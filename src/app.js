@@ -20,6 +20,7 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 
 // 记录 HTTP 日志
+app.use(require('./utils/logger'))
 
 // 定义路由
 app.use('/', indexRouter);
