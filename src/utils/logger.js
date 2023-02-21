@@ -11,7 +11,7 @@ const { format } = require('date-fns');
 
 const yearMonth = moment().format('YYYY-MM');
 // 日志文件存放路径
-const logDirectory = path.join('./src/logs/');
+const logDirectory = path.join(path.join(__dirname, '..', '/logs/'));
 // 确保日志文件夹存在
 require('fs').mkdirSync(logDirectory, { recursive: true });
 const logFileName = `access_${yearMonth}.log`;
