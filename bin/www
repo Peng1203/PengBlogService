@@ -3,11 +3,11 @@
 /**
  * Module dependencies.
  */
-
 var app = require('../src/app');
 var debug = require('debug')('peng-blog-service:server');
 var http = require('http');
 
+const GATEWAY = require('../src/config/GATEWAY.config')
 /**
  * Get port from environment and store in Express.
  */
@@ -87,4 +87,6 @@ function onListening() {
     ? 'pipe ' + addr
     : 'port ' + addr.port;
   debug('Listening on ' + bind);
+
+  console.log(`server is runuing: ${GATEWAY}:${process.env.PORT || '3000'}`)
 }
