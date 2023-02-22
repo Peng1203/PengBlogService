@@ -7,7 +7,7 @@ var app = require('../src/app');
 var debug = require('debug')('peng-blog-service:server');
 var http = require('http');
 
-const GATEWAY = require('../src/config/GATEWAY.config')
+const GATEWAY = require('../src/configs/GATEWAY.config')
 /**
  * Get port from environment and store in Express.
  */
