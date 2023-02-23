@@ -15,6 +15,8 @@ app.use(express.static(path.join(__dirname, process.env.NODE_ENV === 'developmen
 app.use(require('./utils/logger'))
 // 将全局通用的库 或者函数 注册到 res 响应对象上
 app.use(require('./utils/moment'))
+// 将环境变量 设置到 res 响应对象上
+app.use(require('./utils/environment'))
 
 // 定义路由
 app.use('/', indexRouter);
