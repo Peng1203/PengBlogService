@@ -9,8 +9,8 @@ switch (process.env.NODE_ENV) {
     URL = 'http://127.0.0.1'
     break;
   case 'production':
-    // 线上服务器公网IP地址 或域名
-    URL = 'http://1.1.1.1'
+    // 线上服务器公网IP地址
+    URL = 'http://0.0.0.0'
     break;
   default:
     URL = 'http://localhost'
