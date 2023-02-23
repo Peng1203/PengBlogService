@@ -6,6 +6,7 @@ import { Request, Response, NextFunction } from 'express'
  */
 function env(res: Request, req: Response, next: NextFunction): void {
   req.locals.env = process.env.NODE_ENV === 'development' ? 'dev' : 'prod'
+  next()
 }
 
 module.exports = env
