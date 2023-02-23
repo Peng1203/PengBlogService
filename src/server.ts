@@ -7,14 +7,10 @@ const indexRouter = require('./routes/index');
 const usersRouter = require('./routes/users');
 const app = express();
 
-// view engine setup
-app.set('views', path.join(__dirname, './views'));
-app.set('view engine', 'ejs');
-
 app.use(express.json());
 app.use(express.urlencoded({ extended: false }));
 app.use(cookieParser());
-app.use(express.static(path.join(__dirname, 'public')));
+app.use(express.static(path.join(__dirname, process.env.NODE_ENV === 'development' ? '../public' : 'public')));
 // 记录 HTTP请求 日志
 app.use(require('./utils/logger'))
 // 将全局通用的库 或者函数 注册到 res 响应对象上
