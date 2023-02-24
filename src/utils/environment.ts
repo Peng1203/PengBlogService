@@ -4,9 +4,9 @@ import { Request, Response, NextFunction } from 'express'
  * development
  * production
  */
-function env(res: Request, req: Response, next: NextFunction): void {
-  req.locals.env = process.env.NODE_ENV === 'development' ? 'dev' : 'prod'
+function env(req: Request, res: Response, next: NextFunction): void {
+  res.locals.env = process.env.NODE_ENV === 'development' ? 'dev' : 'prod'
   next()
 }
 
-module.exports = env
+export default env

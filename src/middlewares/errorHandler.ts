@@ -1,3 +1,5 @@
+import { Request, Response, NextFunction } from 'express'
+
 /**
  * 错误处理中间件
  * @author Peng
@@ -9,14 +11,14 @@
  * @returns {void}
  */
 
-function errorHandler(err, req, res, next) {
+function errorHandler(err: Error, req: Request, res: Response, next: NextFunction): void {
   // set locals, only providing error in development
   res.locals.message = err.message;
   res.locals.error = req.app.get('env') === 'development' ? err : {};
 
   // render the error page
-  res.status(err.status || 500);
+  res.status(500);
   res.render('error');
 }
 
-module.exports = errorHandler
+export default errorHandler

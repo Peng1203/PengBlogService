@@ -1,3 +1,5 @@
+import { Request, Response, NextFunction } from 'express'
+
 /**
  * 路由 404 中间件
  * @author Peng
@@ -8,7 +10,7 @@
  * @returns {void}
  */
 
-function notFound(req, res, next) {
+function notFound(req: Request, res: Response, next: NextFunction): void {
   res.status(404).json({
     status: 'error',
     message: 'Resource not found',
@@ -16,4 +18,4 @@ function notFound(req, res, next) {
   });
 }
 
-module.exports = notFound;
+export default notFound;

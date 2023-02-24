@@ -1,7 +1,12 @@
-const redis = require('redis');
-const config = require('../configs/redis.config')
+
+import { RedisCommandArgument } from '@redis/client/dist/lib/commands'
+import { createClient } from 'redis'
+import config from '../configs/redis.config'
 // 创建Redis终端
-const redisClient = redis.createClient(config)
+const redisClient = createClient({
+  legacyMode: true,
+  ...config
+})
 
 /**
  * 设置缓存
@@ -13,18 +18,18 @@ const redisClient = redis.createClient(config)
  * @result 返回结果 OK
  * @returns {Promise}
  */
-function setCache(key, value, second) {
+function setCache(key: any, value: any, second: number | undefined) {
   if (typeof value === "object") value = JSON.stringify(value)
   return new Promise((resolve, reject) => {
     if (second === undefined) {
       // 没有时间限制缓存
-      redisClient.set(key, value, (err, res) => {
+      redisClient.set(key, value, (err: any, res: number) => {
         if (err) reject(err)
         else resolve(res)
       })
     } else {
       // 有时间限制缓存 过期自动删除
-      redisClient.setex(key, second, value, (err, res) => {
+      redisClient.setEx(key, second, value, (err: any, res: number) => {
         if (err) reject(err)
         else resolve(res)
       })
@@ -41,9 +46,9 @@ function setCache(key, value, second) {
  * @result 返回结果 成功{查询结果} 失败null
  * @returns {Promise}
  */
-function getCache(key) {
+function getCache(key: any) {
   return new Promise((resolve, reject) => {
-    redisClient.get(key, (err, res) => {
+    redisClient.get(key, (err: any, res: unknown) => {
       if (err) reject(err)
       else resolve(res)
     })
@@ -59,9 +64,9 @@ function getCache(key) {
  * @result 返回结果 成功true 失败false
  * @returns {Boolean}
  */
-function delCache(key) {
+function delCache(key: any) {
   return new Promise((resolve, reject) => {
-    redisClient.del(key, (err, res) => {
+    redisClient.del(key, (err: any, res: any) => {
       if (err) reject(err)
       else resolve(res ? true : false)
     })
@@ -77,9 +82,9 @@ function delCache(key) {
  * @result 返回结果 成功true 失败false
  * @returns {Boolean}
  */
-function isExists(key) {
+function isExists(key: any) {
   return new Promise((resolve, reject) => {
-    redisClient.exists(key, (err, reply) => {
+    redisClient.exists(key, (err: any, reply: any) => {
       if (err) reject(err)
       // 存在1 不存在0
       else resolve(reply ? true : false)
@@ -96,9 +101,9 @@ function isExists(key) {
  * @result 返回结果 成功 当前统计数量 
  * @returns {Number}
  */
-function incrCounter(key) {
+function incrCounter(key: any) {
   return new Promise((resolve, reject) => {
-    redisClient.incr(key, (err, res) => {
+    redisClient.incr(key, (err: any, res: unknown) => {
       if (err) reject(err)
       else resolve(res)
       // else resolve(res && true)
@@ -137,7 +142,6 @@ async function test() {
 // test()
 
 module.exports = {
-  redisClient,
   setCache,
   getCache,
   delCache,

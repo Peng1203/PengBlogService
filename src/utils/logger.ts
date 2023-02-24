@@ -3,11 +3,11 @@
  * 按照每个月 生成一次新的日志
  * 格式化 日志记录方式
  */
-const morgan = require('morgan');
-const moment = require('moment');
-const rfs = require('rotating-file-stream');
-const path = require('path');
-const { format } = require('date-fns');
+import morgan from 'morgan'
+import moment from 'moment'
+import rfs from 'rotating-file-stream'
+import path from 'path'
+import { format } from 'date-fns'
 
 const yearMonth = moment().format('YYYY-MM');
 // 日志文件存放路径
@@ -29,4 +29,4 @@ morgan.token('date', () => {
 const logFormat = 'IP/:remote-addr HTTP/:http-version Method/:method  URL:url  Code/:status  Response_ms/:response-time ms  ResponseTime[:date[iso]]'
 const logger = morgan(logFormat, { stream: accessLogStream });
 
-module.exports = logger;
+export default logger
