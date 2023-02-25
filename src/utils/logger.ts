@@ -5,7 +5,7 @@
  */
 import morgan from 'morgan'
 import moment from 'moment'
-import rfs from 'rotating-file-stream'
+import { createStream } from 'rotating-file-stream'
 import path from 'path'
 import { format } from 'date-fns'
 
@@ -16,7 +16,7 @@ const logDirectory = path.join(path.join(__dirname, '..', '/logs/'));
 require('fs').mkdirSync(logDirectory, { recursive: true });
 const logFileName = `access_${yearMonth}.log`;
 // 创建一个新的日志文件流
-const accessLogStream = rfs.createStream(logFileName, {
+const accessLogStream = createStream(logFileName, {
   interval: '1M', // 每天创建一个新的日志文件
   path: logDirectory,
 });

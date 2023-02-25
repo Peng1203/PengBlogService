@@ -1,40 +1,32 @@
 
-import { RedisCommandArgument } from '@redis/client/dist/lib/commands'
-import { createClient } from 'redis'
+import redis from 'ioredis'
 import config from '../configs/redis.config'
 // 创建Redis终端
-const redisClient = createClient({
-  legacyMode: true,
-  ...config
-})
+const redisClient = new redis(config)
 
 /**
  * 设置缓存
  * @author Peng
  * @date 2023-02-23
- * @param {any} key
+ * @param {string} key
  * @param {any} value
- * @param {Number} second
+ * @param {number} second
  * @result 返回结果 OK
  * @returns {Promise}
  */
-function setCache(key: any, value: any, second: number | undefined) {
-  if (typeof value === "object") value = JSON.stringify(value)
-  return new Promise((resolve, reject) => {
+async function setCache<T extends string | Error | null>(key: string, value: any, second: number | undefined): Promise<T> {
+  try {
+    if (typeof value === "object") value = JSON.stringify(value)
     if (second === undefined) {
       // 没有时间限制缓存
-      redisClient.set(key, value, (err: any, res: number) => {
-        if (err) reject(err)
-        else resolve(res)
-      })
+      return await redisClient.set(key, value) as T
     } else {
       // 有时间限制缓存 过期自动删除
-      redisClient.setEx(key, second, value, (err: any, res: number) => {
-        if (err) reject(err)
-        else resolve(res)
-      })
+      return await redisClient.setex(key, second, value) as unknown as T
     }
-  })
+  } catch (error) {
+    throw error
+  }
 }
 
 
@@ -42,17 +34,17 @@ function setCache(key: any, value: any, second: number | undefined) {
  * 获取缓存
  * @author Peng
  * @date 2023-02-23
- * @param {any} key
+ * @param {string} key
  * @result 返回结果 成功{查询结果} 失败null
  * @returns {Promise}
  */
-function getCache(key: any) {
-  return new Promise((resolve, reject) => {
-    redisClient.get(key, (err: any, res: unknown) => {
-      if (err) reject(err)
-      else resolve(res)
-    })
-  })
+async function getCache<T>(key: string): Promise<T | null> {
+  try {
+    const result = await redisClient.get(key);
+    return result ? (result as T) : null;
+  } catch (error) {
+    throw error
+  }
 }
 
 
@@ -60,17 +52,17 @@ function getCache(key: any) {
  * 删除缓存
  * @author Peng
  * @date 2023-02-23
- * @param {any} key
+ * @param {string} key
  * @result 返回结果 成功true 失败false
  * @returns {Boolean}
  */
-function delCache(key: any) {
-  return new Promise((resolve, reject) => {
-    redisClient.del(key, (err: any, res: any) => {
-      if (err) reject(err)
-      else resolve(res ? true : false)
-    })
-  })
+async function delCache<T extends string>(key: T): Promise<boolean> {
+  try {
+    // 成功1 失败0
+    return !!(await redisClient.del(key))
+  } catch (error) {
+    throw error
+  }
 }
 
 
@@ -78,37 +70,37 @@ function delCache(key: any) {
  * 判断缓存 是否已经存在
  * @author Peng
  * @date 2023-02-23
- * @param {String} key
+ * @param {string} key
  * @result 返回结果 成功true 失败false
  * @returns {Boolean}
  */
-function isExists(key: any) {
-  return new Promise((resolve, reject) => {
-    redisClient.exists(key, (err: any, reply: any) => {
-      if (err) reject(err)
-      // 存在1 不存在0
-      else resolve(reply ? true : false)
-    })
-  })
+async function isExists<T extends boolean | Error>(key: string): Promise<T> {
+  let exists: boolean
+  try {
+    // 存在1 不存在0
+    exists = await redisClient.exists(key) ? true : false
+  } catch (error) {
+    throw error
+  }
+  return exists as T
 }
+
 
 
 /**
  * 自增计数器 设置存储值自增+1 用于统计访问量等数据
  * @author Peng
  * @date 2023-02-23
- * @param {String} key
+ * @param {string} counterKey
  * @result 返回结果 成功 当前统计数量 
  * @returns {Number}
  */
-function incrCounter(key: any) {
-  return new Promise((resolve, reject) => {
-    redisClient.incr(key, (err: any, res: unknown) => {
-      if (err) reject(err)
-      else resolve(res)
-      // else resolve(res && true)
-    })
-  })
+async function incrCounter<T extends number | Error>(counterKey: string): Promise<T> {
+  try {
+    return await redisClient.incr(counterKey) as T
+  } catch (error) {
+    throw error
+  }
 }
 
 
@@ -119,16 +111,16 @@ function incrCounter(key: any) {
  * @returns {void}
  */
 async function test() {
-  console.log('redisClient -----', redisClient)
+  // console.log('redisClient -----', redisClient)
   const status = await setCache('test', { name: '张三' }, 100)
   // const status = await setCaches({ key4: '哈', key5: '哈哈', key6: '哈哈哈' }, 100)
-  console.log('status -----', status) // OK
+  console.log('设置缓存 -----', status) // OK
 
   const res = await getCache('test')
-  console.log('res -----', JSON.parse(res)) // 成功 value 失败 null
+  console.log('获取缓存 -----', JSON.parse(res as string)) // 成功 value 失败 null
 
-  const delStatus = await delCache('test11') // 删除 成功1 失败0
-  console.log('delStatus -----', delStatus)
+  const delStatus = await delCache('test1') // 删除 成功1 失败0
+  console.log('删除缓存 -----', delStatus)
 
   const isExist = await isExists('key5') // 存在true 不存在false
   console.log('isExist -----', isExist)
@@ -138,10 +130,13 @@ async function test() {
 
   const testCounter = await getCache('testCounter')
   console.log('testCounter -----', testCounter)
+
+  redisClient.quit()
 }
-// test()
+test()
 
 module.exports = {
+  redisClient,
   setCache,
   getCache,
   delCache,
