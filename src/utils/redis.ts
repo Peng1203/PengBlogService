@@ -133,7 +133,7 @@ async function test() {
 
   redisClient.quit()
 }
-test()
+// test()
 
 module.exports = {
   redisClient,
