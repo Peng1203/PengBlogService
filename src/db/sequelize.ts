@@ -11,6 +11,7 @@ const sequelize = new Sequelize({
   ...dbConfig,
   dialect: 'mysql',
   logging: console.log,
+  timezone: '+08:00', // 设置时区为北京时间
 })
 
 // 测试连接

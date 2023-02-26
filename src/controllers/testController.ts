@@ -1,9 +1,13 @@
 import { Request, Response, NextFunction } from 'express'
-import { TestDTO } from '../dtos/testDTO'
 import { validate, validateOrReject } from 'class-validator'
 import { plainToClass } from 'class-transformer'
+import { PostTestDTO } from '../dtos/testDTO'
+import TestService from '../services/testService'
 
 class TestController {
+  // 创建测试service 实例
+  public testService = new TestService()
+
   /**
    * 测试Post提交
    * @author Peng
@@ -12,18 +16,17 @@ class TestController {
    * @param {any} res:Response
    * @param {any} next:NextFunction
    * @returns {any}
+   * 在类中使用
    */
-  public async postTest(
+  public postTest = async (
     req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<void> {
+  ) => {
     req.body.age = Number(req.body.age)
-    console.log(' -----', req.body)
-    // console.log('process.env -----', process.env.NODE_ENV)
-    // const testDTO = new TestDTO()
-    const errors = await validate(plainToClass(TestDTO, req.body))
-
+    // console.log(' -----', req.body)
+    // 校验DTO层
+    const errors = await validate(plainToClass(PostTestDTO, req.body))
     if (errors.length > 0) {
       const errorMessage = errors
         .map((error) => Object.values(error.constraints))
@@ -31,6 +34,10 @@ class TestController {
       res.status(400).json({ code: 400, message: errorMessage })
       return
     }
+
+    // 调用Service层 操作模型
+    const result = await this.testService.createdTestData({ ...req.body, })
+    console.log('调用Service层 result -----', result)
 
     res.send('成功!!!')
   }
