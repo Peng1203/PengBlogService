@@ -18,7 +18,7 @@ module.exports = {
   resolve: {
     extensions: ['.ts', '.js'], // 配置可以省略的文件后缀名
     alias: {
-      '@': path.resolve(__dirname, 'src') // 配置路径别名
+      '@': path.resolve(__dirname, './src') // 配置路径别名
     }
   },
   output: {
