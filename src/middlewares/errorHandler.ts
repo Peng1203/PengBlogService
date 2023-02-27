@@ -33,12 +33,17 @@ function errorHandler(
       res.status(code).send(`error: ${err.message}`)
       break;
     case 'DTO': {
-      console.log('errors -----', errors)
-      if (errors.length > 0) {
-        const errorMessage = errors
-          .map((error) => Object.values(error.constraints))
-          .join(', ')
-      }
+      // 错误信息
+      let errorMessage = ''
+      errors.forEach(errInfo => {
+        // console.log('errInfo -----', errInfo)
+        // const { constraints } = errInfo
+        // 断言
+        const errMsgs = (errInfo as any).constraints
+        for (const key in errMsgs) {
+          errorMessage += errMsgs[key] + ', '
+        }
+      })
       message = errorMessage
       res.status(code).send({ code, errorType: 'params error!', message })
     }
@@ -49,3 +54,4 @@ function errorHandler(
 }
 
 export default errorHandler
+
