@@ -2,14 +2,18 @@ import TestModel from '../models/testModel'
 
 // 提交参数限制
 type PostType = {
-  userName: '',
-  age: '',
-  data: '',
+  userName: ''
+  age: ''
+  data: ''
 }
-/** 
+/**
  * 定义service 测试类
  */
 class TestService {
+  public async getTestInfoByID(id: string | number): Promise<object | null> {
+    return await TestModel.findByPk(id)
+  }
+
   /**
    * 新增数据
    */

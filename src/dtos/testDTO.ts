@@ -12,19 +12,41 @@ import {
   Max,
   MinLength,
   MaxLength,
-  IsNotEmpty,
+  IsNotEmpty, // 参数不能为空
   IsString,
   IsNumber,
   ValidateIf,
   IsNumberString,
-  IsOptional,
+  IsOptional, // 允许参数为空
   IsObject,
   IsDateString,
   Matches,
   IsISO8601,
 } from 'class-validator'
 
-// 创建测试数据
+// 查询测试数据参数DTO
+export class GetTestListDTO {
+  @Min(1)
+  @IsInt()
+  @IsNumber()
+  @IsOptional()
+  // @IsNotEmpty()
+  readonly page: number
+
+  @Min(1)
+  // @Max(500)
+  @IsInt()
+  @IsNumber()
+  @IsOptional()
+  // @IsNotEmpty()
+  readonly pageSize: number
+
+  @IsString()
+  @IsOptional()
+  readonly queryStr: string
+}
+
+// 创建测试数据参数DTO
 export class PostTestDTO {
   // @ValidateIf((_, value) => value !== '')
   @IsNotEmpty({ message: '用户名不能为空' })
