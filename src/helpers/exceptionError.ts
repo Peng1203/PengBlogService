@@ -10,12 +10,12 @@
 export default class MyError extends Error {
   code: number
   type: string
-  errors: object[]
+  errors: object[] | string
   constructor(
     errCode: number,
     message: string,
-    errors: object[],
-    type: string | undefined,
+    errors: object[] | string,
+    type: string | undefined
   ) {
     super(message)
     this.type = type

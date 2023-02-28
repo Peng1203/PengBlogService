@@ -1,5 +1,5 @@
 import TestModel from '../models/testModel'
-
+import moment from 'moment'
 // 提交参数限制
 type PostType = {
   userName: ''
@@ -19,10 +19,12 @@ class TestService {
    */
   public async createdTestData(data: PostType): Promise<any> {
     try {
-      console.log('data -----', data)
-      const res = await TestModel.create(data)
-      console.log('res -----', res)
-      return res
+      const _data = {
+        ...data,
+        createdTime: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+      }
+      console.log('_data -----', _data)
+      return await TestModel.create(_data)
     } catch (e) {
       console.log(e)
     }

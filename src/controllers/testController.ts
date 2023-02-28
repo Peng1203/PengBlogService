@@ -26,13 +26,13 @@ class TestController {
   ): Promise<any> => {
     try {
       const errors = await validate(plainToClass(GetTestListDTO, req.query))
-      if (errors.length) throw new MyError(PARAMS_ERROR_CODE, 'hhhhh', errors, 'DTO')
+      if (errors.length)
+        throw new MyError(PARAMS_ERROR_CODE, 'params error!', errors, 'DTO')
       console.log('你好 -----', req.query)
       res.send('获取测试数据列表')
     } catch (erro) {
       next(erro)
     }
-
   }
 
   /**
@@ -51,10 +51,13 @@ class TestController {
   ): Promise<any> => {
     console.log('req.params -----', req.params.id)
     const queryID: number | boolean = parseInt(req.params.id) || false
-    if (!queryID) return res.status(400).send({
-      code: 400,
-      message: 'id参数有误!',
-    })
+    if (!queryID)
+      throw new MyError(
+        PARAMS_ERROR_CODE,
+        'params error!',
+        'id参数有误!',
+        'DTO'
+      )
     const result = await this.testService.getTestInfoByID(req.params.id)
     console.log('result -----', typeof result, result)
     res.send(result)
@@ -75,23 +78,27 @@ class TestController {
     res: Response,
     next: NextFunction
   ): Promise<void> => {
-    req.body.age = Number(req.body.age)
-    // console.log(' -----', req.body)
-    // 校验DTO层
-    const errors = await validate(plainToClass(PostTestDTO, req.body))
-    if (errors.length > 0) {
-      const errorMessage = errors
-        .map((error) => Object.values(error.constraints))
-        .join(', ')
-      res.status(400).json({ code: 400, message: errorMessage })
-      return
+    try {
+      req.body.age = Number(req.body.age)
+      // 校验DTO层
+      const errors = await validate(plainToClass(PostTestDTO, req.body))
+      if (errors.length)
+        throw new MyError(PARAMS_ERROR_CODE, 'params error!', errors, 'DTO')
+
+      // 调用Service层 操作模型
+      const result = await this.testService.createdTestData(req.body)
+      console.log('result -----', result)
+      if (!Object.keys(result.dataValues)) {
+        res.send({
+          code: '200',
+          message: 'Falied',
+        })
+      } else {
+        res.send({ code: '200', message: 'Success', data: result.dataValues })
+      }
+    } catch (e) {
+      next(e)
     }
-
-    // 调用Service层 操作模型
-    const result = await this.testService.createdTestData({ ...req.body })
-    console.log('调用Service层 result -----', result)
-
-    res.send('成功!!!')
   }
 }
 

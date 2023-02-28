@@ -21,7 +21,7 @@ function errorHandler(
   // set locals, only providing error in development
   // const { code } = err
   // console.log('code -----', code)
-  // instanceof 
+  // instanceof
   let { code, type, message, errors } = err
   // if (err instanceof MyError) console.log('true -----', true)
   // console.log('err -----', err.code)
@@ -31,27 +31,27 @@ function errorHandler(
   switch (type) {
     case 'Service':
       res.status(code).send(`error: ${err.message}`)
-      break;
+      break
     case 'DTO': {
       // 错误信息
-      let errorMessage = ''
-      errors.forEach(errInfo => {
-        // console.log('errInfo -----', errInfo)
-        // const { constraints } = errInfo
-        // 断言
-        const errMsgs = (errInfo as any).constraints
-        for (const key in errMsgs) {
-          errorMessage += errMsgs[key] + ', '
-        }
-      })
-      message = errorMessage
-      res.status(code).send({ code, errorType: 'params error!', message })
+      let errorInfo: string[] = []
+      if (Array.isArray(errors)) {
+        errors.forEach((errInfo) => {
+          // 断言
+          const errMsgs = (errInfo as any).constraints
+          for (const key in errMsgs) {
+            errorInfo.push(errMsgs[key])
+          }
+        })
+      } else if (typeof errors === 'string') {
+        errorInfo.push(errors)
+      }
+      res.status(code).send({ code, message, errorInfo })
     }
     default:
       res.status(500).send('service error!')
-      break;
+      break
   }
 }
 
 export default errorHandler
-
