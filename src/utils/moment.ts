@@ -19,11 +19,35 @@ function regeditMomentTolocals(
   // res.locals.moment()
   res.locals.moment = moment
   // 日期格式化 方法
-  res.locals.dateFormat = (val: MomentInput) =>
-    moment(val || new Date()).format('YYYY-MM-DD')
-  res.locals.dateTimeFormat = (val: MomentInput) =>
-    moment(val || new Date()).format('YYYY-MM-DD HH:mm:ss')
+  res.locals.dateFormat = dateFormat
+  res.locals.dateTimeFormat = dateTimeFormat
   next()
+}
+
+// 类型别名
+type dateType = number | Date | undefined
+
+
+/**
+ * 格式化时间的方法 YYYY-MM-DD
+ * @author Peng
+ * @date 2023-03-01
+ * @param {any} date:dateType
+ * @returns {string}
+ */
+export function dateFormat(date?: dateType): string {
+  return moment(date || new Date()).format('YYYY-MM-DD')
+}
+
+/**
+ * 格式化时间的方法 YYYY-MM-DD HH:mm:ss'
+ * @author Peng
+ * @date 2023-03-01
+ * @param {any} date:dateType
+ * @returns {string}
+ */
+export function dateTimeFormat(date?: dateType) {
+  return moment(date || new Date()).format('YYYY-MM-DD HH:mm:ss')
 }
 
 export default regeditMomentTolocals

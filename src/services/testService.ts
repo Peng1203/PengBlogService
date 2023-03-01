@@ -1,5 +1,6 @@
 import TestModel from '../models/testModel'
 import moment from 'moment'
+import { dateTimeFormat } from '../utils/moment'
 // 提交参数限制
 type PostType = {
   userName: ''
@@ -21,12 +22,12 @@ class TestService {
     try {
       const _data = {
         ...data,
-        createdTime: moment(new Date()).format('YYYY-MM-DD HH:mm:ss'),
+        createdTime: dateTimeFormat(),
       }
       console.log('_data -----', _data)
       return await TestModel.create(_data)
     } catch (e) {
-      console.log(e)
+      throw new Error('创建测试数据失败')
     }
   }
 }
