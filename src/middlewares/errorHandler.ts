@@ -19,15 +19,8 @@ function errorHandler(
 ): void {
   console.log('触发错误中间件 -----', err)
   // set locals, only providing error in development
-  // const { code } = err
-  // console.log('code -----', code)
   // instanceof
   let { code, type, message, errors } = err
-  // if (err instanceof MyError) console.log('true -----', true)
-  // console.log('err -----', err.code)
-  // console.log('err.name -----', err.name)
-  // console.log('err.stack -----', err.stack)
-  // console.log('err.message -----', err.message)
   switch (type) {
     case 'Service':
       res.status(code).send(`error: ${err.message}`)
@@ -49,7 +42,7 @@ function errorHandler(
       res.status(code).send({ code, message, errorInfo })
     }
     default:
-      res.status(500).send('service error!')
+      res.status(500).send({ code: 500, message: err.message })
       break
   }
 }

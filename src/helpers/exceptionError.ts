@@ -13,7 +13,7 @@ export default class MyError extends Error {
   errors: object[] | string
   constructor(
     errCode: number,
-    message: string,
+    message: string | '',
     errors: object[] | string,
     type: string | undefined
   ) {
@@ -21,7 +21,7 @@ export default class MyError extends Error {
     this.type = type
     this.code = errCode
     this.errors = errors
-    this.message = message
+    this.message = message || '参数有误!'
     this.name = 'MyError'
   }
 }
