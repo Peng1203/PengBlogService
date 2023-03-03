@@ -3,13 +3,13 @@
   "version": "0.0.0",
   "private": true,
   "scripts": {
-    "start": "ts-node ./src/index.ts",
+    "start": "cross-env NODE_ENV=development ts-node ./src/index.ts",
     "dev": "cross-env NODE_ENV=development nodemon ./src/index.ts",
     "test": "jest",
-    "build:w": "webpack",
-    "build:ts": "tsc",
-    "dist-w": "webpack && node ./dist/app.js",
-    "dist-ts": "tsc && node ./dist/index.js"
+    "build:wp": "cross-env NODE_ENV=production webpack",
+    "build:ts": "cross-env NODE_ENV=production tsc",
+    "dist-wp": "yarn run build:wp && node ./dist/app.js",
+    "dist-ts": "yarn run build:ts && node ./dist/index.js"
   },
   "dependencies": {
     "class-transformer": "^0.5.1",
@@ -18,6 +18,7 @@
     "cross-env": "^7.0.3",
     "date-fns": "^2.29.3",
     "debug": "~2.6.9",
+    "dotenv": "^16.0.3",
     "ejs": "~2.6.1",
     "express": "~4.16.1",
     "http-errors": "~1.6.3",

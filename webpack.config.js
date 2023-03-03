@@ -1,6 +1,10 @@
 const path = require('path');
 const nodeExternals = require('webpack-node-externals');
 const CopyWebpackPlugin = require('copy-webpack-plugin');
+const dotenv = require('dotenv').config();
+
+console.log('dotenv -----', dotenv)
+console.log('NODE_ENV -----', process.env.NODE_ENV)
 
 module.exports = {
   entry: './src/index.ts', // 项目入口文件
@@ -21,9 +25,10 @@ module.exports = {
       '@': path.resolve(__dirname, './src') // 配置路径别名
     }
   },
+  mode: process.env.NODE_ENV,
   output: {
     filename: 'app.js', // 打包后生成的文件名
-    path: path.resolve(__dirname, 'dist'), // 打包后的文件存放目录
+    path: path.resolve(__dirname, dotenv.parsed.OUT_PUT_NAME), // 打包后的文件存放目录
     // publicPath: path.resolve(__dirname, 'public')
   },
   plugins: [

@@ -1,5 +1,7 @@
+const dotenv = require('dotenv').config();
 const server = require('./server')
 
 const port: string = process.env.PORT || '3000'
+const { API_URL, PORT } = dotenv.parsed
 
-server.listen(port, () => console.log(`server in running http://127.0.0.1:${port}`))
+server.listen(port, () => console.log(`${API_URL}:${PORT}`))
