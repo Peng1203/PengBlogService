@@ -30,8 +30,8 @@ class TestController {
         throw new MyError(PARAMS_ERROR_CODE, 'params error!', errors, 'DTO')
       console.log('你好 -----', req.query)
       res.send('获取测试数据列表')
-    } catch (erro) {
-      next(erro)
+    } catch (e) {
+      next(e)
     }
   }
 
@@ -42,25 +42,28 @@ class TestController {
    * @param {any} req:Request
    * @param {any} res:Response
    * @param {any} next:NextFunction
-   * @returns {void}
+   * @returns {Promise<void>}
    */
   public getTestInfoByID = async (
     req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<any> => {
-    console.log('req.params -----', req.params.id)
-    const queryID: number | boolean = parseInt(req.params.id) || false
-    if (!queryID)
-      throw new MyError(
-        PARAMS_ERROR_CODE,
-        'params error!',
-        'id参数有误!',
-        'DTO'
-      )
-    const result = await this.testService.getTestInfoByID(req.params.id)
-    console.log('result -----', typeof result, result)
-    res.send(result)
+  ): Promise<void> => {
+    try {
+      const queryID: number | boolean = parseInt(req.params.id) || false
+      if (!queryID)
+        throw new MyError(
+          PARAMS_ERROR_CODE,
+          'params error!',
+          'id参数有误!',
+          'DTO'
+        )
+      const result = await this.testService.getTestInfoByID(req.params.id)
+      console.log('result -----', typeof result, result)
+      res.send(result)
+    } catch (e) {
+      next(e)
+    }
   }
 
   /**
@@ -70,7 +73,7 @@ class TestController {
    * @param {any} req:Request
    * @param {any} res:Response
    * @param {any} next:NextFunction
-   * @returns {any}
+   * @returns {Promise<void>}
    * 在类中使用
    */
   public postTest = async (
@@ -83,7 +86,7 @@ class TestController {
       // 校验DTO层
       const errors = await validate(plainToClass(PostTestDTO, req.body))
       if (errors.length)
-        throw new MyError(PARAMS_ERROR_CODE, 'params error!', errors, 'DTO')
+        throw new MyError(PARAMS_ERROR_CODE, '', errors, 'DTO')
 
       // 调用Service层 操作模型
       const result = await this.testService.createdTestData(req.body)

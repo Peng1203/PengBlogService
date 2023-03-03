@@ -8,6 +8,6 @@ router.get('/getTestList', testController.getTestList)
 
 router.get('/getTestInfo/:id', testController.getTestInfoByID)
 
-router.post('/post', testController.postTest)
+router.post('/addTestInfo', testController.postTest)
 
 export default router
