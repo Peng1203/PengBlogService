@@ -1,5 +1,6 @@
 import express from 'express'
 import cookieParser from 'cookie-parser'
+import cors from 'cors'
 import _logger from './utils/logger'
 import _moment from './utils/moment'
 import _env from './utils/environment'
@@ -12,6 +13,7 @@ import convertNumber from './middlewares/convertNumber'
 
 const app = express()
 
+app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
