@@ -3,6 +3,13 @@ import { plainToClass } from 'class-transformer'
 import MyError from './exceptionError'
 import { PARAMS_ERROR_CODE } from './errorCode'
 
+// 限制前端传递多余参数
+// whitelist 选项表示只接受被 class-validator 修饰的属性，而不接受未被修饰的属性； forbidNonWhitelisted 选项表示禁止接受未被修饰的属性，如果接收到未被修饰的属性，会抛出异常
+const options = {
+  whitelist: true,
+  forbidNonWhitelisted: true,
+}
+
 /**
  * validate校验DTO层方法 不抛出错误 返回错误数组
  * @author Peng
@@ -16,12 +23,6 @@ export async function validateDTO<T>(
   params: any
 ): Promise<ValidationError[]> {
   try {
-    // 限制前端传递多余参数
-    // whitelist 选项表示只接受被 class-validator 修饰的属性，而不接受未被修饰的属性； forbidNonWhitelisted 选项表示禁止接受未被修饰的属性，如果接收到未被修饰的属性，会抛出异常
-    const options = {
-      whitelist: true,
-      forbidNonWhitelisted: true,
-    }
     return await validate(plainToClass(DTO, params), options)
   } catch (e) {
     throw e
@@ -42,10 +43,6 @@ export async function validateOrRejectDTO<T>(
   params: any
 ): Promise<void> {
   try {
-    const options = {
-      whitelist: true,
-      forbidNonWhitelisted: true,
-    }
     return await validateOrReject(plainToClass(DTO, params), options)
   } catch (e) {
     // 当抛出错误时 使用自定义错误类
