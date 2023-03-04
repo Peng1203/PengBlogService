@@ -1,16 +1,27 @@
+import { Op } from 'sequelize'
 import TestModel from '../models/testModel'
 import { dateTimeFormat } from '../utils/moment'
-// 提交参数限制
+
+// 提交参数
 type PostType = {
-  userName: ''
-  age: ''
-  data: ''
+  userName: string
+  age: string
+  data: string
 }
+
+// 查询参数
+type queryParamsType = {
+  page?: number
+  pageSize?: number
+  queryStr?: string
+  column?: string
+  order?: 'ASC' | 'DESC' | ''
+}
+
 /**
  * 定义service 测试类
  */
 class TestService {
-
   /**
    * ID查询测试模型数据
    * @author Peng
@@ -26,7 +37,6 @@ class TestService {
     }
   }
 
-
   /**
    * 创建测试模型数据
    * @author Peng
@@ -34,6 +44,8 @@ class TestService {
    * @param {any} data:PostType
    * @returns {any}
    */
+  // 提交参数限制
+
   public async createdTestData(data: PostType): Promise<any> {
     try {
       const _data = {
@@ -44,6 +56,47 @@ class TestService {
       return await TestModel.create(_data)
     } catch (e) {
       throw new Error('创建测试数据失败!')
+    }
+  }
+
+  /**
+   * 查询测试数据
+   * @author Peng
+   * @date 2023-03-04
+   * @param {any} params?:queryParamsType
+   * @returns {any}
+   */
+  public async getTestList(params?: queryParamsType): Promise<any> {
+    try {
+      console.log('params -----', params)
+      const { page, pageSize, queryStr, column, order } = params ?? {}
+      const where = queryStr
+        ? {
+            [Op.or]: [
+              { userName: { [Op.like]: `%${queryStr}%` } },
+              { data: { [Op.like]: `%${queryStr}%` } },
+            ],
+          }
+        : {}
+
+      const options =
+        page && pageSize
+          ? {
+              limit: pageSize,
+              offset: (page - 1) * pageSize,
+            }
+          : {}
+
+      const result = await TestModel.findAndCountAll({
+        where,
+        ...options,
+        // 字段排序 ASC DESC
+        order: [[column || 'id', order || 'ASC']],
+      })
+      const total = await TestModel.count()
+      return { ...result, total }
+    } catch (e) {
+      throw new Error('查询数据失败!')
     }
   }
 }

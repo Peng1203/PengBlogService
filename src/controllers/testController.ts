@@ -1,10 +1,11 @@
 import { Request, Response, NextFunction } from 'express'
-import { validate, validateOrReject } from 'class-validator'
+import { validate } from 'class-validator'
 import { plainToClass } from 'class-transformer'
 import { GetTestListDTO, PostTestDTO } from '../dtos/testDTO'
 import TestService from '../services/testService'
 import MyError from './../helpers/exceptionError'
 import { PARAMS_ERROR_CODE } from './../helpers/errorCode'
+import { validateDTO, validateOrRejectDTO } from '../helpers/validateParams'
 
 class TestController {
   // 创建测试service 实例
@@ -25,11 +26,23 @@ class TestController {
     next: NextFunction
   ): Promise<any> => {
     try {
-      const errors = await validate(plainToClass(GetTestListDTO, req.query))
-      if (errors.length)
-        throw new MyError(PARAMS_ERROR_CODE, 'params error!', errors, 'DTO')
-      console.log('你好 -----', req.query)
-      res.send('获取测试数据列表')
+      const errors = await validateDTO(GetTestListDTO, req.query)
+      if (errors.length) throw new MyError(PARAMS_ERROR_CODE, '', errors, 'DTO')
+      // 抛出错误校验
+      // await validateOrRejectDTO(GetTestListDTO, req.query)
+      const {
+        count,
+        total,
+        rows: data,
+      } = await this.testService.getTestList(req.query)
+      res.send({
+        code: 200,
+        message: 'Success',
+        data,
+        count,
+        total,
+        method: 'getTestList',
+      })
     } catch (e) {
       next(e)
     }
@@ -85,8 +98,7 @@ class TestController {
       req.body.age = Number(req.body.age)
       // 校验DTO层
       const errors = await validate(plainToClass(PostTestDTO, req.body))
-      if (errors.length)
-        throw new MyError(PARAMS_ERROR_CODE, '', errors, 'DTO')
+      if (errors.length) throw new MyError(PARAMS_ERROR_CODE, '', errors, 'DTO')
 
       // 调用Service层 操作模型
       const result = await this.testService.createdTestData(req.body)

@@ -1,4 +1,4 @@
-import { Transform } from 'class-transformer';
+import { Transform } from 'class-transformer'
 import {
   validate, // 校验
   validateOrReject, // 校验 不通过时抛出错误
@@ -22,6 +22,7 @@ import {
   IsDateString,
   Matches,
   IsISO8601,
+  IsIn, // 限制实参范围
 } from 'class-validator'
 
 // 查询测试数据参数DTO
@@ -44,6 +45,15 @@ export class GetTestListDTO {
   @IsString()
   @IsOptional()
   readonly queryStr: string
+
+  @IsString()
+  @IsOptional()
+  readonly column: string
+
+  @IsString()
+  @IsOptional()
+  @IsIn(['ASC', 'DESC', ''])
+  readonly order: 'ASC' | 'DESC' | '' = ''
 }
 
 // 创建测试数据参数DTO
@@ -69,7 +79,7 @@ export class PostTestDTO {
   readonly age: number | string
 
   @IsNotEmpty()
-  data: any;
+  data: any
 
   // @Transform(({ value }) => new Date(value), { toClassOnly: true })
   // @Matches(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/, { message: '创建日期格式为 YYYY-MM-DD HH:mm:ss' })
