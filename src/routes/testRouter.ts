@@ -10,4 +10,5 @@ router.get('/getTestInfo/:id', testController.getTestInfoByID)
 
 router.post('/addTestInfo', testController.postTest)
 
+router.put('/updateTestInfo/:id', testController.updateTestInfoByID)
 export default router

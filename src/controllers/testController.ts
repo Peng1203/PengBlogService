@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import { validate } from 'class-validator'
 import { plainToClass } from 'class-transformer'
-import { GetTestListDTO, PostTestDTO } from '../dtos/testDTO'
+import { GetTestListDTO, PostTestDTO, updateTestDTO } from '../dtos/testDTO'
 import TestService from '../services/testService'
 import MyError from './../helpers/exceptionError'
 import { PARAMS_ERROR_CODE } from './../helpers/errorCode'
@@ -72,8 +72,12 @@ class TestController {
           'DTO'
         )
       const result = await this.testService.getTestInfoByID(req.params.id)
-      console.log('result -----', typeof result, result)
-      res.send(result)
+      res.send({
+        code: 200,
+        message: '成功',
+        data: result,
+        method: 'getTestInfoByID',
+      })
     } catch (e) {
       next(e)
     }
@@ -110,6 +114,54 @@ class TestController {
         })
       } else {
         res.send({ code: '200', message: 'Success', data: result.dataValues })
+      }
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  /**
+   * 通过ID修改 测试信息
+   * @author Peng
+   * @date 2023-03-06
+   * @param {any} req:Request
+   * @param {any} res:Response
+   * @param {any} next:NextFunction
+   * @returns {any}
+   */
+  public updateTestInfoByID = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    try {
+      const { params, body } = req
+      console.log('req.param -----', params)
+      console.log('body -----', body)
+      const editID: number | boolean = parseInt(params.id) || false
+      if (!editID)
+        throw new MyError(
+          PARAMS_ERROR_CODE,
+          'params error!',
+          'id参数有误!',
+          'DTO'
+        )
+      await validateOrRejectDTO(updateTestDTO, body)
+
+      const result = await this.testService.updateTestInfo(params.id, body)
+      console.log('result -----', result[0])
+      if (result[0]) {
+        res.send({
+          code: '200',
+          message: 'Success',
+          method: 'updateTestInfoByID',
+        })
+      } else {
+        res.send({
+          code: '200',
+          message: 'Falied',
+          method: 'updateTestInfoByID',
+        })
       }
     } catch (e) {
       next(e)

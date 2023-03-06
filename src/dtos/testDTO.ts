@@ -8,21 +8,23 @@ import {
   IsEmail,
   IsFQDN,
   IsDate,
-  Min,
-  Max,
-  MinLength,
-  MaxLength,
+  Min, // 数字最小值
+  Max, // 数字最大值
+  MinLength, // 最小长度
+  MaxLength, // 最大长度
   IsNotEmpty, // 参数不能为空
-  IsString,
-  IsNumber,
+  IsString, // 是否是字符串
+  IsNumber, // 是否是数字
   ValidateIf,
   IsNumberString,
   IsOptional, // 允许参数为空
-  IsObject,
+  IsObject, // 是否是对象
   IsDateString,
   Matches,
-  IsISO8601,
-  IsIn, // 限制实参范围
+  IsISO8601, // 是否是ISO8601日期数据
+  IsIn,
+  isNumber,
+  isInt, // 限制实参范围
 } from 'class-validator'
 
 // 查询测试数据参数DTO
@@ -85,4 +87,23 @@ export class PostTestDTO {
   // @Matches(/^\d{4}-\d{2}-\d{2} \d{2}:\d{2}:\d{2}$/, { message: '创建日期格式为 YYYY-MM-DD HH:mm:ss' })
   // @IsISO8601()
   // readonly createdTime: Date | string
+}
+
+// 修改测试数据DTO
+export class updateTestDTO {
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(2) // 最小长度
+  @MaxLength(16) // 最大长度
+  readonly userName: string
+
+  @IsInt()
+  @IsNotEmpty()
+  @Min(1)
+  @Max(120)
+  readonly age: number
+
+  @IsString()
+  @IsOptional()
+  readonly data: string | ''
 }

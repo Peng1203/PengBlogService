@@ -44,8 +44,6 @@ class TestService {
    * @param {any} data:PostType
    * @returns {any}
    */
-  // 提交参数限制
-
   public async createdTestData(data: PostType): Promise<any> {
     try {
       const _data = {
@@ -97,6 +95,17 @@ class TestService {
       return { ...result, total }
     } catch (e) {
       throw new Error('查询数据失败!')
+    }
+  }
+
+  public async updateTestInfo(id: string | number, data: object): Promise<any> {
+    try {
+      console.log('servic层 -----', id, data)
+      return await TestModel.update(data, {
+        where: { id },
+      })
+    } catch (e) {
+      throw new Error('更新数据失败')
     }
   }
 }
