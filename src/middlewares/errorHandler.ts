@@ -20,8 +20,16 @@ function errorHandler(
 ): void {
   // set locals, only providing error in development
   // instanceof
-  let { code, type, message, errors, method } = err
+  let { code, message, errors, type, method } = err
   switch (type) {
+    case 'noAuth':
+      res.status(code).send({
+        code,
+        message,
+        errors,
+        timestamp: dateTimeFormat(),
+      })
+      break
     case 'Service':
       res.status(code).send(`error: ${err.message}`)
       break

@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
+import { dateTimeFormat } from '../utils/moment'
 
 /**
  * 路由 404 中间件
@@ -12,10 +13,12 @@ import { Request, Response, NextFunction } from 'express'
 
 function notFound(req: Request, res: Response, next: NextFunction): void {
   res.status(404).json({
+    code: 404,
     status: 'error',
     message: 'Resource not found',
-    data: null
-  });
+    data: null,
+    timestamp: dateTimeFormat(),
+  })
 }
 
-export default notFound;
+export default notFound
