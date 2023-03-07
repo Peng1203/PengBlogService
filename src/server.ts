@@ -37,7 +37,7 @@ app.use(convertNumber)
 // 定义路由
 app.use('/', indexRouter)
 app.use('/test', testRouter)
-app.use('/users', usersRouter)
+app.use('/user', usersRouter)
 
 // 404中间件
 app.use(notFoundMiddleware)
