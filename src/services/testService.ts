@@ -108,6 +108,16 @@ class TestService {
       throw new Error('更新数据失败')
     }
   }
+
+  public async deleteTestInfo(id: string | number) {
+    try {
+      return await TestModel.destroy({
+        where: { id },
+      })
+    } catch (e) {
+      console.log(e)
+    }
+  }
 }
 
 export default TestService

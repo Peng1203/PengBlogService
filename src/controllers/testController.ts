@@ -136,33 +136,62 @@ class TestController {
   ): Promise<void> => {
     try {
       const { params, body } = req
-      console.log('req.param -----', params)
-      console.log('body -----', body)
       const editID: number | boolean = parseInt(params.id) || false
       if (!editID)
         throw new MyError(
           PARAMS_ERROR_CODE,
           'params error!',
           'id参数有误!',
-          'DTO'
+          'DTO',
+          'updateTestInfoByID'
         )
       await validateOrRejectDTO(updateTestDTO, body)
 
       const result = await this.testService.updateTestInfo(params.id, body)
-      console.log('result -----', result[0])
-      if (result[0]) {
-        res.send({
-          code: '200',
-          message: 'Success',
-          method: 'updateTestInfoByID',
-        })
-      } else {
-        res.send({
-          code: '200',
-          message: 'Falied',
-          method: 'updateTestInfoByID',
-        })
-      }
+      res.send({
+        code: '200',
+        message: result[0] ? 'Success' : 'Failed',
+        info: result[0] ? '修改成功!' : '修改失败!',
+        method: 'deleteTestInfoByID',
+      })
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  /**
+   * 通过ID删除测试数据
+   * @author Peng
+   * @date 2023-03-07
+   * @param {any} req:Request
+   * @param {any} res:Response
+   * @param {any} next:NextFunction
+   * @returns {any}
+   */
+  public deleteTestInfoByID = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    try {
+      const id = req.query.id as string
+      const deleteID: number | boolean = parseInt(id) || false
+      if (!deleteID)
+        throw new MyError(
+          PARAMS_ERROR_CODE,
+          '',
+          'id参数有误!',
+          'DTO',
+          'deleteTestInfoByID'
+        )
+
+      const result = await this.testService.deleteTestInfo(id)
+      res.send({
+        code: '200',
+        message: result ? 'Success' : 'Failed',
+        info: result ? '删除成功!' : '删除失败!',
+        method: 'deleteTestInfoByID',
+      })
     } catch (e) {
       next(e)
     }
