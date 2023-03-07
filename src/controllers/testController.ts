@@ -6,7 +6,7 @@ import TestService from '../services/testService'
 import MyError from './../helpers/exceptionError'
 import { PARAMS_ERROR_CODE } from './../helpers/errorCode'
 import { validateDTO, validateOrRejectDTO } from '../helpers/validateParams'
-
+import { generateToken, verifyToken } from '../utils/token'
 class TestController {
   // 创建测试service 实例
   private testService = new TestService()
@@ -191,6 +191,46 @@ class TestController {
         message: result ? 'Success' : 'Failed',
         info: result ? '删除成功!' : '删除失败!',
         method: 'deleteTestInfoByID',
+      })
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  /**
+   * 测试生成token
+   * @author Peng
+   * @date 2023-03-07
+   * @param {any} req:Request
+   * @param {any} res:Response
+   * @param {any} next:NextFunction
+   * @returns {any}
+   */
+  public generateToken = (req: Request, res: Response, next: NextFunction) => {
+    try {
+      const { userName, password } = req.query as {
+        userName: string
+        password: string
+      }
+      const token = generateToken({ userName, password })
+      res.send({ code: 200, token })
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  public validateToken = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
+    try {
+      const result = await verifyToken(req.body.token)
+      res.send({
+        code: 200,
+        message: 'token有效',
+        time: new Date().getTime(),
+        ...result,
       })
     } catch (e) {
       next(e)
