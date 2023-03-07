@@ -11,16 +11,19 @@ export default class MyError extends Error {
   code: number
   type: string
   errors: object[] | string
+  method?: string
   constructor(
     errCode: number,
     message: string | '',
     errors: object[] | string,
-    type: string | undefined
+    type: string | undefined,
+    method?: string
   ) {
     super(message)
     this.type = type
     this.code = errCode
     this.errors = errors
+    this.method = method || ''
     this.message = message || '参数有误!'
     this.name = 'MyError'
   }

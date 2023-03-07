@@ -1,5 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import MyError from '../helpers/exceptionError'
+import { dateTimeFormat } from '../utils/moment'
 /**
  * 错误处理中间件
  * @author Peng
@@ -17,10 +18,9 @@ function errorHandler(
   res: Response,
   next: NextFunction
 ): void {
-  console.log('触发错误中间件 -----', err)
   // set locals, only providing error in development
   // instanceof
-  let { code, type, message, errors } = err
+  let { code, type, message, errors, method } = err
   switch (type) {
     case 'Service':
       res.status(code).send(`error: ${err.message}`)
@@ -39,7 +39,13 @@ function errorHandler(
       } else if (typeof errors === 'string') {
         errorInfo.push(errors)
       }
-      res.status(code).send({ code, message, errorInfo })
+      res.status(code).send({
+        code,
+        message: message,
+        errorInfo,
+        method,
+        timestamp: dateTimeFormat(),
+      })
     }
     default:
       res.status(500).send({ code: 500, message: err.message })
