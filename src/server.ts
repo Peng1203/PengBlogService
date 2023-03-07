@@ -1,3 +1,4 @@
+import path from 'path'
 import express from 'express'
 import cookieParser from 'cookie-parser'
 import cors from 'cors'
@@ -17,14 +18,7 @@ app.use(cors())
 app.use(express.json())
 app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
-app.use(
-  express.static(
-    require('path').join(
-      __dirname,
-      process.env.NODE_ENV === 'development' ? '../public' : 'public'
-    )
-  )
-)
+app.use(express.static(path.join(__dirname, './public')))
 // 记录 HTTP请求 日志
 app.use(_logger)
 // 将全局通用的库 或者函数 注册到 res 响应对象上

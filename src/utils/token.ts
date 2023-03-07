@@ -67,14 +67,14 @@ export function verifyToken<T extends string>(token: T): Promise<any> {
   })
 }
 
-;(function () {
-  const toekn = generateToken({ userName: 'zs', password: '1233' })
+// ;(function () {
+//   const toekn = generateToken({ userName: 'zs', password: '1233' })
 
-  console.log('toekn -----', toekn)
+//   console.log('toekn -----', toekn)
 
-  // const valRes = await verifyToken(toekn)
-  setTimeout(async () => {
-    const valRes = await verifyToken(toekn)
-    console.log('验证结果 -----', valRes)
-  }, 5)
-})()
+//   // const valRes = await verifyToken(toekn)
+//   setTimeout(async () => {
+//     const valRes = await verifyToken(toekn)
+//     console.log('验证结果 -----', valRes)
+//   }, 5)
+// })()

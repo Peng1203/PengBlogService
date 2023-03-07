@@ -5,9 +5,9 @@ import {
   Contains, // 用于验证一个字符串是否包含指定的字符串
   IsInt, // 用于验证一个数字是否为整数
   Length, // 用于验证一个字符串的长度是否在指定范围内
-  IsEmail,
-  IsFQDN,
-  IsDate,
+  IsEmail, // 用于验证一个字符串是否为Email地址
+  IsFQDN, // 用于验证一个字符串是否为完全限定域名
+  IsDate, // 用于验证一个字符串是否为日期格式
   Min, // 数字最小值
   Max, // 数字最大值
   MinLength, // 最小长度
@@ -15,15 +15,15 @@ import {
   IsNotEmpty, // 参数不能为空
   IsString, // 是否是字符串
   IsNumber, // 是否是数字
-  ValidateIf,
-  IsNumberString,
+  ValidateIf, // 用于根据条件决定是否进行校验
+  IsNumberString, // 用于验证一个字符串是否为数字字符串
   IsOptional, // 允许参数为空
   IsObject, // 是否是对象
-  IsDateString,
-  Matches,
-  IsISO8601, // 是否是ISO8601日期数据
-  IsIn,
-  isNumber,
+  IsDateString, // 用于验证一个字符串是否为日期字符串
+  Matches, // 正则校验
+  IsISO8601, // 用于验证一个字符串是否为ISO8601日期数据
+  IsIn, // 用于限制一个参数的取值范围
+  isNumber, // 判断是否为数字
   isInt, // 限制实参范围
 } from 'class-validator'
 
