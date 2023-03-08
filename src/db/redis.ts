@@ -104,19 +104,96 @@ async function incrCounter<T extends number | Error>(
 }
 
 /**
+ * 往指定集合当中添加一条数据 当集合不存在时则会自动创建 并添加
+ * 集合中的值是唯一的 重复的 val 没有效果
+ * @author Peng
+ * @date 2023-03-08
+ * @param {any} key:string
+ * @param {any} ...values:Array<T>
+ * @returns {boolean} 添加成功true 添加失败false
+ */
+async function addToSet<T extends string | number>(
+  key: string,
+  ...values: Array<T>
+): Promise<boolean> {
+  try {
+    return !!(await redisClient.sadd(key, ...(values as Array<T>)))
+  } catch (error) {
+    throw error
+  }
+}
+
+/**
+ * 获取集合
+ * @author Peng
+ * @date 2023-03-08
+ * @param {any} key:string
+ * @returns {any} 找到则返回数组 未找到则返回空数组
+ */
+async function getSet(key: string): Promise<string[]> {
+  try {
+    const result = await redisClient.smembers(key)
+    return result
+  } catch (error) {
+    throw error
+  }
+}
+
+/**
+ * 检查指定集合中是否存在某个值
+ * @author Peng
+ * @date 2023-03-08
+ * @param {any} key:string
+ * @param {any} member:string|number
+ * @returns {boolean} 存在true 不存在false
+ */
+async function checkSetHasValue(
+  key: string,
+  member: string | number
+): Promise<boolean> {
+  try {
+    return !!(await redisClient.sismember(key, member))
+  } catch (e) {
+    console.log(e)
+  }
+}
+
+/**
+ * 批量删除 指定集合中的key
+ * @author Peng
+ * @date 2023-03-08
+ * @param {any} key:string
+ * @param {any} ...values:Array<T>
+ * @returns {any}
+ */
+async function removeSetValues<T extends string | number>(
+  key: string,
+  ...values: Array<T>
+): Promise<number> {
+  try {
+    return await redisClient.srem(
+      key,
+      ...(values as Array<string | number | Buffer>)
+    )
+  } catch (error) {
+    throw error
+  }
+}
+
+/**
  * 测试
  * @author Peng
  * @date 2023-02-23
  * @returns {void}
  */
 async function test() {
-  // console.log('redisClient -----', redisClient)
+  console.log('redisClient -----', redisClient)
   const status = await setCache('test', { name: '张三' }, 100)
   // const status = await setCaches({ key4: '哈', key5: '哈哈', key6: '哈哈哈' }, 100)
   console.log('设置缓存 -----', status) // OK
 
-  const res = await getCache('test')
-  console.log('获取缓存 -----', JSON.parse(res as string)) // 成功 value 失败 null
+  const res = await getCache('testSet')
+  console.log('获取缓存 -----', JSON.parse(res as any)) // 成功 value 失败 null
 
   const delStatus = await delCache('test1') // 删除 成功1 失败0
   console.log('删除缓存 -----', delStatus)
@@ -130,6 +207,24 @@ async function test() {
   const testCounter = await getCache('testCounter')
   console.log('testCounter -----', testCounter)
 
+  const addStatus = await addToSet<number | string>(
+    'testSet',
+    JSON.stringify({ name: 'zs', age: 18 })
+  )
+  console.log('集合添加状态 -----', addStatus)
+
+  const setHasThisValue = await checkSetHasValue(
+    'testSet',
+    JSON.stringify({ name: 'zs', age: 18 })
+  )
+  console.log('集合中是否包含当前值? -----', setHasThisValue)
+
+  const delCount = await removeSetValues('testSet', 3, 4)
+  console.log('删除集合数 -----', delCount)
+
+  const setVal = await getSet('testSet')
+  console.log('测试集合 -----', setVal)
+
   redisClient.quit()
 }
 // test()
@@ -141,4 +236,8 @@ module.exports = {
   delCache,
   isExists,
   incrCounter,
+  addToSet,
+  getSet,
+  checkSetHasValue,
+  removeSetValues,
 }
