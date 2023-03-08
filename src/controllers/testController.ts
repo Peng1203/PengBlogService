@@ -7,6 +7,9 @@ import MyError from './../helpers/exceptionError'
 import { PARAMS_ERROR_CODE } from './../helpers/errorCode'
 import { validateDTO, validateOrRejectDTO } from '../helpers/validateParams'
 import { generateToken, verifyToken } from '../utils/token'
+import { addToSet, getCache, isExists, setCache } from '../db/redis'
+import { EXPIRESD } from '../configs/sign'
+
 class TestController {
   // 创建测试service 实例
   private testService = new TestService()
@@ -206,19 +209,52 @@ class TestController {
    * @param {any} next:NextFunction
    * @returns {any}
    */
-  public generateToken = (req: Request, res: Response, next: NextFunction) => {
+  public generateToken = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ) => {
     try {
+      const userid = Number(req.headers.userid)
       const { userName, password } = req.query as {
         userName: string
         password: string
       }
+      const userTokenKey = `user_token:${userid}_${userName}`
+      // 登录时在进行token生成之前先判断当前账号是否已经处于登录状态
+      const isHave = await isExists(userTokenKey)
+      console.log('isHave -----', isHave)
+      if (isHave)
+        return res.send({
+          code: 200,
+          message: '当前账户已经登录了!',
+        })
+
       const token = generateToken({ userName, password })
-      res.send({ code: 200, token })
+      // 把生成的token 存储在redis中
+      await setCache(userTokenKey, token, EXPIRESD)
+      console.log('缓存中的 token 值 -----', await getCache(userTokenKey))
+      // await addToSet('testBlackList')
+      res.send({
+        code: 200,
+        userName,
+        userID: userid,
+        token,
+      })
     } catch (e) {
       next(e)
     }
   }
 
+  /**
+   * 严重Token 是否有效
+   * @author Peng
+   * @date 2023-03-08
+   * @param {any} req:Request
+   * @param {any} res:Response
+   * @param {any} next:NextFunction
+   * @returns {any}
+   */
   public validateToken = async (
     req: Request,
     res: Response,

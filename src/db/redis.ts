@@ -229,7 +229,7 @@ async function test() {
 }
 // test()
 
-module.exports = {
+export {
   redisClient,
   setCache,
   getCache,
