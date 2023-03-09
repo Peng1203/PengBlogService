@@ -11,6 +11,7 @@ import usersRouter from './routes/usersRouter'
 import notFoundMiddleware from './middlewares/404Middleware'
 import errorHandler from './middlewares/errorHandler'
 import convertNumber from './middlewares/convertNumber'
+import authMiddleware from './middlewares/authMiddleware'
 
 const app = express()
 
@@ -28,6 +29,7 @@ app.use(_env)
 // 数字字符串转换为Number 类型中间件
 app.use(convertNumber)
 
+app.use(authMiddleware)
 // 定义路由
 app.use('/', indexRouter)
 app.use('/test', testRouter)
