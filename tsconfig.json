@@ -33,4 +33,7 @@
     "node_modules",
     "**/*.spec.ts"
   ], // 排除不需要编译的文件或目录
+  "typeRoots": [
+    "node_modules/@types"
+  ]
 }
