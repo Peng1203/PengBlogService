@@ -40,4 +40,4 @@ app.use(notFoundMiddleware)
 // 错误处理中间件
 app.use(errorHandler)
 
-module.exports = app
+export default app
