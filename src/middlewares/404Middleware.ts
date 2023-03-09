@@ -15,8 +15,8 @@ function notFound(req: Request, res: Response, next: NextFunction): void {
   res.status(404).json({
     code: 404,
     status: 'error',
-    message: 'Resource not found',
-    data: null,
+    message: 'Not found',
+    path: req.path,
     timestamp: dateTimeFormat(),
   })
 }
