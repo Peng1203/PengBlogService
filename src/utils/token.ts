@@ -28,7 +28,13 @@ export function generateToken(loginInfo: userInfoType): string {
   })
 }
 
-// 解析token
+/**
+ * 解析token
+ * @author Peng
+ * @date 2023-03-09
+ * @param {string} token:T
+ * @returns {any}
+ */
 export function verifyToken<T extends string>(token: T): Promise<any> {
   return new Promise((resolve, reject) => {
     // token字段 密钥 回调函数 err 通过时为空 不通过则为一个错误对象 res相反
@@ -53,14 +59,24 @@ export function verifyToken<T extends string>(token: T): Promise<any> {
             )
           )
         } else if (error instanceof JsonWebTokenError) {
-          reject(
-            new MyError(
-              NO_AUTH_ERROR_CODE,
-              '无权限访问',
-              '签名失败,无效的Token',
-              'noAuth'
+          if (!token)
+            reject(
+              new MyError(
+                NO_AUTH_ERROR_CODE,
+                'Token验证失败',
+                'Token不能为空!',
+                'noAuth'
+              )
             )
-          )
+          else
+            reject(
+              new MyError(
+                NO_AUTH_ERROR_CODE,
+                '无权限访问',
+                '签名失败,无效的Token',
+                'noAuth'
+              )
+            )
         }
       } else resolve(result)
     })
