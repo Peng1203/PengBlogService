@@ -15,11 +15,8 @@ import { checkSetHasValue } from '../db/redis'
 const UN_AUTH_PATH: string[] = [
   '/user/login',
   '/user/logout',
-  '/user/logout',
-  '/user/logout',
-  '/user/logout',
-  '/user/logout',
   '/test/getToken',
+  '/testData',
 ]
 
 async function authMiddleware(

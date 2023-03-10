@@ -11,6 +11,7 @@ import { Request, Response, NextFunction } from 'express'
  */
 function setHeader(req: Request, res: Response, next: NextFunction): void {
   res.setHeader('Content-Type', 'application/json')
+  // res.setHeader('Access-Control-Allow-Origin', '*')
   next()
 }
 

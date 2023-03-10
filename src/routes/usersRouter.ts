@@ -1,9 +1,20 @@
-import express, { Request, Response, NextFunction } from 'express'
-var router = express.Router()
+import express from 'express'
+import UserController from '../controllers/userControlles'
 
-/* GET users listing. */
-router.get('/', function (req: Request, res: Response, next: NextFunction) {
-  res.send('respond with a resource')
+const router = express.Router()
+
+const userController = new UserController()
+
+router.post('/login', userController.userLogin)
+
+router.post('/testData', (req, res, next) => {
+  const { sessionID } = req as any
+  console.log('sessionID -----', sessionID)
+
+  res.json({
+    name: 'zs',
+    data: 'test',
+  })
 })
 
 export default router
