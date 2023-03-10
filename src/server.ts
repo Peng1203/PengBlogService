@@ -1,7 +1,8 @@
 import path from 'path'
 import express from 'express'
-import cookieParser from 'cookie-parser'
 import cors from 'cors'
+import cookieParser from 'cookie-parser'
+import session from 'express-session'
 import _logger from './utils/logger'
 import _moment from './utils/moment'
 import _env from './utils/environment'
@@ -12,13 +13,22 @@ import notFoundMiddleware from './middlewares/404Middleware'
 import errorHandler from './middlewares/errorHandler'
 import convertNumber from './middlewares/convertNumber'
 import authMiddleware from './middlewares/authMiddleware'
+import setHeader from './middlewares/defaultHeader'
 
 const app = express()
 
 app.use(cors())
+app.use(setHeader)
 app.use(express.json())
-app.use(express.urlencoded({ extended: false }))
 app.use(cookieParser())
+app.use(
+  session({
+    secret: 'Peng1203', // 设置会话密钥
+    resave: false,
+    saveUninitialized: true,
+  })
+)
+app.use(express.urlencoded({ extended: false }))
 app.use(express.static(path.join(__dirname, './public')))
 // 记录 HTTP请求 日志
 app.use(_logger)
