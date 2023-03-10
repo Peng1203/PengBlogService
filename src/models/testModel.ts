@@ -2,11 +2,6 @@ import { dateTimeFormat } from '../utils/moment'
 import { DataTypes, Sequelize } from 'sequelize'
 import sequelize from '../db/sequelize'
 
-// 模型配置属性
-const modelOption = {
-  tableName: 'test',
-  timestamps: false,
-}
 /**
  * 创建测试模型
  * @author Peng
@@ -53,7 +48,11 @@ const TestModel = sequelize.define(
       },
     },
   },
-  modelOption
+  // 模型配置属性
+  {
+    tableName: 'test',
+    timestamps: false,
+  }
 )
 
 // TestModel.create({
