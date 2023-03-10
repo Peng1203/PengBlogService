@@ -1,5 +1,5 @@
-import { dateTimeFormat } from '../utils/moment'
 import { DataTypes, Sequelize } from 'sequelize'
+import { dateTimeFormat } from '../utils/moment'
 import sequelize from '../db/sequelize'
 
 /**
