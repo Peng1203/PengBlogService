@@ -16,7 +16,7 @@ const redisClient = new redis(config)
 async function setCache<T extends string | Error | null>(
   key: string,
   value: any,
-  second: number | undefined
+  second?: number | undefined
 ): Promise<T> {
   try {
     if (typeof value === 'object') value = JSON.stringify(value)
