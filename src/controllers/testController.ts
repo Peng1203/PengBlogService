@@ -113,7 +113,7 @@ class TestController {
       if (!Object.keys(result.dataValues)) {
         res.send({
           code: '200',
-          message: 'Falied',
+          message: 'Failed',
         })
       } else {
         res.send({ code: '200', message: 'Success', data: result.dataValues })
