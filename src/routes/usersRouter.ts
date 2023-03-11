@@ -5,16 +5,10 @@ const router = express.Router()
 
 const userController = new UserController()
 
+router.get('/getCaptcha', userController.getCaptcha)
+
+router.post('/verifyCaptcha', userController.verifyCaptcha)
+
 router.post('/login', userController.userLogin)
-
-router.post('/testData', (req, res, next) => {
-  const { sessionID } = req as any
-  console.log('sessionID -----', sessionID)
-
-  res.json({
-    name: 'zs',
-    data: 'test',
-  })
-})
 
 export default router
