@@ -3,7 +3,7 @@ import { PARAMS_ERROR_CODE } from '../helpers/errorCode'
 import { UserLoginDTO } from '../dtos/userDTO'
 import { validateOrRejectDTO } from '../helpers/validateParams'
 import { UUID_REGEX } from '../helpers/regex'
-import { isExists } from '../db/redis'
+import { generateToken } from '../utils/token'
 import MyError from '../helpers/exceptionError'
 import UserService from '../services/userService'
 import generateUUID from '../utils/uuid'
@@ -116,18 +116,16 @@ class UserController {
   ): Promise<any> => {
     try {
       const { userName, password, uuid } = req.body
+      // DTO层校验
       await validateOrRejectDTO(UserLoginDTO, req.body)
-      // console.log('sessionID -----', sessionID)
-      // console.log('cookies -----', cookies)
-      // const isPass = await this.userService.checkUserLoginCaptcha(uuid)
-      // if (!isPass)
-      //   return res.send({
-      //     code: 200,
-      //     message: 'Failed',
-      //     data: '验证码失效或已过期!',
-      //   })
-      const result = await await this.userService.login({ userName, password })
-      console.log('result -----', result)
+      // 查询数据中 当前账户是否已生成有效token
+
+      // true 将之前有效token 放入token黑名单 false 则正常走登录流程
+
+      const result = (await await this.userService.userLogin({
+        userName,
+        password,
+      })) as any
       if (!result)
         return res.send({
           code: 200,
@@ -135,11 +133,18 @@ class UserController {
           data: '用户名或密码错误!',
         })
 
+      const token = generateToken({ userName, password })
+      await this.userService.setTokenToCatch({
+        userId: result.id,
+        userName,
+        token,
+      })
+
       res.send({
         code: 200,
         message: 'Success',
         data: result,
-        token: '1212112',
+        token,
       })
     } catch (e) {
       next(e)

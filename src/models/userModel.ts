@@ -20,6 +20,7 @@ const UserModel = sequelize.define(
     roleId: {
       field: 'role_id',
       type: DataTypes.BIGINT,
+      allowNull: false,
     },
     userName: {
       field: 'user_name',
@@ -46,27 +47,20 @@ const UserModel = sequelize.define(
       type: DataTypes.DATE,
       allowNull: false,
       // defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
-      defaultValue: dateTimeFormat(),
+      defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       // 获取创建日期时格式化 返回
       get() {
         return dateTimeFormat(this.getDataValue('created_time'))
-        // return dateTimeFormat(this.getDataValue('createdTime'))
       },
     },
     updateTime: {
       field: 'update_time',
       type: DataTypes.DATE,
       allowNull: false,
-      defaultValue: dateTimeFormat(),
+      defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       // 获取创建日期时格式化 返回
       get() {
-        console.log(
-          'this. -----',
-          this.getDataValue('update_time'),
-          this.getDataValue('updateTime')
-        )
         return dateTimeFormat(this.getDataValue('update_time'))
-        // return dateTimeFormat(this.getDataValue('updateTime'))
       },
     },
     // 用户头像
@@ -77,12 +71,6 @@ const UserModel = sequelize.define(
     unsealTime: {
       field: 'unseal_time',
       type: DataTypes.DATE,
-      // defaultValue: '',
-      get() {
-        const unsealTime = this.getDataValue('unsealTime')
-        if (!unsealTime) return unsealTime
-        return dateTimeFormat(unsealTime)
-      },
     },
   },
   // 模型配置属性

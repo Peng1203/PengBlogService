@@ -2,10 +2,17 @@ import UserModel from '../models/userModel'
 import RoleModel from '../models/roleModel'
 import { getCache, isExists, setCache } from '../db/redis'
 import generateCaptchaString from '../utils/generateCaptcha'
+import { EXPIRESD } from '../configs/sign'
 
 type loginInfoType = {
   userName: string
   password: string
+}
+
+type setTokenType = {
+  userId: number | string
+  userName: string
+  token: string
 }
 
 /**
@@ -13,7 +20,13 @@ type loginInfoType = {
  */
 
 class UserService {
-  // 生成验证码存储到缓存中
+  /**
+   * 生成验证码存储到缓存中
+   * @author Peng
+   * @date 2023-03-11
+   * @param {any} uuid:string
+   * @returns {any}
+   */
   public async createCaptcha(uuid: string): Promise<string> {
     try {
       const generateCaptcha = generateCaptchaString()
@@ -25,7 +38,13 @@ class UserService {
     }
   }
 
-  // 获取缓存中的验证码
+  /**
+   * 描述
+   * @author Peng
+   * @date 2023-03-11
+   * @param {any} uuid:string
+   * @returns {any}
+   */
   public async getCaptcha(uuid: string): Promise<string | null> {
     try {
       return await getCache(`loginCaptcha:${uuid}`)
@@ -34,7 +53,13 @@ class UserService {
     }
   }
 
-  // 将通过验证码校验的UUID存储在redis中 用于后续登录接口校验
+  /**
+   * 将通过验证码校验的UUID存储在redis中 用于后续登录接口校验
+   * @author Peng
+   * @date 2023-03-14
+   * @param {any} uuid:string
+   * @returns {any}
+   */
   public async setValidatedCaptchaUUID(uuid: string): Promise<string> {
     try {
       const setRes = await setCache(`loginCaptchaPassed:${uuid}`, '1', 60)
@@ -54,8 +79,16 @@ class UserService {
     }
   }
 
-  // 查询根据用户名和密码查询数据库
-  public async login({
+  /**
+   * 根据用户名和密码查询数据库
+   * @author Peng
+   * @date 2023-03-13
+   * @param {any} {userName
+   * @param {any} password
+   * @param {any} }:loginInfoType
+   * @returns {any}
+   */
+  public async userLogin({
     userName,
     password,
   }: loginInfoType): Promise<object | null> {
@@ -66,9 +99,58 @@ class UserService {
           password,
         },
         include: [RoleModel],
+        attributes: [
+          'id',
+          'email',
+          'state',
+          'createdTime',
+          'updateTime',
+          'avatar',
+          'unsealTime',
+        ],
       })
-      console.log('findUserRes -----', findUserRes)
-      return findUserRes?.dataValues || null
+      if (!findUserRes) return null
+      const {
+        id,
+        email,
+        state,
+        createdTime,
+        updateTime,
+        avatar,
+        unsealTime,
+        Role,
+      } = findUserRes.toJSON()
+      const { id: roleId, roleName } = Role
+      return {
+        id,
+        roleId,
+        userName,
+        roleName,
+        email,
+        state,
+        createdTime,
+        updateTime,
+        avatar,
+        unsealTime,
+      }
+    } catch (e) {
+      throw e
+    }
+  }
+
+  /**
+   * 将token 存在redis中
+   * @author Peng
+   * @date 2023-03-14
+   * @param {any} info:setTokenType
+   * @returns {void}
+   */
+  public async setTokenToCatch(info: setTokenType): Promise<void> {
+    try {
+      const { userId, userName, token } = info
+      const userTokenKey = `user_token:${userId}_${userName}`
+      const setRes = await setCache(userTokenKey, token, EXPIRESD)
+      if (setRes !== 'OK') throw new Error('服务器内部错误!')
     } catch (e) {
       throw e
     }
