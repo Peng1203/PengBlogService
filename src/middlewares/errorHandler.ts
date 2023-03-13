@@ -18,7 +18,6 @@ function errorHandler(
   res: Response,
   next: NextFunction
 ): void {
-  // set locals, only providing error in development
   // instanceof
   let { code, message, errors, type, method } = err
   switch (type) {
