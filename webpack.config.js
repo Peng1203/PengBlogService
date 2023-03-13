@@ -41,6 +41,14 @@ module.exports = {
         {
           from: './src/public', // 要复制的目录或文件
           to: './public' // 复制到打包后的目录
+        },
+        {
+          from: './package.json',
+          to: 'package.json'
+        },
+        {
+          from: './.env',
+          to: '.env'
         }
       ]
     })

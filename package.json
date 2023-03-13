@@ -4,10 +4,11 @@
   "private": true,
   "scripts": {
     "start": "cross-env NODE_ENV=development ts-node ./src/index.ts",
+    "prod:start": "npm install --only=prod && node index.js",
     "dev": "cross-env NODE_ENV=development nodemon ./src/index.ts",
     "test": "jest",
     "build:wp": "cross-env NODE_ENV=production webpack",
-    "build:ts": "cross-env NODE_ENV=production tsc",
+    "build:ts": "cross-env NODE_ENV=production tsc && copy package.json dist\\ && copy .env dist\\",
     "dist-wp": "yarn run build:wp && node ./dist/app.js",
     "dist-ts": "yarn run build:ts && node ./dist/index.js"
   },
