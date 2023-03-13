@@ -11,7 +11,7 @@
  Target Server Version : 80032 (8.0.32)
  File Encoding         : 65001
 
- Date: 10/03/2023 16:27:43
+ Date: 13/03/2023 17:58:30
 */
 
 SET NAMES utf8mb4;
@@ -2074,15 +2074,15 @@ INSERT INTO `test` VALUES (2020, '测试', 0, '哈哈哈哈哈哈', '2023-03-03 
 DROP TABLE IF EXISTS `user`;
 CREATE TABLE `user`  (
   `id` int NOT NULL AUTO_INCREMENT COMMENT '用户ID',
-  `role_id` int NOT NULL COMMENT '用户所属角色ID',
   `user_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '用户名',
   `password` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NOT NULL COMMENT '密码',
+  `role_id` int NOT NULL COMMENT '用户所属角色ID',
   `email` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci NULL DEFAULT NULL COMMENT '电子邮箱',
   `state` int NOT NULL DEFAULT 1 COMMENT '用户状态 \r\n1正常\r\n2锁定\r\n3封禁',
   `created_time` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '注册时间',
-  `upadte_time` datetime NOT NULL COMMENT '更新时间',
-  `avatar` blob NULL COMMENT '用户头像',
+  `update_time` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   `unseal_time` datetime NULL DEFAULT NULL COMMENT '解封日期',
+  `avatar` blob NULL COMMENT '用户头像',
   PRIMARY KEY (`id`) USING BTREE,
   INDEX `角色ID`(`role_id` ASC) USING BTREE,
   CONSTRAINT `角色ID` FOREIGN KEY (`role_id`) REFERENCES `role` (`id`) ON DELETE RESTRICT ON UPDATE RESTRICT
@@ -2091,6 +2091,6 @@ CREATE TABLE `user`  (
 -- ----------------------------
 -- Records of user
 -- ----------------------------
-INSERT INTO `user` VALUES (1, 1, 'admin', '123456', '', 1, '2023-03-10 15:17:29', '2023-03-10 15:12:50', NULL, NULL);
+INSERT INTO `user` VALUES (1, 'admin', '123456', 1, '', 1, '2023-03-10 15:17:29', '2023-03-10 15:12:50', NULL, NULL);
 
 SET FOREIGN_KEY_CHECKS = 1;
