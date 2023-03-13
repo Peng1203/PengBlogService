@@ -1,6 +1,7 @@
 import { DataTypes, Sequelize } from 'sequelize'
 import { dateTimeFormat } from '../utils/moment'
 import sequelize from '../db/sequelize'
+import RoleModel from './roleModel'
 
 /**
  * 创建用户模型
@@ -16,7 +17,7 @@ const UserModel = sequelize.define(
       primaryKey: true,
       allowNull: false,
     },
-    roleID: {
+    roleId: {
       field: 'role_id',
       type: DataTypes.BIGINT,
     },
@@ -48,7 +49,8 @@ const UserModel = sequelize.define(
       defaultValue: dateTimeFormat(),
       // 获取创建日期时格式化 返回
       get() {
-        return dateTimeFormat(this.getDataValue('createdTime'))
+        return dateTimeFormat(this.getDataValue('created_time'))
+        // return dateTimeFormat(this.getDataValue('createdTime'))
       },
     },
     updateTime: {
@@ -58,7 +60,13 @@ const UserModel = sequelize.define(
       defaultValue: dateTimeFormat(),
       // 获取创建日期时格式化 返回
       get() {
-        return dateTimeFormat(this.getDataValue('updateTime'))
+        console.log(
+          'this. -----',
+          this.getDataValue('update_time'),
+          this.getDataValue('updateTime')
+        )
+        return dateTimeFormat(this.getDataValue('update_time'))
+        // return dateTimeFormat(this.getDataValue('updateTime'))
       },
     },
     // 用户头像
@@ -83,5 +91,7 @@ const UserModel = sequelize.define(
     timestamps: false,
   }
 )
+
+UserModel.belongsTo(RoleModel, { foreignKey: 'id' })
 
 export default UserModel

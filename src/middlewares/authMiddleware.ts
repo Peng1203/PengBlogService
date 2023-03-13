@@ -13,6 +13,7 @@ import { checkSetHasValue } from '../db/redis'
  */
 // 不需要 token 校验的 路由
 const UN_AUTH_PATH: string[] = [
+  '/getTestList',
   '/test/getToken',
   '/user/login',
   '/user/logout',

@@ -1,6 +1,9 @@
 import { Request, Response, NextFunction } from 'express'
 import { PARAMS_ERROR_CODE } from '../helpers/errorCode'
+import { UserLoginDTO } from '../dtos/userDTO'
+import { validateOrRejectDTO } from '../helpers/validateParams'
 import { UUID_REGEX } from '../helpers/regex'
+import { isExists } from '../db/redis'
 import MyError from '../helpers/exceptionError'
 import UserService from '../services/userService'
 import generateUUID from '../utils/uuid'
@@ -31,7 +34,7 @@ class UserController {
         resResult.uuid = UUID
         generateCaptcha = await this.userService.createCaptcha(UUID)
       } else if (UUID_REGEX.test(uuid)) {
-        // 当uuid存在时 校验格式 
+        // 当uuid存在时 校验格式
         generateCaptcha = await this.userService.createCaptcha(uuid)
       } else {
         throw new MyError(PARAMS_ERROR_CODE, '', 'UUID参数格式有误!', 'DTO')
@@ -64,29 +67,33 @@ class UserController {
   ): Promise<any> => {
     try {
       const { code, uuid } = req.body
-      if (!code || !uuid) throw new MyError(PARAMS_ERROR_CODE, '', '验证码和uuid不能为空!', 'DTO')
-      if (!UUID_REGEX.test(uuid)) throw new MyError(PARAMS_ERROR_CODE, '', 'UUID参数格式有误!', 'DTO')
+      if (!code || !uuid)
+        throw new MyError(PARAMS_ERROR_CODE, '', '验证码和uuid不能为空!', 'DTO')
+      if (!UUID_REGEX.test(uuid))
+        throw new MyError(PARAMS_ERROR_CODE, '', 'UUID参数格式有误!', 'DTO')
 
       const findRes = await this.userService.getCaptcha(uuid)
-      if (findRes === null) return res.send({
-        code: 200,
-        message: 'Failed',
-        data: '验证码失效或已过期!'
-      })
+      if (findRes === null)
+        return res.send({
+          code: 200,
+          message: 'Failed',
+          data: '验证码失效或已过期!',
+        })
 
-      if (findRes !== code) return res.send({
-        code: 200,
-        message: 'Failed',
-        data: '验证码错误!'
-      })
+      if (findRes !== code)
+        return res.send({
+          code: 200,
+          message: 'Failed',
+          data: '验证码错误!',
+        })
 
-      // 通过校验时 把当前通过校验的客户端标识 放入缓存中 用于后续登录接口校验 
+      // 通过校验时 把当前通过校验的客户端标识 放入缓存中 用于后续登录接口校验
       await this.userService.setValidatedCaptchaUUID(uuid)
 
       res.send({
         code: 200,
         message: 'Success',
-        data: '校验通过'
+        data: '校验通过',
       })
     } catch (e) {
       next(e)
@@ -106,14 +113,34 @@ class UserController {
     req: Request,
     res: Response,
     next: NextFunction
-  ): Promise<void> => {
+  ): Promise<any> => {
     try {
-      // const { body, sessionID, cookies } = req as any
-      // console.log('body -----', body)
+      const { userName, password, uuid } = req.body
+      await validateOrRejectDTO(UserLoginDTO, req.body)
       // console.log('sessionID -----', sessionID)
       // console.log('cookies -----', cookies)
+      // const isPass = await this.userService.checkUserLoginCaptcha(uuid)
+      // if (!isPass)
+      //   return res.send({
+      //     code: 200,
+      //     message: 'Failed',
+      //     data: '验证码失效或已过期!',
+      //   })
+      const result = await await this.userService.login({ userName, password })
+      console.log('result -----', result)
+      if (!result)
+        return res.send({
+          code: 200,
+          message: 'Failed',
+          data: '用户名或密码错误!',
+        })
 
-      res.send('登录')
+      res.send({
+        code: 200,
+        message: 'Success',
+        data: result,
+        token: '1212112',
+      })
     } catch (e) {
       next(e)
     }

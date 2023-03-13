@@ -1,6 +1,12 @@
 import UserModel from '../models/userModel'
+import RoleModel from '../models/roleModel'
 import { getCache, isExists, setCache } from '../db/redis'
 import generateCaptchaString from '../utils/generateCaptcha'
+
+type loginInfoType = {
+  userName: string
+  password: string
+}
 
 /**
  * 定义service 用户类
@@ -43,6 +49,26 @@ class UserService {
   public async checkUserLoginCaptcha(uuid: string): Promise<boolean> {
     try {
       return await isExists(`loginCaptchaPassed:${uuid}`)
+    } catch (e) {
+      throw e
+    }
+  }
+
+  // 查询根据用户名和密码查询数据库
+  public async login({
+    userName,
+    password,
+  }: loginInfoType): Promise<object | null> {
+    try {
+      const findUserRes = await UserModel.findOne({
+        where: {
+          user_name: userName,
+          password,
+        },
+        include: [RoleModel],
+      })
+      console.log('findUserRes -----', findUserRes)
+      return findUserRes?.dataValues || null
     } catch (e) {
       throw e
     }
