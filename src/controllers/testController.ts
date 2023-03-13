@@ -35,15 +35,15 @@ class TestController {
       // await validateOrRejectDTO(GetTestListDTO, req.query)
       const {
         count,
-        total,
+        // total,
         rows: data,
       } = await this.testService.getTestList(req.query)
       res.send({
         code: 200,
         message: 'Success',
         data,
-        count,
-        total,
+        total: count,
+        // total,
         method: 'getTestList',
       })
     } catch (e) {
