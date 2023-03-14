@@ -80,6 +80,7 @@ const UserModel = sequelize.define(
   }
 )
 
+// 模型关联
 UserModel.belongsTo(RoleModel, { foreignKey: 'id' })
 
 export default UserModel

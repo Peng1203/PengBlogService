@@ -56,7 +56,7 @@ class UserService {
   /**
    * 将通过验证码校验的UUID存储在redis中 用于后续登录接口校验
    * @author Peng
-   * @date 2023-03-14
+   * @date 2023-03-11
    * @param {any} uuid:string
    * @returns {any}
    */
@@ -70,7 +70,13 @@ class UserService {
     }
   }
 
-  // 校验登录账号是否通过验证码校验
+  /**
+   * 校验登录账号是否通过验证码校验
+   * @author Peng
+   * @date 2023-03-11
+   * @param {any} uuid:string
+   * @returns {boolean}
+   */
   public async checkUserLoginCaptcha(uuid: string): Promise<boolean> {
     try {
       return await isExists(`loginCaptchaPassed:${uuid}`)
@@ -151,6 +157,14 @@ class UserService {
       const userTokenKey = `user_token:${userId}_${userName}`
       const setRes = await setCache(userTokenKey, token, EXPIRESD)
       if (setRes !== 'OK') throw new Error('服务器内部错误!')
+    } catch (e) {
+      throw e
+    }
+  }
+
+  // 判断当前用户是否已经生成了有效token
+  public async currentUserHasToken() {
+    try {
     } catch (e) {
       throw e
     }
