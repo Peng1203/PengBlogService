@@ -45,7 +45,7 @@ export function verifyToken<T extends string>(token: T): Promise<any> {
             new MyError(
               NO_AUTH_ERROR_CODE,
               '无权限访问',
-              'Token已过期',
+              'token已过期',
               'noAuth'
             )
           )
@@ -54,7 +54,7 @@ export function verifyToken<T extends string>(token: T): Promise<any> {
             new MyError(
               NO_AUTH_ERROR_CODE,
               '无权限访问',
-              'Token未生效',
+              'token未生效',
               'noAuth'
             )
           )
@@ -63,8 +63,8 @@ export function verifyToken<T extends string>(token: T): Promise<any> {
             reject(
               new MyError(
                 NO_AUTH_ERROR_CODE,
-                'Token验证失败',
-                'Token不能为空!',
+                '验证失败',
+                'token不能为空!',
                 'noAuth'
               )
             )
@@ -73,7 +73,7 @@ export function verifyToken<T extends string>(token: T): Promise<any> {
               new MyError(
                 NO_AUTH_ERROR_CODE,
                 '无权限访问',
-                '签名失败,无效的Token',
+                '签名失败,无效的token',
                 'noAuth'
               )
             )
