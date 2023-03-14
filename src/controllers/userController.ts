@@ -1,14 +1,13 @@
 import { Request, Response, NextFunction } from 'express'
-import { PARAMS_ERROR_CODE } from '../../helpers/errorCode'
-import { UserLoginDTO } from '../../dtos/userDTO'
-import { validateOrRejectDTO } from '../../helpers/validateParams'
-import { UUID_REGEX } from '../../helpers/regex'
-import { generateToken } from '../../utils/token'
-import MyError from '../../helpers/exceptionError'
-import UserService from '../../services/userService'
-import generateUUID from '../../utils/uuid'
-
-abstract class LoginControlle {
+import { PARAMS_ERROR_CODE } from '../helpers/errorCode'
+import { UserLoginDTO } from '../dtos/userDTO'
+import { validateOrRejectDTO } from '../helpers/validateParams'
+import { UUID_REGEX } from '../helpers/regex'
+import { generateToken } from '../utils/token'
+import MyError from '../helpers/exceptionError'
+import UserService from '../services/userService'
+import generateUUID from '../utils/uuid'
+class UserController {
   private userService = new UserService()
 
   /**
@@ -165,4 +164,4 @@ abstract class LoginControlle {
   }
 }
 
-export default LoginControlle
+export default UserController
