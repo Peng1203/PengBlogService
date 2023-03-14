@@ -79,7 +79,7 @@ class UserService {
   ): Promise<boolean> {
     try {
       const catchVal = (await getCache(`loginCaptchaPassed:${uuid}`)) as any
-      if (!catchVal) throw false
+      if (!catchVal) return false
       if (code !== catchVal) return false
       return true
     } catch (e) {
