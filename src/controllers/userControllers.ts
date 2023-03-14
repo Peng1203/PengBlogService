@@ -118,9 +118,15 @@ class UserController {
       const { userName, password, uuid } = req.body
       // DTO层校验
       await validateOrRejectDTO(UserLoginDTO, req.body)
-      // 查询数据中 当前账户是否已生成有效token
 
-      // true 将之前有效token 放入token黑名单 false 则正常走登录流程
+      // 校验该账号是否通过验证码校验
+      const isPass = await this.userService.checkUserLoginCaptcha(uuid)
+      if (!isPass)
+        return res.send({
+          code: 200,
+          message: 'Failed',
+          data: '验证码失效或已过期!',
+        })
 
       const result = (await await this.userService.userLogin({
         userName,
@@ -133,6 +139,12 @@ class UserController {
           data: '用户名或密码错误!',
         })
 
+      // 查询缓存中 当前账户是否已生成有效token
+      this.userService.currentUserHasToken()
+
+      // true 将之前有效token 放入token黑名单 false 则正常走登录流程
+
+      // 生成 token
       const token = generateToken({ userName, password })
       await this.userService.setTokenToCatch({
         userId: result.id,

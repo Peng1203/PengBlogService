@@ -1,5 +1,5 @@
 import express from 'express'
-import TestController from '../controllers/testController'
+import TestController from '../controllers/testControllers'
 
 const router = express.Router()
 
