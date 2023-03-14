@@ -88,7 +88,7 @@ class UserController {
         })
 
       // 通过校验时 把当前通过校验的客户端标识 放入缓存中 用于后续登录接口校验
-      await this.userService.setValidatedCaptchaUUID(uuid)
+      await this.userService.setValidatedCaptchaUUID(uuid, code)
 
       res.send({
         code: 200,
@@ -115,19 +115,20 @@ class UserController {
     next: NextFunction
   ): Promise<any> => {
     try {
-      const { userName, password, uuid } = req.body
+      const { userName, password, captcha, uuid } = req.body
       // DTO层校验
       await validateOrRejectDTO(UserLoginDTO, req.body)
 
-      // 校验该账号是否通过验证码校验
-      const isPass = await this.userService.checkUserLoginCaptcha(uuid)
+      // 验证码 校验该账号是否通过验证码
+      const isPass = await this.userService.checkUserLoginCaptcha(uuid, captcha)
       if (!isPass)
         return res.send({
           code: 200,
           message: 'Failed',
-          data: '验证码失效或已过期!',
+          data: '验证码有误或已过期!',
         })
 
+      // 查询 用户在 数据库中的信息
       const result = (await await this.userService.userLogin({
         userName,
         password,
@@ -140,12 +141,17 @@ class UserController {
         })
 
       // 查询缓存中 当前账户是否已生成有效token
-      this.userService.currentUserHasToken()
-
+      const isHaveTrueToekn = await this.userService.currentUserHasToken(
+        result.id,
+        userName
+      )
       // true 将之前有效token 放入token黑名单 false 则正常走登录流程
+      if (isHaveTrueToekn)
+        await this.userService.setOldTokenToTokenBlackList(result.id, userName)
 
       // 生成 token
       const token = generateToken({ userName, password })
+      // 将token 存入 redis 中 如果存在之前的token并覆盖掉
       await this.userService.setTokenToCatch({
         userId: result.id,
         userName,

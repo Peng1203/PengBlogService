@@ -1,6 +1,6 @@
 import UserModel from '../models/userModel'
 import RoleModel from '../models/roleModel'
-import { getCache, isExists, setCache } from '../db/redis'
+import { addToSet, delCache, getCache, isExists, setCache } from '../db/redis'
 import generateCaptchaString from '../utils/generateCaptcha'
 import { EXPIRESD } from '../configs/sign'
 
@@ -59,9 +59,12 @@ class UserService {
    * @param {any} uuid:string
    * @returns {any}
    */
-  public async setValidatedCaptchaUUID(uuid: string): Promise<string> {
+  public async setValidatedCaptchaUUID(
+    uuid: string,
+    code: string
+  ): Promise<string> {
     try {
-      const setRes = await setCache(`loginCaptchaPassed:${uuid}`, '1', 60)
+      const setRes = await setCache(`loginCaptchaPassed:${uuid}`, code, 60)
       if (setRes !== 'OK') throw new Error('服务器内部错误')
       return setRes
     } catch (e) {
@@ -70,9 +73,15 @@ class UserService {
   }
 
   // 校验登录账号是否通过验证码校验
-  public async checkUserLoginCaptcha(uuid: string): Promise<boolean> {
+  public async checkUserLoginCaptcha(
+    uuid: string,
+    code: string
+  ): Promise<boolean> {
     try {
-      return await isExists(`loginCaptchaPassed:${uuid}`)
+      const catchVal = (await getCache(`loginCaptchaPassed:${uuid}`)) as any
+      if (!catchVal) throw false
+      if (code !== catchVal) return false
+      return true
     } catch (e) {
       throw e
     }
@@ -138,7 +147,7 @@ class UserService {
   }
 
   /**
-   * 将token 存在redis中
+   * 将token 存在redis 中
    * @author Peng
    * @date 2023-03-14
    * @param {any} info:setTokenType
@@ -155,9 +164,42 @@ class UserService {
     }
   }
 
-  // 判断当前用户是否已经生成了有效token
-  public async currentUserHasToken() {
+  /**
+   * 判断当前用户是否已经生成了有效token
+   * @author Peng
+   * @date 2023-03-14
+   * @param {any} userId:string|number
+   * @param {any} userName:string
+   * @returns {any}
+   */
+  public async currentUserHasToken(
+    userId: string | number,
+    userName: string
+  ): Promise<any> {
     try {
+      return isExists(`user_token:${userId}_${userName}`)
+    } catch (e) {
+      throw e
+    }
+  }
+
+  /**
+   * 将旧token 删除并 出入黑名单中
+   * @author Peng
+   * @date 2023-03-14
+   * @param {any} userId:string|number
+   * @param {any} userName:string
+   * @returns {any}
+   */
+  public async setOldTokenToTokenBlackList(
+    userId: string | number,
+    userName: string
+  ) {
+    try {
+      const key = `user_token:${userId}_${userName}`
+      const token = (await getCache(key)) as string
+      await addToSet(`tokenBlackList`, token)
+      await delCache(key)
     } catch (e) {
       throw e
     }
