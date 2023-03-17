@@ -46,7 +46,7 @@ export function dateFormat(date?: dateType): string {
  * @param {any} date:dateType
  * @returns {string}
  */
-export function dateTimeFormat(date?: dateType) {
+export function dateTimeFormat(date?: dateType): string {
   return moment(date || new Date()).format('YYYY-MM-DD HH:mm:ss')
 }
 

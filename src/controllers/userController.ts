@@ -76,7 +76,7 @@ class UserController {
       if (findRes === null)
         return res.send({
           code: 200,
-          message: 'Failed',
+          message: 'Expire',
           data: '验证码失效或已过期!',
         })
 

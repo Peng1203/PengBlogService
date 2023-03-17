@@ -50,7 +50,7 @@ const UserModel = sequelize.define(
       defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       // 获取创建日期时格式化 返回
       get() {
-        return dateTimeFormat(this.getDataValue('created_time'))
+        return dateTimeFormat(this.getDataValue('createdTime'))
       },
     },
     updateTime: {
@@ -60,7 +60,7 @@ const UserModel = sequelize.define(
       defaultValue: Sequelize.literal('CURRENT_TIMESTAMP'),
       // 获取创建日期时格式化 返回
       get() {
-        return dateTimeFormat(this.getDataValue('update_time'))
+        return dateTimeFormat(this.getDataValue('updateTime'))
       },
     },
     // 用户头像
