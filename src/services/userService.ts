@@ -72,7 +72,14 @@ class UserService {
     }
   }
 
-  // 校验登录账号是否通过验证码校验
+  /**
+   * 校验登录账号是否通过验证码校验
+   * @author Peng
+   * @date 2023-03-18
+   * @param {any} uuid:string
+   * @param {any} code:string
+   * @returns {any}
+   */
   public async checkUserLoginCaptcha(
     uuid: string,
     code: string
