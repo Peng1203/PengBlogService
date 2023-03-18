@@ -135,17 +135,28 @@ class UserService {
         unsealTime,
         Role,
       } = findUserRes.toJSON()
-      const { id: roleId, roleName } = Role
+      console.log('Role', Role);
+
+      const {
+        id: roleId,
+        roleName,
+        roleDesc,
+        menus,
+        operationPermissions: authBtnList
+      } = Role
       return {
         id,
         roleId,
         userName,
         roleName,
+        roleDesc,
         email,
         state,
+        avatar,
+        menus,
+        authBtnList,
         createdTime,
         updateTime,
-        avatar,
         unsealTime,
       }
     } catch (e) {
