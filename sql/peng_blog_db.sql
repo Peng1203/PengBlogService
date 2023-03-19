@@ -1,7 +1,7 @@
 /*
  Navicat Premium Data Transfer
 
- Source Server         : localhost
+ Source Server         : localhost_3306
  Source Server Type    : MySQL
  Source Server Version : 80032 (8.0.32)
  Source Host           : localhost:3306
@@ -11,11 +11,55 @@
  Target Server Version : 80032 (8.0.32)
  File Encoding         : 65001
 
- Date: 13/03/2023 17:58:30
+ Date: 20/03/2023 00:08:47
 */
 
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
+
+-- ----------------------------
+-- Table structure for auth_permission
+-- ----------------------------
+DROP TABLE IF EXISTS `auth_permission`;
+CREATE TABLE `auth_permission`  (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '权限标识ID',
+  `permission_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '权限标识名称',
+  `permission_code` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '权限标识代码',
+  `description` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '权限标识描述',
+  `created_time` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NOT NULL COMMENT '更新时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 5 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of auth_permission
+-- ----------------------------
+INSERT INTO `auth_permission` VALUES (1, '添加', 'ADD', '添加操作', '2023-03-18 16:20:16', '2023-03-18 16:17:09');
+INSERT INTO `auth_permission` VALUES (2, '删除', 'DELETE', '删除数据', '2023-03-18 16:20:30', '2023-03-18 16:18:22');
+INSERT INTO `auth_permission` VALUES (3, '编辑', 'EDIT', '修改数据', '2023-03-18 16:21:26', '2023-03-18 16:21:30');
+INSERT INTO `auth_permission` VALUES (4, '查询', 'VIEW', '查询数据', '2023-03-18 16:46:34', '2023-03-18 16:22:53');
+
+-- ----------------------------
+-- Table structure for menu
+-- ----------------------------
+DROP TABLE IF EXISTS `menu`;
+CREATE TABLE `menu`  (
+  `id` int NOT NULL AUTO_INCREMENT COMMENT '菜单id',
+  `menu_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '菜单名称',
+  `menu_path` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '菜单访问路径',
+  `menu_uri` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '菜单唯一标识',
+  `menu_icon` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL COMMENT '菜单 图表类名',
+  `parent_id` int NULL DEFAULT 0 COMMENT '菜单的父级ID 0标识该菜单为父级菜单',
+  `roles` json NULL COMMENT '拥有该菜单的角色',
+  `created_time` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '菜单创建时间',
+  `update_time` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '菜单更新时间',
+  PRIMARY KEY (`id`) USING BTREE
+) ENGINE = InnoDB AUTO_INCREMENT = 2 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = Dynamic;
+
+-- ----------------------------
+-- Records of menu
+-- ----------------------------
+INSERT INTO `menu` VALUES (1, '首页', '/home', 'home', NULL, 0, NULL, '2023-03-18 16:24:44', '2023-03-18 16:24:47');
 
 -- ----------------------------
 -- Table structure for role
@@ -24,14 +68,19 @@ DROP TABLE IF EXISTS `role`;
 CREATE TABLE `role`  (
   `id` int NOT NULL AUTO_INCREMENT COMMENT '角色ID',
   `role_name` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NOT NULL COMMENT '角色名',
+  `role_desc` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_0900_ai_ci NULL DEFAULT NULL,
+  `menus` json NULL COMMENT '菜单标识',
+  `auth_permissions` json NULL COMMENT '操作权限标识',
   `created_time` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '创建时间',
+  `update_time` datetime NOT NULL ON UPDATE CURRENT_TIMESTAMP COMMENT '更新时间',
   PRIMARY KEY (`id`) USING BTREE
 ) ENGINE = InnoDB AUTO_INCREMENT = 3 CHARACTER SET = utf8mb4 COLLATE = utf8mb4_0900_ai_ci ROW_FORMAT = DYNAMIC;
 
 -- ----------------------------
 -- Records of role
 -- ----------------------------
-INSERT INTO `role` VALUES (1, 'administrator', '2023-03-10 15:32:06');
+INSERT INTO `role` VALUES (1, 'administrator', '超级管理员', '[]', '[]', '2023-03-18 16:03:37', '2023-03-18 16:03:37');
+INSERT INTO `role` VALUES (2, 'test', '测试角色', '[]', '[]', '2023-03-18 17:09:13', '2023-03-18 17:09:13');
 
 -- ----------------------------
 -- Table structure for test
