@@ -135,14 +135,13 @@ class UserService {
         unsealTime,
         Role,
       } = findUserRes.toJSON()
-      console.log('Role', Role);
 
       const {
         id: roleId,
         roleName,
         roleDesc,
         menus,
-        operationPermissions: authBtnList
+        operationPermissions: authBtnList,
       } = Role
       return {
         id,
@@ -212,12 +211,35 @@ class UserService {
   public async setOldTokenToTokenBlackList(
     userId: string | number,
     userName: string
-  ) {
+  ): Promise<void> {
     try {
       const key = `user_token:${userId}_${userName}`
       const token = (await getCache(key)) as string
       await addToSet(`tokenBlackList`, token)
       await delCache(key)
+    } catch (e) {
+      throw e
+    }
+  }
+
+  /**
+   * 查询数据库 用户id和用户名是否匹配
+   * @author Peng
+   * @date 2023-03-19
+   * @param {any} userId:string|number
+   * @param {any} userName:string
+   * @returns {any}
+   */
+  public async userInfoIsMatch(userId: string | number, userName: string): Promise<boolean> {
+    try {
+      const findRes = await UserModel.findOne({
+        where: {
+          id: userId,
+          // id: 0,
+          userName
+        }
+      })
+      return !!(findRes?.toJSON())
     } catch (e) {
       throw e
     }

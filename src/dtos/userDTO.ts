@@ -1,8 +1,11 @@
 import {
+  IsInt,
   IsNotEmpty,
+  IsNumber,
   IsString,
   Matches,
   MaxLength,
+  Min,
   MinLength,
 } from 'class-validator'
 
@@ -34,4 +37,23 @@ export class UserLoginDTO {
   @MinLength(36)
   @MaxLength(36)
   readonly uuid: string
+}
+
+// 退出登录
+export class UserLogoutDTO {
+  @Min(1)
+  @IsInt()
+  @IsNumber()
+  @IsNotEmpty()
+  readonly id: number
+
+  @IsNotEmpty()
+  @IsString()
+  @MinLength(2)
+  @MaxLength(6)
+  readonly userName: string
+
+  @IsNotEmpty()
+  @IsString()
+  readonly token: string
 }

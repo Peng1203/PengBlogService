@@ -1,9 +1,9 @@
 import { Request, Response, NextFunction } from 'express'
-import { PARAMS_ERROR_CODE } from '../helpers/errorCode'
-import { UserLoginDTO } from '../dtos/userDTO'
+import { FORBIDDEN_ERROR_CODE, PARAMS_ERROR_CODE } from '../helpers/errorCode'
+import { UserLoginDTO, UserLogoutDTO } from '../dtos/userDTO'
 import { validateOrRejectDTO } from '../helpers/validateParams'
 import { UUID_REGEX } from '../helpers/regex'
-import { generateToken } from '../utils/token'
+import { generateToken, verifyToken } from '../utils/token'
 import MyError from '../helpers/exceptionError'
 import UserService from '../services/userService'
 import generateUUID from '../utils/uuid'
@@ -115,10 +115,10 @@ class UserController {
     next: NextFunction
   ): Promise<any> => {
     try {
-      const { userName, password, captcha, uuid } = req.body
       // DTO层校验
       await validateOrRejectDTO(UserLoginDTO, req.body)
 
+      const { userName, password, captcha, uuid } = req.body
       // 验证码 校验该账号是否通过验证码
       const isPass = await this.userService.checkUserLoginCaptcha(uuid, captcha)
       if (!isPass)
@@ -163,6 +163,42 @@ class UserController {
         message: 'Success',
         data: result,
         token,
+      })
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  /**
+   * 退出登录
+   * @author Peng
+   * @date 2023-03-19
+   * @param {any} req:Request
+   * @param {any} res:Response
+   * @param {any} next:NextFunction
+   * @returns {any}
+   */
+  public userLogout = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<any> => {
+    try {
+      await validateOrRejectDTO(UserLogoutDTO, req.body)
+      // 将退出登录的用户 清除在redis中的数据 并把生成的token 放入黑名单
+      const { id, userName, token } = req.body
+      const tokenUserInfo = await verifyToken(token)
+
+      // 防止恶意修改提交参数 达到越权操作
+      if (tokenUserInfo.userName !== userName) throw new MyError(FORBIDDEN_ERROR_CODE, '越权操作!', '权限签名用户与操作用户不匹配!', 'noAuth')
+      // 查询数据库 判断 用户id 和 用户名是否匹配
+      const isMatch = await this.userService.userInfoIsMatch(id, userName)
+      if (!isMatch) throw new MyError(FORBIDDEN_ERROR_CODE, '越权操作!', '操作用户信息不匹配!', 'noAuth')
+      await this.userService.setOldTokenToTokenBlackList(id, userName)
+      res.send({
+        code: 200,
+        message: 'Success',
+        data: '退出登录成功!'
       })
     } catch (e) {
       next(e)
