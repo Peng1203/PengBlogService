@@ -11,4 +11,6 @@ router.post('/verifyCaptcha', userController.verifyCaptcha)
 
 router.post('/login', userController.userLogin)
 
+router.post('/logout', userController.userLogout)
+
 export default router

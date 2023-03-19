@@ -9,7 +9,7 @@ export const PARAMS_ERROR_CODE = 400
 // 无权限
 export const NO_AUTH_ERROR_CODE = 401
 
-// 访问被禁止
+// 越权操作访问被禁止
 export const FORBIDDEN_ERROR_CODE = 403
 
 // 请求地址 未找到

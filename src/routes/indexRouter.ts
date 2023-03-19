@@ -5,7 +5,9 @@ const router = express.Router()
 router.get(
   '/',
   function (req: Request, res: Response, next: NextFunction): void {
-    res.send(`你好 当前开发环境${res.locals.env}`)
+    const { info } = req.query
+    console.log('有客户端访问', info)
+    res.send(`当前开发环境${res.locals.env}`)
   }
 )
 

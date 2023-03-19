@@ -4,6 +4,16 @@ import { checkSetHasValue } from '../db/redis'
 import MyError from '../helpers/exceptionError'
 import { NO_AUTH_ERROR_CODE } from '../helpers/errorCode'
 
+// 不需要 token 校验的 路由
+const UN_AUTH_PATH: string[] = [
+  // '/getTestList',
+  '/index',
+  '/test/getToken',
+  '/user/login',
+  '/user/logout',
+  '/getCaptcha',
+  '/verifyCaptcha',
+]
 /**
  * 校验 Token 中间件
  * @author Peng
@@ -13,16 +23,6 @@ import { NO_AUTH_ERROR_CODE } from '../helpers/errorCode'
  * @param {any} next:NextFunction
  * @returns {any}
  */
-// 不需要 token 校验的 路由
-const UN_AUTH_PATH: string[] = [
-  // '/getTestList',
-  '/test/getToken',
-  '/user/login',
-  '/user/logout',
-  '/getCaptcha',
-  '/verifyCaptcha',
-]
-
 async function authMiddleware(
   req: Request,
   res: Response,
@@ -36,11 +36,17 @@ async function authMiddleware(
       path.includes(unAuthPath)
     )
     // 判断为不需要权限的接口直接放行
+    // if (isNoAuthRequest && path === '/user/logout') {
+    //   console.log('走了这个 -----',)
+    //   const isValidate = await verifyToken(token)
+    //   req['tokenUserInfo'] = isValidate
+    //   return next()
+    // }
+
     if (isNoAuthRequest) return next()
-
     // 签名验证token 是否 合法
-    await verifyToken(token)
-
+    const isValidate = await verifyToken(token)
+    req['tokenUserInfo'] = isValidate
     // 查询 Redis 中的token 黑名单 是否存在当前token
     const isInBlackList = await checkSetHasValue('tokenBlackList', token)
     if (isInBlackList)

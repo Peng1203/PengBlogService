@@ -41,7 +41,7 @@ app.use(convertNumber)
 
 app.use(authMiddleware)
 // 定义路由
-app.use('/', indexRouter)
+app.use('/index', indexRouter)
 app.use('/test', testRouter)
 app.use('/user', usersRouter)
 
