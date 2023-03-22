@@ -180,6 +180,23 @@ async function removeSetValues<T extends string | number>(
   }
 }
 
+
+/**
+ * 往指定有序集合中添加数据 集合不存在时自动创建
+ * @author Peng
+ * @date 2023-03-20
+ * @returns {any}
+ */
+async function addToSSet(key: string, score: number, value: string): Promise<boolean> {
+  try {
+    const addRes = await redisClient.zadd(key, score, value)
+    console.log('addRes -----', addRes)
+    return !!(addRes)
+  } catch (error) {
+    throw error
+  }
+}
+
 /**
  * 设置指定Hash表数据 没有则自动创建
  * @author Peng
@@ -234,14 +251,17 @@ async function getAllHash(key: string): Promise<object> {
  * @returns {void}
  */
 async function test() {
+  // await addToSSet('testSSet', Date.now(), '123')
+
+
   // const setHashResult = await redisClient.hset('testObj', {
   //   name: 'zs',
   //   age: '14',
   // })
   // console.log('setHashResult -----', setHashResult)
 
-  const getHashRes = await redisClient.hgetall('testObj1')
-  console.log('getHashRes -----', getHashRes)
+  // const getHashRes = await redisClient.hgetall('testObj1')
+  // console.log('getHashRes -----', getHashRes)
   // redisClient
   //   .hget('testObj', 'name1')
   //   .then((res) => console.log('res -----', res))

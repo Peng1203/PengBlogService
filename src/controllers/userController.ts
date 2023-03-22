@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
+import moment from 'moment'
 import { FORBIDDEN_ERROR_CODE, PARAMS_ERROR_CODE } from '../helpers/errorCode'
 import { UserLoginDTO, UserLogoutDTO } from '../dtos/userDTO'
 import { validateOrRejectDTO } from '../helpers/validateParams'
@@ -133,30 +134,57 @@ class UserController {
         userName,
         password,
       })) as any
-      if (!result)
+      console.log('result -----', result)
+      const { id, state, unsealTime } = result as (any | null)
+      // 判断当前登录账户是否锁定
+      if (state !== 1) {
+        return res.send({
+          code: 200,
+          message: 'Failed',
+          data: '账号已被停用, 请联系管理员!',
+        })
+      }
+
+      // 判断是否未过锁定时间
+      if (!unsealTime) {
+        // 解禁的毫秒时间戳
+        const unsealTimeStamp = moment(unsealTime).unix()
+        if (unsealTimeStamp > Date.now()) return res.send({
+          code: 200,
+          message: 'Failed',
+          data: `账号已被锁定, 解锁日期${unsealTimeStamp}`,
+        })
+      }
+
+      // 未查询到用户信息 则进行登录错误计数器 进行累加
+      if (!result) {
         return res.send({
           code: 200,
           message: 'Failed',
           data: '用户名或密码错误!',
         })
+      }
+
 
       // 查询缓存中 当前账户是否已生成有效token
       const isHaveTrueToekn = await this.userService.currentUserHasToken(
-        result.id,
+        id,
         userName
       )
       // true 将之前有效token 放入token黑名单 false 则正常走登录流程
       if (isHaveTrueToekn)
-        await this.userService.setOldTokenToTokenBlackList(result.id, userName)
+        await this.userService.setOldTokenToTokenBlackList(id, userName)
 
       // 生成 token
       const token = generateToken({ userName, password })
       // 将token 存入 redis 中 如果存在之前的token并覆盖掉
       await this.userService.setTokenToCatch({
-        userId: result.id,
+        userId: id,
         userName,
         token,
       })
+
+      // 登录成功 清除登录错误计数器
 
       res.send({
         code: 200,
