@@ -129,7 +129,15 @@ class UserController {
           data: '验证码有误或已过期!',
         })
 
-      // 查询 用户在 数据库中的信息
+      // 查询 用户是否在数据库中
+      const isUserExist = await this.userService.findUserByUsername(userName)
+      if (!isUserExist) return res.send({
+        code: 200,
+        message: 'Failed',
+        data: '账户不存在!',
+      })
+
+      // 根据 用户名和 密码 查询数据库中的信息
       const result = (await await this.userService.userLogin({
         userName,
         password,
@@ -158,6 +166,8 @@ class UserController {
 
       // 未查询到用户信息 则进行登录错误计数器 进行累加
       if (!result) {
+        // redis 中记录当前账号 登录错误计数器
+        await this.userService.incrLoginErrorCount(uuid)
         return res.send({
           code: 200,
           message: 'Failed',

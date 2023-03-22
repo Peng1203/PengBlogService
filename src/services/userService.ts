@@ -1,6 +1,6 @@
 import UserModel from '../models/userModel'
 import RoleModel from '../models/roleModel'
-import { addToSet, delCache, getCache, isExists, setCache } from '../db/redis'
+import { addToSet, delCache, getCache, incrCounter, isExists, setCache } from '../db/redis'
 import generateCaptchaString from '../utils/generateCaptcha'
 import { EXPIRESD } from '../configs/sign'
 
@@ -89,6 +89,22 @@ class UserService {
       if (!catchVal) return false
       if (code !== catchVal) return false
       return true
+    } catch (e) {
+      throw e
+    }
+  }
+
+  /**
+   * 查询数据库中是否存在指定用户
+   * @author Peng
+   * @date 2023-03-22
+   * @param {any} userName:string
+   * @returns {any}
+   */
+  public async findUserByUsername(userName: string): Promise<boolean> {
+    try {
+      const findRes = await UserModel.findOne({ where: { userName } })
+      return !!findRes
     } catch (e) {
       throw e
     }
@@ -222,6 +238,7 @@ class UserService {
     }
   }
 
+
   /**
    * 查询数据库 用户id和用户名是否匹配
    * @author Peng
@@ -244,6 +261,39 @@ class UserService {
       throw e
     }
   }
+
+  /**
+   * 获取登录错误计数器
+   * @author Peng
+   * @date 2023-03-22
+   * @param {any} key:string
+   * @returns {any}
+   */
+  public async getLoginErrorCount(key: string): Promise<number> {
+    try {
+      return await getCache(`errorCounter:${key}`)
+    } catch (e) {
+      throw e
+    }
+  }
+
+  /**
+   * 增加登录错误计数器
+   * @author Peng
+   * @date 2023-03-22
+   * @param {any} uuid:string
+   * @returns {any}
+   */
+  public async incrLoginErrorCount(uuid: string): Promise<void> {
+    try {
+      const res = await incrCounter(`errorCounter:${uuid}`)
+      console.log('res -----', res)
+    } catch (e) {
+      throw e
+    }
+  }
+
+
 }
 
 export default UserService

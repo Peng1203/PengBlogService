@@ -93,11 +93,14 @@ async function isExists<T extends boolean | Error>(key: string): Promise<T> {
  * @result 返回结果 成功 当前统计数量
  * @returns {Number}
  */
-async function incrCounter<T extends number | Error>(
-  counterKey: string
+async function incrCounter<T extends number | any>(
+  counterKey: string,
+  second?: number,
 ): Promise<T> {
   try {
-    return (await redisClient.incr(counterKey)) as T
+    if (second !== undefined) return (await redisClient.incr(counterKey)) as T
+
+
   } catch (error) {
     throw error
   }

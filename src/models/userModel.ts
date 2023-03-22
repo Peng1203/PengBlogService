@@ -82,4 +82,15 @@ const UserModel = sequelize.define(
 
 UserModel.belongsTo(RoleModel, { foreignKey: 'id' })
 
+async function test() {
+  const finRes = await UserModel.findOne({
+    where: {
+      userName: 'test'
+    }
+  })
+  console.log('finRes -----', finRes.toJSON())
+}
+
+// test()
+
 export default UserModel
