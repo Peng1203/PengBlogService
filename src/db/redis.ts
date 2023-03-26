@@ -1,5 +1,6 @@
 import redis from 'ioredis'
 import config from '../configs/redisConfig'
+import { JSON_REGEX } from '../helpers/regex'
 // 创建Redis终端
 const redisClient = new redis(config)
 
@@ -40,9 +41,12 @@ async function setCache<T extends string | Error | null>(
  * @result 返回结果 成功{查询结果} 失败null
  * @returns {Promise}
  */
-async function getCache<T>(key: string): Promise<T | null> {
+async function getCache<T extends number | string>(
+  key: string
+): Promise<T | null> {
   try {
-    const result = await redisClient.get(key)
+    let result = await redisClient.get(key)
+    if (Number(result)) return Number(result) as T
     return result ? (result as T) : null
   } catch (error) {
     throw error
@@ -93,14 +97,14 @@ async function isExists<T extends boolean | Error>(key: string): Promise<T> {
  * @result 返回结果 成功 当前统计数量
  * @returns {Number}
  */
-async function incrCounter<T extends number | any>(
+async function incrCounter(
   counterKey: string,
-  second?: number,
-): Promise<T> {
+  second?: number extends 0 ? never : number
+): Promise<number> {
   try {
-    if (second !== undefined) return (await redisClient.incr(counterKey)) as T
-
-
+    const res = await redisClient.incr(counterKey)
+    if (second !== undefined) redisClient.expire(counterKey, second)
+    return res
   } catch (error) {
     throw error
   }
@@ -183,18 +187,21 @@ async function removeSetValues<T extends string | number>(
   }
 }
 
-
 /**
  * 往指定有序集合中添加数据 集合不存在时自动创建
  * @author Peng
  * @date 2023-03-20
  * @returns {any}
  */
-async function addToSSet(key: string, score: number, value: string): Promise<boolean> {
+async function addToSSet(
+  key: string,
+  score: number,
+  value: string
+): Promise<boolean> {
   try {
     const addRes = await redisClient.zadd(key, score, value)
     console.log('addRes -----', addRes)
-    return !!(addRes)
+    return !!addRes
   } catch (error) {
     throw error
   }
@@ -205,12 +212,23 @@ async function addToSSet(key: string, score: number, value: string): Promise<boo
  * @author Peng
  * @date 2023-03-10
  * @param {any} key:string
- * @param {any} data:object
- * @returns {number} 返回存储成功的 键值对 数量
+ * @param {string} hKey:string
+ * @param { object | number | string} data:object
+ * @param {number} second?:object
+ * @returns {number} 返回存储成功的 键值对数量 当更新一个已经存在的 键时 返回为0
  */
-async function setHashCatch(key: string, data: object): Promise<number> {
+async function setHashCatch(
+  key: string,
+  hKey: string,
+  data: object | number | string,
+  second?: number extends 0 ? never : number
+): Promise<number> {
   try {
-    return await redisClient.hset(key, data)
+    if (typeof data === 'object') data = JSON.stringify(data)
+    const setRes = await redisClient.hset(key, hKey, data)
+    // 当传入过期时间时 设置指定hash的过期时间
+    if (second !== undefined) redisClient.expire(key, second)
+    return setRes
   } catch (error) {
     throw error
   }
@@ -224,9 +242,18 @@ async function setHashCatch(key: string, data: object): Promise<number> {
  * @param {any} hKey:string 表中的key
  * @returns {string | null} 字符串结果 或者 null
  */
-async function getKeyHash(key: string, hKey: string): Promise<string | null> {
+async function getKeyHash(
+  key: string,
+  hKey: string
+): Promise<string | number | null | object | []> {
   try {
-    return await redisClient.hget(key, hKey)
+    const res = await redisClient.hget(key, hKey)
+    // 判断存储的是否是数字类型
+    if (Number(res)) return Number(res)
+    // 判断 回来的数据是否 JSON 数据
+    if (JSON_REGEX.test(res)) return JSON.parse(res)
+    // 返回字符串
+    return res
   } catch (error) {
     throw error
   }
@@ -248,14 +275,60 @@ async function getAllHash(key: string): Promise<object> {
 }
 
 /**
+ * 删除单个或多个 hash中的数据 单个键或者键数组
+ * @author Peng
+ * @date 2023-03-25
+ * @param {any} key:string
+ * @param {any} hKey:string|string[]
+ * @returns {any}
+ */
+async function delKeyInHash(
+  key: string,
+  hKey: string | string[]
+): Promise<number> {
+  try {
+    if (typeof hKey === 'string') return await redisClient.hdel(key, hKey)
+    return await redisClient.hdel(key, ...hKey)
+  } catch (e) {
+    throw e
+  }
+}
+
+/**
  * 测试
  * @author Peng
  * @date 2023-02-23
  * @returns {void}
  */
-async function test() {
-  // await addToSSet('testSSet', Date.now(), '123')
+async function test(): Promise<void> {
+  // for (let i = 0; i <= 10; i++) {
+  //   setTimeout(async () => {
+  //     console.log('i -----', i)
+  //     await setHashCatch('testHash', `key${Date.now()}`, Date.now())
+  //   }, i * 100)
+  // }
+  // const delRes = await delKeyInHash('testHash', [
+  //   'key1679809623132',
+  //   'key1679809623024',
+  //   'key1679809622931',
+  // ])
+  // console.log('delRes -----', delRes)
+  // const setRes = await setHashCatch('testHash', 'testArr', [
+  //   1,
+  //   2,
+  //   3,
+  //   4,
+  //   { name: 'zs' },
+  // ])
+  // console.log('setRes -----', setRes)
 
+  // const res = await getKeyHash('testHash', '121')
+  // const res = await getKeyHash('testHash', 'desc')
+  // const res = await getKeyHash('testHash', 'testArr')
+  // const res = await getAllHash('testHash')
+  // // await delKeyInHash()
+  // console.log('hash查询结果 res -----', res)
+  // await addToSSet('testSSet', Date.now(), '123')
 
   // const setHashResult = await redisClient.hset('testObj', {
   //   name: 'zs',
@@ -282,9 +355,11 @@ async function test() {
   // const isExist = await isExists('key5') // 存在true 不存在false
   // console.log('isExist -----', isExist)
 
-  // const result = await incrCounter('testCounter')
+  // const result = await incrCounter('testCounter', 1000)
   // console.log('result -----', result)
 
+  const conterRes = await getCache('testCounter')
+  console.log('计数器结果 -----', conterRes)
   // const testCounter = await getCache('testCounter')
   // console.log('testCounter -----', testCounter)
 
