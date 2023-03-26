@@ -7,3 +7,5 @@ export const ISSUER = 'Peng'
 
 // 登录最大试错数
 export const MAX_TRY_ERROR_COUNT = 5
+// 登录超过最大错误次数 禁用时间
+export const LOGIN_DISABLE_TIME = 60 * 10

@@ -1,8 +1,17 @@
+import moment from 'moment'
 import UserModel from '../models/userModel'
 import RoleModel from '../models/roleModel'
-import { addToSet, delCache, getCache, incrCounter, isExists, setCache } from '../db/redis'
+import {
+  addToSet,
+  delCache,
+  getCache,
+  incrCounter,
+  isExists,
+  setCache,
+} from '../db/redis'
 import generateCaptchaString from '../utils/generateCaptcha'
-import { EXPIRESD } from '../configs/sign'
+import { EXPIRESD, LOGIN_DISABLE_TIME } from '../configs/sign'
+import { dateTimeFormat } from '..//utils/moment'
 
 type loginInfoType = {
   userName: string
@@ -238,7 +247,6 @@ class UserService {
     }
   }
 
-
   /**
    * 查询数据库 用户id和用户名是否匹配
    * @author Peng
@@ -247,16 +255,19 @@ class UserService {
    * @param {any} userName:string
    * @returns {any}
    */
-  public async userInfoIsMatch(userId: string | number, userName: string): Promise<boolean> {
+  public async userInfoIsMatch(
+    userId: string | number,
+    userName: string
+  ): Promise<boolean> {
     try {
       const findRes = await UserModel.findOne({
         where: {
           id: userId,
           // id: 0,
-          userName
-        }
+          userName,
+        },
       })
-      return !!(findRes?.toJSON())
+      return !!findRes?.toJSON()
     } catch (e) {
       throw e
     }
@@ -266,12 +277,12 @@ class UserService {
    * 获取登录错误计数器
    * @author Peng
    * @date 2023-03-22
-   * @param {any} key:string
+   * @param {any} uuid:string
    * @returns {any}
    */
-  public async getLoginErrorCount(key: string): Promise<number> {
+  public async getLoginErrorCount(uuid: string): Promise<number> {
     try {
-      return await getCache(`errorCounter:${key}`)
+      return await getCache(`errorCounter:${uuid}`)
     } catch (e) {
       throw e
     }
@@ -286,14 +297,50 @@ class UserService {
    */
   public async incrLoginErrorCount(uuid: string): Promise<void> {
     try {
-      const res = await incrCounter(`errorCounter:${uuid}`)
+      const res = await incrCounter(`errorCounter:${uuid}`, LOGIN_DISABLE_TIME)
       console.log('res -----', res)
     } catch (e) {
       throw e
     }
   }
 
+  /**
+   * 重置登录错误计数器
+   * @author Peng
+   * @date 2023-03-26
+   * @param {any} uuid:string
+   * @returns {any}
+   */
+  public async resetLoginErrorCount(uuid: string): Promise<boolean> {
+    try {
+      return await delCache(`errorCounter:${uuid}`)
+    } catch (e) {
+      throw e
+    }
+  }
 
+  /**
+   * 设置数据库中 用户解封时间
+   * @author Peng
+   * @date 2023-03-26
+   * @param {any} second:string
+   * @returns {string} 返回禁用时长
+   */
+  public async setUserUnsealTime(
+    userName: string,
+    second: number
+  ): Promise<string> {
+    try {
+      const unsealTime = dateTimeFormat(Date.now() + second * 1000)
+      const res = await UserModel.update(
+        { unsealTime },
+        { where: { userName } }
+      )
+      return res[0] === 1 ? unsealTime : ''
+    } catch (e) {
+      throw e
+    }
+  }
 }
 
 export default UserService

@@ -71,6 +71,9 @@ const UserModel = sequelize.define(
     unsealTime: {
       field: 'unseal_time',
       type: DataTypes.DATE,
+      get() {
+        return dateTimeFormat(this.getDataValue('unsealTime'))
+      },
     },
   },
   // 模型配置属性
@@ -85,8 +88,8 @@ UserModel.belongsTo(RoleModel, { foreignKey: 'id' })
 async function test() {
   const finRes = await UserModel.findOne({
     where: {
-      userName: 'test'
-    }
+      userName: 'test',
+    },
   })
   console.log('finRes -----', finRes.toJSON())
 }

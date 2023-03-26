@@ -8,6 +8,8 @@ import { generateToken, verifyToken } from '../utils/token'
 import MyError from '../helpers/exceptionError'
 import UserService from '../services/userService'
 import generateUUID from '../utils/uuid'
+import { LOGIN_DISABLE_TIME, MAX_TRY_ERROR_COUNT } from '../configs/sign'
+import { dateTimeFormat } from '../utils/moment'
 class UserController {
   private userService = new UserService()
 
@@ -131,11 +133,28 @@ class UserController {
 
       // 查询 用户是否在数据库中
       const isUserExist = await this.userService.findUserByUsername(userName)
-      if (!isUserExist) return res.send({
-        code: 200,
-        message: 'Failed',
-        data: '账户不存在!',
-      })
+      if (!isUserExist)
+        return res.send({
+          code: 200,
+          message: 'Failed',
+          data: '账户不存在!',
+        })
+
+      // 判断当前登录账户是否已经达到最大试错数
+      const errConter = await this.userService.getLoginErrorCount(uuid)
+      // 当登录次数已经超过试错次数
+      if (errConter !== null && errConter >= MAX_TRY_ERROR_COUNT) {
+        // 设置数据库中的禁用时间 防止切换不同设备 限制失效 可优化
+        await this.userService.setUserUnsealTime(userName, LOGIN_DISABLE_TIME)
+
+        return res.send({
+          code: 200,
+          message: 'Failed',
+          data: `登录错误次数已达到最大限制, 请在${
+            LOGIN_DISABLE_TIME / 60
+          }分钟后尝试`,
+        })
+      }
 
       // 根据 用户名和 密码 查询数据库中的信息
       const result = (await await this.userService.userLogin({
@@ -143,28 +162,7 @@ class UserController {
         password,
       })) as any
       console.log('result -----', result)
-      const { id, state, unsealTime } = result as (any | null)
-      // 判断当前登录账户是否锁定
-      if (state !== 1) {
-        return res.send({
-          code: 200,
-          message: 'Failed',
-          data: '账号已被停用, 请联系管理员!',
-        })
-      }
-
-      // 判断是否未过锁定时间
-      if (!unsealTime) {
-        // 解禁的毫秒时间戳
-        const unsealTimeStamp = moment(unsealTime).unix()
-        if (unsealTimeStamp > Date.now()) return res.send({
-          code: 200,
-          message: 'Failed',
-          data: `账号已被锁定, 解锁日期${unsealTimeStamp}`,
-        })
-      }
-
-      // 未查询到用户信息 则进行登录错误计数器 进行累加
+      // 当用户信息不存在 则进行登录错误计数器 进行累加
       if (!result) {
         // redis 中记录当前账号 登录错误计数器
         await this.userService.incrLoginErrorCount(uuid)
@@ -175,6 +173,28 @@ class UserController {
         })
       }
 
+      const { id, state, unsealTime } = result as any | null
+      console.log('unsealTime -----', unsealTime)
+      // 判断当前登录账户是否锁定
+      if (state !== 1) {
+        return res.send({
+          code: 200,
+          message: 'Failed',
+          data: '账号已被停用, 请联系管理员!',
+        })
+      }
+
+      // 判断是否未过锁定时间
+      if (unsealTime) {
+        // 解禁的毫秒时间戳
+        const unsealTimeStamp = moment(unsealTime).valueOf()
+        if (unsealTimeStamp > Date.now())
+          return res.send({
+            code: 200,
+            message: 'Failed',
+            data: `账号已被锁定, 解锁日期 ${dateTimeFormat(unsealTimeStamp)}`,
+          })
+      }
 
       // 查询缓存中 当前账户是否已生成有效token
       const isHaveTrueToekn = await this.userService.currentUserHasToken(
@@ -195,7 +215,7 @@ class UserController {
       })
 
       // 登录成功 清除登录错误计数器
-
+      await this.userService.resetLoginErrorCount(uuid)
       res.send({
         code: 200,
         message: 'Success',
@@ -228,15 +248,27 @@ class UserController {
       const tokenUserInfo = await verifyToken(token)
 
       // 防止恶意修改提交参数 达到越权操作
-      if (tokenUserInfo.userName !== userName) throw new MyError(FORBIDDEN_ERROR_CODE, '越权操作!', '权限签名用户与操作用户不匹配!', 'noAuth')
+      if (tokenUserInfo.userName !== userName)
+        throw new MyError(
+          FORBIDDEN_ERROR_CODE,
+          '越权操作!',
+          '权限签名用户与操作用户不匹配!',
+          'noAuth'
+        )
       // 查询数据库 判断 用户id 和 用户名是否匹配
       const isMatch = await this.userService.userInfoIsMatch(id, userName)
-      if (!isMatch) throw new MyError(FORBIDDEN_ERROR_CODE, '越权操作!', '操作用户信息不匹配!', 'noAuth')
+      if (!isMatch)
+        throw new MyError(
+          FORBIDDEN_ERROR_CODE,
+          '越权操作!',
+          '操作用户信息不匹配!',
+          'noAuth'
+        )
       await this.userService.setOldTokenToTokenBlackList(id, userName)
       res.send({
         code: 200,
         message: 'Success',
-        data: '退出登录成功!'
+        data: '退出登录成功!',
       })
     } catch (e) {
       next(e)
