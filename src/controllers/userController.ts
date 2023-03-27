@@ -161,7 +161,7 @@ class UserController {
         userName,
         password,
       })) as any
-      console.log('result -----', result)
+      // console.log('result -----', result)
       // 当用户信息不存在 则进行登录错误计数器 进行累加
       if (!result) {
         // redis 中记录当前账号 登录错误计数器
@@ -174,7 +174,6 @@ class UserController {
       }
 
       const { id, state, unsealTime } = result as any | null
-      console.log('unsealTime -----', unsealTime)
       // 判断当前登录账户是否锁定
       if (state !== 1) {
         return res.send({

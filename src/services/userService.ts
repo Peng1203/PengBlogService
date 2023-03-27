@@ -1,4 +1,3 @@
-import moment from 'moment'
 import UserModel from '../models/userModel'
 import RoleModel from '../models/roleModel'
 import {
@@ -10,7 +9,11 @@ import {
   setCache,
 } from '../db/redis'
 import generateCaptchaString from '../utils/generateCaptcha'
-import { EXPIRESD, LOGIN_DISABLE_TIME } from '../configs/sign'
+import {
+  CAPTCHA_VALID_TIME,
+  EXPIRESD,
+  LOGIN_DISABLE_TIME,
+} from '../configs/sign'
 import { dateTimeFormat } from '..//utils/moment'
 
 type loginInfoType = {
@@ -38,7 +41,11 @@ class UserService {
   public async createCaptcha(uuid: string): Promise<string> {
     try {
       const generateCaptcha = generateCaptchaString()
-      const setRes = await setCache(`loginCaptcha:${uuid}`, generateCaptcha, 60)
+      const setRes = await setCache(
+        `loginCaptcha:${uuid}`,
+        generateCaptcha,
+        CAPTCHA_VALID_TIME
+      )
       if (setRes !== 'OK') throw new Error('服务器内部错误')
       return generateCaptcha
     } catch (e) {
@@ -73,7 +80,11 @@ class UserService {
     code: string
   ): Promise<string> {
     try {
-      const setRes = await setCache(`loginCaptchaPassed:${uuid}`, code, 60)
+      const setRes = await setCache(
+        `loginCaptchaPassed:${uuid}`,
+        code,
+        CAPTCHA_VALID_TIME
+      )
       if (setRes !== 'OK') throw new Error('服务器内部错误')
       return setRes
     } catch (e) {
