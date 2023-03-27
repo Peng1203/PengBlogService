@@ -193,17 +193,80 @@ async function removeSetValues<T extends string | number>(
  * @date 2023-03-20
  * @returns {any}
  */
-async function addToSSet(
+async function addToSortSet(
   key: string,
-  score: number,
-  value: string
+  value: string,
+  score: number
 ): Promise<boolean> {
   try {
     const addRes = await redisClient.zadd(key, score, value)
-    console.log('addRes -----', addRes)
     return !!addRes
   } catch (error) {
     throw error
+  }
+}
+
+/**
+ * 获取有序集合数据
+ * @author Peng
+ * @date 2023-03-27
+ * @param {any} key:string
+ * @param {any} sort?:'ASC'|'DESC'
+ * @param {any} isWithScores?:Boolean
+ * @param {any} start?:number
+ * @param {any} end?:number
+ * @returns {any}
+ */
+async function getSortSet(
+  key: string,
+  sort?: 'ASC' | 'DESC',
+  isWithScores?: Boolean,
+  start?: number,
+  end?: number
+): Promise<string[]> {
+  try {
+    if (sort === 'ASC' || !sort) {
+      if (isWithScores)
+        return await redisClient.zrange(
+          key,
+          start || 0,
+          end || -1,
+          'WITHSCORES'
+        )
+      return await redisClient.zrange(key, start || 0, end || -1)
+    } else {
+      if (isWithScores)
+        return await redisClient.zrevrange(
+          key,
+          start || 0,
+          end || -1,
+          'WITHSCORES'
+        )
+      return await redisClient.zrevrange(key, start || 0, end || -1)
+    }
+  } catch (error) {
+    throw error
+  }
+}
+
+/**
+ * 删除单个或多个 有序集合中的数据
+ * @author Peng
+ * @date 2023-03-27
+ * @param {any} sKey:string
+ * @param {any} delVal:string|string[]
+ * @returns {any}
+ */
+async function removeSortSetValues(
+  sKey: string,
+  delVal: string | string[]
+): Promise<Boolean> {
+  try {
+    if (typeof delVal === 'string')
+      return !!(await redisClient.zrem(sKey, delVal))
+    return !!(await redisClient.zrem(sKey, ...delVal))
+  } catch (e) {
+    throw e
   }
 }
 
@@ -328,8 +391,11 @@ async function test(): Promise<void> {
   // const res = await getAllHash('testHash')
   // // await delKeyInHash()
   // console.log('hash查询结果 res -----', res)
-  // await addToSSet('testSSet', Date.now(), '123')
-
+  const setRes = await addToSortSet('testSSet', 'hhhh', Date.now())
+  console.log('setRes -----', setRes)
+  // const findRes = await redisClient.zrange('testSSet', 0, -1, 'WITHSCORES')
+  const findRes = await getSortSet('testSSet', 'ASC', true)
+  console.log('findRes -----', findRes)
   // const setHashResult = await redisClient.hset('testObj', {
   //   name: 'zs',
   //   age: '14',
@@ -358,8 +424,8 @@ async function test(): Promise<void> {
   // const result = await incrCounter('testCounter', 1000)
   // console.log('result -----', result)
 
-  const conterRes = await getCache('testCounter')
-  console.log('计数器结果 -----', conterRes)
+  // const conterRes = await getCache('testCounter')
+  // console.log('计数器结果 -----', conterRes)
   // const testCounter = await getCache('testCounter')
   // console.log('testCounter -----', testCounter)
 
@@ -383,7 +449,7 @@ async function test(): Promise<void> {
 
   redisClient.quit()
 }
-// test()
+test()
 
 export {
   redisClient,
@@ -396,7 +462,11 @@ export {
   getSet,
   checkSetHasValue,
   removeSetValues,
+  addToSortSet,
+  getSortSet,
+  removeSortSetValues,
   setHashCatch,
   getKeyHash,
   getAllHash,
+  delKeyInHash,
 }
