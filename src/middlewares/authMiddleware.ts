@@ -1,6 +1,6 @@
 import { Request, Response, NextFunction } from 'express'
 import { verifyToken } from '../utils/token'
-import { checkSetHasValue } from '../db/redis'
+import { checkSortSetHasValue } from '../db/redis'
 import MyError from '../helpers/exceptionError'
 import { NO_AUTH_ERROR_CODE } from '../helpers/errorCode'
 
@@ -48,7 +48,7 @@ async function authMiddleware(
     const isValidate = await verifyToken(token)
     req['tokenUserInfo'] = isValidate
     // 查询 Redis 中的token 黑名单 是否存在当前token
-    const isInBlackList = await checkSetHasValue('tokenBlackList', token)
+    const isInBlackList = await checkSortSetHasValue('tokenBlackList', token)
     if (isInBlackList)
       throw new MyError(
         NO_AUTH_ERROR_CODE,

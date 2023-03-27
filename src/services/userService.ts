@@ -1,7 +1,7 @@
 import UserModel from '../models/userModel'
 import RoleModel from '../models/roleModel'
 import {
-  addToSet,
+  addToSortSet,
   delCache,
   getCache,
   incrCounter,
@@ -251,7 +251,7 @@ class UserService {
     try {
       const key = `user_token:${userId}_${userName}`
       const token = (await getCache(key)) as string
-      await addToSet(`tokenBlackList`, token)
+      await addToSortSet(`tokenBlackList`, token, Date.now())
       await delCache(key)
     } catch (e) {
       throw e
