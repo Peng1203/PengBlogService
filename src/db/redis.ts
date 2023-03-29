@@ -4,6 +4,22 @@ import { JSON_REGEX } from '../helpers/regex'
 // 创建Redis终端
 const redisClient = new redis(config)
 
+// redisClient.on('connect', () => {
+//   console.log('ioredis connect-----')
+// })
+// redisClient.on('error', () => {
+//   console.log('ioredis error-----')
+// })
+// redisClient.on('idle', () => {
+//   console.log('ioredis idle-----')
+// })
+// redisClient.on('close', () => {
+//   console.log('ioredis close-----')
+// })
+// redisClient.on('end', () => {
+//   console.log('ioredis end-----')
+// })
+
 /**
  * 设置缓存
  * @author Peng
@@ -474,6 +490,7 @@ async function test(): Promise<void> {
 
   // const setVal = await getSet('testSet')
   // console.log('测试集合 -----', setVal)
+  // console.log('是否是集群 -----', redisClient.isCluster)
 
   redisClient.quit()
 }
