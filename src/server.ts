@@ -14,6 +14,7 @@ import errorHandler from './middlewares/errorHandler'
 import convertNumber from './middlewares/convertNumber'
 import authMiddleware from './middlewares/authMiddleware'
 import setHeader from './middlewares/defaultHeader'
+import taskManager from './tasks'
 
 const app = express()
 
@@ -49,5 +50,8 @@ app.use('/user', usersRouter)
 app.use(notFoundMiddleware)
 // 错误处理中间件
 app.use(errorHandler)
+
+// 开启全部定时任务
+taskManager.startTasks()
 
 export default app
