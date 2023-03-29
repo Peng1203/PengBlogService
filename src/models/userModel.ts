@@ -72,6 +72,7 @@ const UserModel = sequelize.define(
       field: 'unseal_time',
       type: DataTypes.DATE,
       get() {
+        if (this.getDataValue('unsealTime') === null) return null
         return dateTimeFormat(this.getDataValue('unsealTime'))
       },
     },
