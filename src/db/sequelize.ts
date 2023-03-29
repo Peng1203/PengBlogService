@@ -10,7 +10,8 @@ import dbConfig from '../configs/mysqlConfig'
 const sequelize = new Sequelize({
   ...dbConfig,
   dialect: 'mysql',
-  logging: console.log,
+  logging: false,
+  // logging: console.log,
   timezone: '+08:00', // 设置时区为北京时间
 })
 
@@ -20,7 +21,7 @@ sequelize
   .then(() => {
     console.log('mysql 连接成功')
   })
-  .catch((e) => {
+  .catch(e => {
     console.error('mysql 连接失败', e)
   })
 
