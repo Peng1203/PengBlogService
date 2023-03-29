@@ -123,13 +123,13 @@ class UserController {
 
       const { userName, password, captcha, uuid } = req.body
       // 验证码 校验该账号是否通过验证码
-      // const isPass = await this.userService.checkUserLoginCaptcha(uuid, captcha)
-      // if (!isPass)
-      //   return res.send({
-      //     code: 200,
-      //     message: 'Failed',
-      //     data: '验证码有误或已过期!',
-      //   })
+      const isPass = await this.userService.checkUserLoginCaptcha(uuid, captcha)
+      if (!isPass)
+        return res.send({
+          code: 200,
+          message: 'Failed',
+          data: '验证码有误或已过期!',
+        })
 
       // 查询 用户是否在数据库中
       const isUserExist = await this.userService.findUserByUsername(userName)
