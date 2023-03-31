@@ -1,7 +1,12 @@
 import { Request, Response, NextFunction } from 'express'
 import moment from 'moment'
 import { FORBIDDEN_ERROR_CODE, PARAMS_ERROR_CODE } from '../helpers/errorCode'
-import { GetUserListDTO, UserLoginDTO, UserLogoutDTO } from '../dtos/userDTO'
+import {
+  AddUserDTO,
+  GetUserListDTO,
+  UserLoginDTO,
+  UserLogoutDTO,
+} from '../dtos/userDTO'
 import { validateOrRejectDTO } from '../helpers/validateParams'
 import { UUID_REGEX } from '../helpers/regex'
 import { generateToken, verifyToken } from '../utils/token'
@@ -334,6 +339,30 @@ class UserController {
         message: data ? 'Success' : 'Failed',
         data: data ? data : '未找到相关用户信息',
       })
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  /**
+   * 添加用户
+   * @author Peng
+   * @date 2023-03-31
+   * @param {any} req:Request
+   * @param {any} res:Response
+   * @param {any} next:NextFunction
+   * @returns {any}
+   */
+  public addUser = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<any> => {
+    try {
+      await validateOrRejectDTO(AddUserDTO, req.body)
+      // 判断数据库中是否有同名用户
+
+      res.send('添加用户')
     } catch (e) {
       next(e)
     }

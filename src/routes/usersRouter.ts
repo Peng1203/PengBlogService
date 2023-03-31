@@ -17,4 +17,6 @@ router.get('/getUserList', userController.getUserList)
 
 router.get('/getUserInfo/:id', userController.getUserInfo)
 
+router.post('/addUser', userController.addUser)
+
 export default router

@@ -20,7 +20,14 @@ function handleParamsType(obj: Object, convertProps: Array<string>): void {
 
 function convertNumber(req: Request, res: Response, next: NextFunction): void {
   // 需要转换为数值类型的属性名称列表
-  const convertProps: string[] = ['id', 'age', 'count', 'page', 'pageSize']
+  const convertProps: string[] = [
+    'id',
+    'roleId',
+    'age',
+    'count',
+    'page',
+    'pageSize',
+  ]
   const { query, body } = req
 
   // console.log('body前', JSON.parse(JSON.stringify(body)))

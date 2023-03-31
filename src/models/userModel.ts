@@ -37,6 +37,7 @@ const UserModel = sequelize.define(
     // 用户状态 1正常 2锁定 3封禁
     state: {
       type: DataTypes.INTEGER,
+      defaultValue: 1,
       validate: {
         min: 1,
         max: 3,
@@ -66,6 +67,7 @@ const UserModel = sequelize.define(
     // 用户头像
     avatar: {
       type: DataTypes.BLOB,
+      defaultValue: null,
       get() {
         if (!this.getDataValue('avatar')) return null
         return `data:image/png;base64,${this.getDataValue('avatar').toString(
@@ -77,6 +79,7 @@ const UserModel = sequelize.define(
     unsealTime: {
       field: 'unseal_time',
       type: DataTypes.DATE,
+      defaultValue: null,
       get() {
         if (this.getDataValue('unsealTime') === null) return null
         return dateTimeFormat(this.getDataValue('unsealTime'))
@@ -93,12 +96,19 @@ const UserModel = sequelize.define(
 UserModel.belongsTo(RoleModel, { foreignKey: 'id' })
 
 async function test() {
-  const finRes = await UserModel.findOne({
-    where: {
-      userName: 'test',
-    },
-  })
-  console.log('finRes -----', finRes.toJSON())
+  const userInfo = {
+    userName: '李四',
+    password: '5100',
+    roleId: 1,
+  }
+  const res = await UserModel.create(userInfo)
+  console.log('添加用户信息 -----', res.toJSON())
+  // const finRes = await UserModel.findOne({
+  //   where: {
+  //     userName: 'test',
+  //   },
+  // })
+  // console.log('finRes -----', finRes.toJSON())
 }
 
 // test()

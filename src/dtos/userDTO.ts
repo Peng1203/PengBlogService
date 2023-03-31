@@ -1,5 +1,6 @@
 import {
   IsDefined,
+  IsEmail,
   IsIn,
   IsInt,
   IsNotEmpty,
@@ -7,6 +8,7 @@ import {
   IsOptional,
   IsString,
   Matches,
+  Max,
   MaxLength,
   Min,
   MinLength,
@@ -64,3 +66,42 @@ export class UserLogoutDTO {
 
 // 获取用户列表
 export class GetUserListDTO extends TableListDTO {}
+
+// 添加用户
+export class AddUserDTO {
+  @IsString()
+  @MinLength(2)
+  @MaxLength(6)
+  @IsDefined()
+  @IsNotEmpty()
+  userName: string
+
+  @IsString()
+  @IsDefined()
+  @IsNotEmpty()
+  @MinLength(6)
+  password: string
+
+  @IsInt()
+  @IsNumber()
+  @Min(1)
+  // @Max(99)
+  @IsDefined()
+  @IsNotEmpty()
+  roleId: number
+
+  @IsString()
+  @IsEmail()
+  @IsOptional()
+  email: string
+
+  @IsInt()
+  @IsNumber()
+  @Min(1)
+  @Max(3)
+  @IsOptional()
+  state: number
+
+  @IsOptional()
+  avatar: Buffer
+}
