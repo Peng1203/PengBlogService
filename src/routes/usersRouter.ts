@@ -13,4 +13,6 @@ router.post('/login', userController.userLogin)
 
 router.post('/logout', userController.userLogout)
 
+router.get('/getUserList', userController.getUserList)
+
 export default router

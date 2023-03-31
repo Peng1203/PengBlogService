@@ -1,7 +1,10 @@
 import {
+  IsDefined,
+  IsIn,
   IsInt,
   IsNotEmpty,
   IsNumber,
+  IsOptional,
   IsString,
   Matches,
   MaxLength,
@@ -10,6 +13,7 @@ import {
 } from 'class-validator'
 
 import { UUID_REGEX } from '../helpers/regex'
+import { TableListDTO } from './common/tableListDTO'
 
 // 用户登录
 export class UserLoginDTO {
@@ -57,3 +61,6 @@ export class UserLogoutDTO {
   @IsString()
   readonly token: string
 }
+
+// 获取用户列表
+export class GetUserListDTO extends TableListDTO {}

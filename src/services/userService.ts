@@ -1,3 +1,4 @@
+import { Op } from 'sequelize'
 import UserModel from '../models/userModel'
 import RoleModel from '../models/roleModel'
 import {
@@ -16,6 +17,9 @@ import {
 } from '../configs/sign'
 import { dateTimeFormat } from '..//utils/moment'
 
+import { ListResponse } from '../interfaces/Common'
+import { UserListItemInfo } from '../interfaces/User'
+
 type loginInfoType = {
   userName: string
   password: string
@@ -26,6 +30,14 @@ type setTokenType = {
   userName: string
   token: string
 }
+
+// type tableListQueryType = {
+//   page: number
+//   pageSize: number
+//   queryStr: string
+//   column?: string
+//   order?: 'ASC' | 'DESC'
+// }
 /**
  * 定义service 用户类
  */
@@ -308,8 +320,7 @@ class UserService {
    */
   public async incrLoginErrorCount(uuid: string): Promise<void> {
     try {
-      const res = await incrCounter(`errorCounter:${uuid}`, LOGIN_DISABLE_TIME)
-      console.log('res -----', res)
+      await incrCounter(`errorCounter:${uuid}`, LOGIN_DISABLE_TIME)
     } catch (e) {
       throw e
     }
@@ -348,6 +359,43 @@ class UserService {
         { where: { userName } }
       )
       return res[0] === 1 ? unsealTime : ''
+    } catch (e) {
+      throw e
+    }
+  }
+
+  /**
+   * 查询用户列表
+   * @author Peng
+   * @date 2023-03-31
+   * @param {any} params:object
+   * @returns {any}
+   */
+  public async getUserList(params: object): Promise<ListResponse> {
+    try {
+      const { page, pageSize, queryStr, column, order } = params as any
+      const { rows, count: total } = await UserModel.findAndCountAll({
+        where: {
+          [Op.or]: [
+            { id: { [Op.like]: `%${queryStr}%` } },
+            { userName: { [Op.like]: `%${queryStr}%` } },
+          ],
+        },
+        offset: (page - 1) * pageSize,
+        limit: pageSize,
+        attributes: { exclude: ['password', 'avatar'] },
+        order: [[column || 'id', order || 'ASC']],
+      })
+      const data: UserListItemInfo[] = rows.map(row => {
+        return row.toJSON()
+        // const dataRes = row.toJSON()
+        // const avatar = dataRes.avatar ? dataRes.avatar.toString('base64') : null
+        // return {
+        //   ...dataRes,
+        //   avatar,
+        // }
+      })
+      return { data, total }
     } catch (e) {
       throw e
     }

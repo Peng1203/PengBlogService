@@ -1,7 +1,7 @@
 import { Request, Response, NextFunction } from 'express'
 import moment from 'moment'
 import { FORBIDDEN_ERROR_CODE, PARAMS_ERROR_CODE } from '../helpers/errorCode'
-import { UserLoginDTO, UserLogoutDTO } from '../dtos/userDTO'
+import { GetUserListDTO, UserLoginDTO, UserLogoutDTO } from '../dtos/userDTO'
 import { validateOrRejectDTO } from '../helpers/validateParams'
 import { UUID_REGEX } from '../helpers/regex'
 import { generateToken, verifyToken } from '../utils/token'
@@ -10,6 +10,7 @@ import UserService from '../services/userService'
 import generateUUID from '../utils/uuid'
 import { LOGIN_DISABLE_TIME, MAX_TRY_ERROR_COUNT } from '../configs/sign'
 import { dateTimeFormat } from '../utils/moment'
+
 class UserController {
   private userService = new UserService()
 
@@ -268,6 +269,34 @@ class UserController {
         code: 200,
         message: 'Success',
         data: '退出登录成功!',
+      })
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  /**
+   * 获取用户列表
+   * @author Peng
+   * @date 2023-03-31
+   * @param {any} req:Request
+   * @param {any} res:Response
+   * @param {any} next:NextFunction
+   * @returns {any}
+   */
+  public getUserList = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<void> => {
+    try {
+      await validateOrRejectDTO(GetUserListDTO, req.query)
+      const { data, total } = await this.userService.getUserList(req.query)
+      res.send({
+        code: 200,
+        message: 'Success',
+        data,
+        total,
       })
     } catch (e) {
       next(e)
