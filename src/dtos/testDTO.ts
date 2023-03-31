@@ -1,5 +1,6 @@
 import { Transform } from 'class-transformer'
 import {
+  IsDefined, // 校验一个是否存储当前属性
   validate, // 校验
   validateOrReject, // 校验 不通过时抛出错误
   Contains, // 用于验证一个字符串是否包含指定的字符串
@@ -26,6 +27,10 @@ import {
   isNumber, // 判断是否为数字
   isInt, // 限制实参范围
 } from 'class-validator'
+
+// @Type(() => User)
+// @Transform(({ value }) => JSON.parse(value))
+// @ValidateNested()
 
 // 查询测试数据参数DTO
 export class GetTestListDTO {
