@@ -66,6 +66,12 @@ const UserModel = sequelize.define(
     // 用户头像
     avatar: {
       type: DataTypes.BLOB,
+      get() {
+        if (!this.getDataValue('avatar')) return null
+        return `data:image/png;base64,${this.getDataValue('avatar').toString(
+          'base64'
+        )}`
+      },
     },
     // 账户解封日期
     unsealTime: {

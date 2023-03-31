@@ -302,6 +302,42 @@ class UserController {
       next(e)
     }
   }
+
+  /**
+   * 通过ID查询用户信息
+   * @author Peng
+   * @date 2023-03-31
+   * @param {any} req:Request
+   * @param {any} res:Response
+   * @param {any} next:NextFunction
+   * @returns {any}
+   */
+  public getUserInfo = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<any> => {
+    try {
+      const queryID: number | boolean = parseInt(req.params.id) || false
+      if (!queryID)
+        throw new MyError(
+          PARAMS_ERROR_CODE,
+          'params error!',
+          '用户id参数有误!',
+          'DTO'
+        )
+
+      const data = await this.userService.findUserById(queryID)
+
+      res.send({
+        code: 200,
+        message: data ? 'Success' : 'Failed',
+        data: data ? data : '未找到相关用户信息',
+      })
+    } catch (e) {
+      next(e)
+    }
+  }
 }
 
 export default UserController

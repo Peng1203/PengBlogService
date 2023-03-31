@@ -18,7 +18,7 @@ import {
 import { dateTimeFormat } from '..//utils/moment'
 
 import { ListResponse } from '../interfaces/Common'
-import { UserListItemInfo } from '../interfaces/User'
+import { UserInfo, UserListItemInfo } from '../interfaces/User'
 
 type loginInfoType = {
   userName: string
@@ -396,6 +396,24 @@ class UserService {
         // }
       })
       return { data, total }
+    } catch (e) {
+      throw e
+    }
+  }
+
+  /**
+   * 通过ID查询用户信息
+   * @author Peng
+   * @date 2023-03-31
+   * @param {any} id:number
+   * @returns {any}
+   */
+  public async findUserById(id: number): Promise<UserInfo | null> {
+    try {
+      const findRes = await UserModel.findByPk(id, {
+        attributes: { exclude: ['password'] },
+      })
+      return findRes ? findRes.toJSON() : null
     } catch (e) {
       throw e
     }
