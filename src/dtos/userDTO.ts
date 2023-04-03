@@ -102,6 +102,6 @@ export class AddUserDTO {
   @IsOptional()
   state: number
 
-  @IsOptional()
-  avatar: Buffer
+  // @IsOptional()
+  // avatar: Buffer
 }

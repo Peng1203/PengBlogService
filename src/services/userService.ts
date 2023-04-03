@@ -19,17 +19,7 @@ import { dateTimeFormat } from '..//utils/moment'
 
 import { ListResponse } from '../interfaces/Common'
 import { UserInfo, UserListItemInfo } from '../interfaces/User'
-
-type loginInfoType = {
-  userName: string
-  password: string
-}
-
-type setTokenType = {
-  userId: number | string
-  userName: string
-  token: string
-}
+import { addUserInfoType, setTokenType, loginInfoType } from '../types/User'
 
 // type tableListQueryType = {
 //   page: number
@@ -414,6 +404,51 @@ class UserService {
         attributes: { exclude: ['password'] },
       })
       return findRes ? findRes.toJSON() : null
+    } catch (e) {
+      throw e
+    }
+  }
+
+  /**
+   * 判断新增的用户名是否已存在
+   * @author Peng
+   * @date 2023-04-03
+   * @param {any} userName:string
+   * @returns {any}
+   */
+  public async isCheckUserName(userName: string): Promise<boolean> {
+    try {
+      return !!(await UserModel.findOne({ where: { userName } }))
+    } catch (e) {
+      throw e
+    }
+  }
+
+  /**
+   * 添加用户
+   * @author Peng
+   * @date 2023-04-03
+   * @param {any} UserInfo:addUserInfoType
+   * @returns {any}
+   */
+  public async createdUser(UserInfo: addUserInfoType): Promise<boolean> {
+    try {
+      return !!(await UserModel.create(UserInfo))
+    } catch (e) {
+      throw e
+    }
+  }
+
+  /**
+   * 通过ID删除用户
+   * @author Peng
+   * @date 2023-04-03
+   * @param {any} id:number
+   * @returns {any}
+   */
+  public async deleteUserById(id: number): Promise<boolean> {
+    try {
+      return !!(await UserModel.destroy({ where: { id } }))
     } catch (e) {
       throw e
     }

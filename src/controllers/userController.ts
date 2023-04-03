@@ -324,7 +324,7 @@ class UserController {
   ): Promise<any> => {
     try {
       const queryID: number | boolean = parseInt(req.params.id) || false
-      if (!queryID)
+      if (!queryID || queryID <= 0)
         throw new MyError(
           PARAMS_ERROR_CODE,
           'params error!',
@@ -361,8 +361,56 @@ class UserController {
     try {
       await validateOrRejectDTO(AddUserDTO, req.body)
       // 判断数据库中是否有同名用户
+      const isCheck = await this.userService.isCheckUserName(req.body.userName)
+      // console.log('是否存在? -----', isCheck)
+      if (isCheck)
+        return res.send({
+          code: 200,
+          message: 'Failed',
+          data: '当前账户已存在, 请选择其他用户名!',
+        })
 
-      res.send('添加用户')
+      // 添加用户
+      const addRes = await this.userService.createdUser(req.body)
+      res.send({
+        code: 200,
+        message: addRes ? 'Success' : 'Failed',
+        data: addRes ? '添加成功!' : '添加失败!',
+      })
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  /**
+   * 通过 id 删除用户
+   * @author Peng
+   * @date 2023-04-03
+   * @param {any} req:Request
+   * @param {any} res:Response
+   * @param {any} next:NextFunction
+   * @returns {any}
+   */
+  public delUser = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<any> => {
+    try {
+      const id: number | boolean = parseInt(req.params.id) || false
+      if (!id || id <= 0)
+        throw new MyError(
+          PARAMS_ERROR_CODE,
+          'params error!',
+          '用户id参数有误!',
+          'DTO'
+        )
+      const delRes = await this.userService.deleteUserById(id)
+      res.send({
+        code: 200,
+        message: delRes ? 'Success' : 'Failed',
+        data: delRes ? '删除成功!' : '删除失败!',
+      })
     } catch (e) {
       next(e)
     }
