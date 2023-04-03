@@ -459,14 +459,31 @@ class UserService {
     }
   }
 
+  /**
+   * 更新用户信息
+   * @author Peng
+   * @date 2023-04-03
+   * @param {any} userInfo:updateUserInfoType
+   * @returns {any}
+   */
   public async updateUserInfo(userInfo: updateUserInfoType): Promise<boolean> {
     try {
-      console.log('userInfo -----', userInfo)
       const updateRes = await UserModel.update(userInfo, {
         where: { id: userInfo.id },
       })
       console.log('updateRes -----', updateRes)
       return !!updateRes[0]
+    } catch (e) {
+      throw e
+    }
+  }
+
+  public async updataUserAvaterById(id: number, fileBuffer: Buffer): Promise<boolean> {
+    try {
+      const updataRes = await UserModel.update({
+        avatar: fileBuffer
+      }, { where: { id } })
+      return !!updataRes[0]
     } catch (e) {
       throw e
     }

@@ -157,9 +157,8 @@ class UserController {
         return res.send({
           code: 200,
           message: 'Failed',
-          data: `登录错误次数已达到最大限制, 请在${
-            LOGIN_DISABLE_TIME / 60
-          }分钟后尝试`,
+          data: `登录错误次数已达到最大限制, 请在${LOGIN_DISABLE_TIME / 60
+            }分钟后尝试`,
         })
       }
 
@@ -441,15 +440,37 @@ class UserController {
     }
   }
 
+  /**
+   * 用户上传头像
+   * @author Peng
+   * @date 2023-04-04
+   * @param {any} req:Request
+   * @param {any} res:Response
+   * @param {any} next:NextFunction
+   * @returns {any}
+   */
   public uploadUserAvater = async (
     req: Request,
     res: Response,
     next: NextFunction
   ): Promise<any> => {
     try {
-      console.log('req -----', req)
-      console.log('req.file -----', req.file.buffer)
-      res.send('上传用户头像')
+      const id: number | boolean = parseInt(req.params.id) || false
+      if (!id || id <= 0)
+        throw new MyError(
+          PARAMS_ERROR_CODE,
+          'params error!',
+          '用户id参数有误!',
+          'DTO'
+        )
+      console.log('req.file -----', req.file?.buffer)
+      const fileBuffer = req.file?.buffer
+      const updateRes = await this.userService.updataUserAvaterById(id, fileBuffer)
+      res.send({
+        code: 200,
+        message: updateRes ? 'Success' : 'Failed',
+        data: updateRes ? '上传头像成功!' : '上传头像失败!',
+      })
     } catch (e) {
       next(e)
     }

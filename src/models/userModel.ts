@@ -66,8 +66,9 @@ const UserModel = sequelize.define(
     },
     // 用户头像
     avatar: {
-      type: DataTypes.BLOB,
+      type: DataTypes.BLOB('long'),
       defaultValue: null,
+      allowNull: true,
       get() {
         if (!this.getDataValue('avatar')) return null
         return `data:image/png;base64,${this.getDataValue('avatar').toString(
