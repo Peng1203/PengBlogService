@@ -440,6 +440,20 @@ class UserController {
       next(e)
     }
   }
+
+  public uploadUserAvater = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<any> => {
+    try {
+      console.log('req -----', req)
+      console.log('req.file -----', req.file.buffer)
+      res.send('上传用户头像')
+    } catch (e) {
+      next(e)
+    }
+  }
 }
 
 export default UserController
