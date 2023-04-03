@@ -19,7 +19,12 @@ import { dateTimeFormat } from '..//utils/moment'
 
 import { ListResponse } from '../interfaces/Common'
 import { UserInfo, UserListItemInfo } from '../interfaces/User'
-import { addUserInfoType, setTokenType, loginInfoType } from '../types/User'
+import {
+  addUserInfoType,
+  setTokenType,
+  loginInfoType,
+  updateUserInfoType,
+} from '../types/User'
 
 // type tableListQueryType = {
 //   page: number
@@ -449,6 +454,19 @@ class UserService {
   public async deleteUserById(id: number): Promise<boolean> {
     try {
       return !!(await UserModel.destroy({ where: { id } }))
+    } catch (e) {
+      throw e
+    }
+  }
+
+  public async updateUserInfo(userInfo: updateUserInfoType): Promise<boolean> {
+    try {
+      console.log('userInfo -----', userInfo)
+      const updateRes = await UserModel.update(userInfo, {
+        where: { id: userInfo.id },
+      })
+      console.log('updateRes -----', updateRes)
+      return !!updateRes[0]
     } catch (e) {
       throw e
     }

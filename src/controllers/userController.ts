@@ -4,6 +4,7 @@ import { FORBIDDEN_ERROR_CODE, PARAMS_ERROR_CODE } from '../helpers/errorCode'
 import {
   AddUserDTO,
   GetUserListDTO,
+  UpdateUserDTO,
   UserLoginDTO,
   UserLogoutDTO,
 } from '../dtos/userDTO'
@@ -410,6 +411,30 @@ class UserController {
         code: 200,
         message: delRes ? 'Success' : 'Failed',
         data: delRes ? '删除成功!' : '删除失败!',
+      })
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  /**
+   * 通过 id 更新用户信息
+   * @author Peng
+   * @date 2023-04-03
+   * @returns {any}
+   */
+  public updateUserInfo = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<any> => {
+    try {
+      await validateOrRejectDTO(UpdateUserDTO, req.body)
+      const updataRes = await this.userService.updateUserInfo(req.body)
+      res.send({
+        code: 200,
+        message: updataRes ? 'Success' : 'Failed',
+        data: updataRes ? '更新成功!' : '更新失败!',
       })
     } catch (e) {
       next(e)

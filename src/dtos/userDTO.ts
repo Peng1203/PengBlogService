@@ -1,4 +1,5 @@
 import {
+  IsDate,
   IsDefined,
   IsEmail,
   IsIn,
@@ -14,7 +15,7 @@ import {
   MinLength,
 } from 'class-validator'
 
-import { UUID_REGEX } from '../helpers/regex'
+import { DATE_TIME_REGEX, UUID_REGEX } from '../helpers/regex'
 import { TableListDTO } from './common/tableListDTO'
 
 // 用户登录
@@ -104,4 +105,52 @@ export class AddUserDTO {
 
   // @IsOptional()
   // avatar: Buffer
+}
+
+// 更新用户信息
+export class UpdateUserDTO {
+  @Min(1)
+  @IsInt()
+  @IsNumber()
+  @IsNotEmpty()
+  readonly id: number
+
+  @IsString()
+  @MinLength(2)
+  @MaxLength(6)
+  @IsOptional()
+  readonly userName: string
+
+  @Min(1)
+  @IsInt()
+  @IsNumber()
+  @IsOptional()
+  readonly roleId: number
+
+  @IsString()
+  @MinLength(10)
+  @IsEmail()
+  @IsOptional()
+  readonly email: string
+
+  @Min(1)
+  @IsInt()
+  @IsNumber()
+  @IsOptional()
+  readonly state: number
+
+  @IsString()
+  @Matches(DATE_TIME_REGEX, { message: '日期格式有误!' })
+  @IsOptional()
+  readonly createdTime: string
+
+  @IsString()
+  @Matches(DATE_TIME_REGEX, { message: '日期格式有误!' })
+  @IsOptional()
+  readonly updateTime: string
+
+  @IsString()
+  @Matches(DATE_TIME_REGEX, { message: '日期格式有误!' })
+  @IsOptional()
+  readonly unsealTime: string
 }
