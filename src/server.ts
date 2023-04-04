@@ -9,6 +9,7 @@ import _env from './utils/environment'
 import indexRouter from './routes/indexRouter'
 import testRouter from './routes/testRouter'
 import usersRouter from './routes/usersRouter'
+import roleRouter from './routes/roleRouter'
 import notFoundMiddleware from './middlewares/404Middleware'
 import errorHandler from './middlewares/errorHandler'
 import convertNumber from './middlewares/convertNumber'
@@ -45,6 +46,7 @@ app.use(authMiddleware)
 app.use('/index', indexRouter)
 app.use('/test', testRouter)
 app.use('/user', usersRouter)
+app.use('/role', roleRouter)
 
 // 404中间件
 app.use(notFoundMiddleware)
