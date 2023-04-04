@@ -154,3 +154,36 @@ export class UpdateUserDTO {
   @IsOptional()
   readonly unsealTime: string
 }
+
+// 上传头像
+export class UploadUserAvatarDTO {}
+
+// 修改密码
+export class ChangePwdDTO {
+  @Min(1)
+  @IsInt()
+  @IsNumber()
+  @IsNotEmpty()
+  readonly id: number
+
+  @IsString()
+  @MinLength(2)
+  @MaxLength(6)
+  @IsNotEmpty()
+  readonly userName: string
+
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(6)
+  readonly oldPassword: string
+
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(6)
+  readonly newPassword: string
+
+  @IsString()
+  @IsNotEmpty()
+  @MinLength(6)
+  readonly confirmNewPassword: string
+}

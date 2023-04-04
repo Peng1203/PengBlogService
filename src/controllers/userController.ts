@@ -3,6 +3,7 @@ import moment from 'moment'
 import { FORBIDDEN_ERROR_CODE, PARAMS_ERROR_CODE } from '../helpers/errorCode'
 import {
   AddUserDTO,
+  ChangePwdDTO,
   GetUserListDTO,
   UpdateUserDTO,
   UserLoginDTO,
@@ -130,13 +131,13 @@ class UserController {
 
       const { userName, password, captcha, uuid } = req.body
       // 验证码 校验该账号是否通过验证码
-      const isPass = await this.userService.checkUserLoginCaptcha(uuid, captcha)
-      if (!isPass)
-        return res.send({
-          code: 200,
-          message: 'Failed',
-          data: '验证码有误或已过期!',
-        })
+      // const isPass = await this.userService.checkUserLoginCaptcha(uuid, captcha)
+      // if (!isPass)
+      //   return res.send({
+      //     code: 200,
+      //     message: 'Failed',
+      //     data: '验证码有误或已过期!',
+      //   })
 
       // 查询 用户是否在数据库中
       const isUserExist = await this.userService.findUserByUsername(userName)
@@ -157,8 +158,9 @@ class UserController {
         return res.send({
           code: 200,
           message: 'Failed',
-          data: `登录错误次数已达到最大限制, 请在${LOGIN_DISABLE_TIME / 60
-            }分钟后尝试`,
+          data: `登录错误次数已达到最大限制, 请在${
+            LOGIN_DISABLE_TIME / 60
+          }分钟后尝试`,
         })
       }
 
@@ -428,7 +430,18 @@ class UserController {
     next: NextFunction
   ): Promise<any> => {
     try {
-      await validateOrRejectDTO(UpdateUserDTO, req.body)
+      const params = { id: req.params.id, ...req.body }
+      console.log('params -----', params)
+      await validateOrRejectDTO(UpdateUserDTO, params)
+
+      const data = await this.userService.findUserById(params.id)
+      if (!data)
+        return res.send({
+          code: 200,
+          message: 'Failed',
+          data: '更新失败!未找到相关用户',
+        })
+
       const updataRes = await this.userService.updateUserInfo(req.body)
       res.send({
         code: 200,
@@ -455,6 +468,7 @@ class UserController {
     next: NextFunction
   ): Promise<any> => {
     try {
+      console.log('req.file -----', req.file)
       const id: number | boolean = parseInt(req.params.id) || false
       if (!id || id <= 0)
         throw new MyError(
@@ -463,13 +477,87 @@ class UserController {
           '用户id参数有误!',
           'DTO'
         )
-      console.log('req.file -----', req.file?.buffer)
       const fileBuffer = req.file?.buffer
-      const updateRes = await this.userService.updataUserAvaterById(id, fileBuffer)
+      const updateRes = await this.userService.updataUserAvaterById(
+        id,
+        fileBuffer
+      )
       res.send({
         code: 200,
         message: updateRes ? 'Success' : 'Failed',
         data: updateRes ? '上传头像成功!' : '上传头像失败!',
+      })
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  public changePassword = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<any> => {
+    try {
+      // 校验token签名中的 userName 与 ID 和传递id和name是否符合 待
+      const uid: number | boolean = parseInt(req.params.id) || false
+      if (!uid || uid <= 0)
+        throw new MyError(
+          PARAMS_ERROR_CODE,
+          'params error!',
+          '用户id参数有误!',
+          'DTO'
+        )
+      const params = { id: uid, ...req.body }
+      await validateOrRejectDTO(ChangePwdDTO, params)
+
+      const data = await this.userService.findUserById(params.id)
+      if (!data)
+        return res.send({
+          code: 200,
+          message: 'Failed',
+          data: '未找到相关用户',
+        })
+
+      const { id, userName, oldPassword, newPassword, confirmNewPassword } =
+        params
+      // 判断输入的旧密码是否正确
+      const isHave = await this.userService.findUserByIdAndUserNameAndPwd(
+        id,
+        userName,
+        oldPassword
+      )
+      if (!isHave)
+        return res.send({
+          code: 200,
+          message: 'Failed',
+          data: '修改用户信息不匹配或旧密码有误',
+        })
+
+      // 判断2次输入的新密码是否一致
+      if (newPassword !== confirmNewPassword)
+        return res.send({
+          code: 200,
+          message: 'Failed',
+          data: '两次密码输入不一致!',
+        })
+
+      // 判断新密码是否与旧密码相等
+      if (oldPassword === newPassword)
+        return res.send({
+          code: 200,
+          message: 'Failed',
+          data: '新密码和旧密码一致!',
+        })
+
+      // 执行修改密码操作
+      const updateRes = await this.userService.updateUserPwdById(
+        id,
+        newPassword
+      )
+      res.send({
+        code: 200,
+        message: updateRes ? 'Success' : 'Failed',
+        data: updateRes ? '修改密码成功!' : '修改密码失败!',
       })
     } catch (e) {
       next(e)

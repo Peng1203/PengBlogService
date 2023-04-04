@@ -27,5 +27,8 @@ export const uploadToDisk = multer({ storage: storageToDisk })
 // 使用内存暂存文件
 const storageToRAM = multer.memoryStorage()
 // 上传文件暂存到内存中 用于获取buffer 并存储到数据库中 当调用 req.file.buffer 则释放内存中的文件
-export const uploadToRAM = multer({ storage: storageToRAM })
+export const uploadToRAM = multer({
+  storage: storageToRAM,
+  limits: { fileSize: 1024 * 1024 * 4 }
+})
 // 调用 uploadToRAM.single('file')

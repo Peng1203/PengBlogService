@@ -28,11 +28,12 @@ function convertNumber(req: Request, res: Response, next: NextFunction): void {
     'page',
     'pageSize',
   ]
-  const { query, body } = req
+  const { query, body, params } = req
 
   // console.log('body前', JSON.parse(JSON.stringify(body)))
   if (Object.keys(query)) handleParamsType(query, convertProps)
   if (Object.keys(body)) handleParamsType(body, convertProps)
+  if (Object.keys(params)) handleParamsType(params, convertProps)
   // console.log('body后', JSON.parse(JSON.stringify(body)))
 
   next()

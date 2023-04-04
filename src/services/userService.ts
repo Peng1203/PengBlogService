@@ -478,11 +478,68 @@ class UserService {
     }
   }
 
-  public async updataUserAvaterById(id: number, fileBuffer: Buffer): Promise<boolean> {
+  /**
+   * 通过 id 更新用户头像
+   * @author Peng
+   * @date 2023-04-04
+   * @param {any} id:number
+   * @param {any} fileBuffer:Buffer
+   * @returns {any}
+   */
+  public async updataUserAvaterById(
+    id: number,
+    fileBuffer: Buffer
+  ): Promise<boolean> {
     try {
-      const updataRes = await UserModel.update({
-        avatar: fileBuffer
-      }, { where: { id } })
+      const updataRes = await UserModel.update(
+        {
+          avatar: fileBuffer,
+        },
+        { where: { id } }
+      )
+      return !!updataRes[0]
+    } catch (e) {
+      throw e
+    }
+  }
+
+  /**
+   * 通过ID 用户名 密码 校验 是否存在
+   * @author Peng
+   * @date 2023-04-04
+   * @param {any} id:number
+   * @param {any} userName:string
+   * @param {any} password:string
+   * @returns {any}
+   */
+  public async findUserByIdAndUserNameAndPwd(
+    id: number,
+    userName: string,
+    password: string
+  ): Promise<boolean> {
+    try {
+      return !!(await UserModel.findOne({
+        where: { id, userName, password },
+      }))
+    } catch (e) {
+      throw e
+    }
+  }
+
+  /**
+   * 通过id修改用户密码
+   * @author Peng
+   * @date 2023-04-04
+   * @param {any} id:number
+   * @param {any} password:string
+   * @returns {any}
+   */
+  public async updateUserPwdById(
+    id: number,
+    password: string
+  ): Promise<boolean> {
+    try {
+      const updataRes = await UserModel.update({ password }, { where: { id } })
       return !!updataRes[0]
     } catch (e) {
       throw e

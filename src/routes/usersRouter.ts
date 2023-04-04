@@ -26,4 +26,6 @@ router.put('/updateUserInfoById/:id', userController.updateUserInfo)
 
 router.patch('/uploadAvatarById/:id', uploadToRAM.single('file'), userController.uploadUserAvater)
 
+router.post('/changePasswordById/:id', userController.changePassword)
+
 export default router
