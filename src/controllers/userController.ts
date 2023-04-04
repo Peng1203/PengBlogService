@@ -492,6 +492,15 @@ class UserController {
     }
   }
 
+  /**
+   * 修改密码
+   * @author Peng
+   * @date 2023-04-04
+   * @param {any} req:Request
+   * @param {any} res:Response
+   * @param {any} next:NextFunction
+   * @returns {any}
+   */
   public changePassword = async (
     req: Request,
     res: Response,
