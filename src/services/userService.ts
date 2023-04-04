@@ -471,7 +471,6 @@ class UserService {
       const updateRes = await UserModel.update(userInfo, {
         where: { id: userInfo.id },
       })
-      console.log('updateRes -----', updateRes)
       return !!updateRes[0]
     } catch (e) {
       throw e
