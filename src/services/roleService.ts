@@ -39,6 +39,13 @@ class RoleService {
     }
   }
 
+  /**
+   * 添加角色 判断是否存在当前角色 不存在则创建
+   * @author Peng
+   * @date 2023-04-05
+   * @param {any} params:AddRoleType
+   * @returns {any}
+   */
   async createdRole(params: AddRoleType): Promise<boolean> {
     try {
       // 判断角色是否已经存在 isCreated根据是否创建 返回布尔类型 创建则返回true 未创建则返回false
@@ -48,6 +55,14 @@ class RoleService {
       })
       // console.log('result -----', result.toJSON())
       return isCreated
+    } catch (e) {
+      throw e
+    }
+  }
+
+  async deleteRoleById(id: number): Promise<boolean> {
+    try {
+      return !!(await RoleModel.destroy({ where: { id } }))
     } catch (e) {
       throw e
     }

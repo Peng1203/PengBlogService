@@ -9,4 +9,6 @@ router.get('/getRoleList', roleController.getRoleList)
 
 router.post('/addRole', roleController.addRole)
 
+router.delete('/deleteRoleById/:id', roleController.delRole)
+
 export default router
