@@ -12,7 +12,7 @@ import usersRouter from './routes/usersRouter'
 import roleRouter from './routes/roleRouter'
 import notFoundMiddleware from './middlewares/404Middleware'
 import errorHandler from './middlewares/errorHandler'
-import convertNumber from './middlewares/convertNumber'
+import handleParamsType from './middlewares/handleParamsType'
 import authMiddleware from './middlewares/authMiddleware'
 import setHeader from './middlewares/defaultHeader'
 import taskManager from './tasks'
@@ -38,8 +38,8 @@ app.use(_logger)
 app.use(_moment)
 // 将环境变量 设置到 res 响应对象上
 app.use(_env)
-// 数字字符串转换为Number 类型中间件
-app.use(convertNumber)
+// 处理解析过后的参数类型 中间件
+app.use(handleParamsType)
 
 app.use(authMiddleware)
 // 定义路由

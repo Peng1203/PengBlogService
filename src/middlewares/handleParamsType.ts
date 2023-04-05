@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
+import { JSON_REGEX } from '../helpers/regex'
 
 /**
  * 数字字符串转换为Number
@@ -14,11 +15,20 @@ import { Request, Response, NextFunction } from 'express'
 // 处理类型
 function handleParamsType(obj: Object, convertProps: Array<string>): void {
   for (const key in obj) {
-    convertProps.includes(key) && (obj[key] = Number(obj[key]))
+    //
+    // 处理指定字段 暂时不用 如果密码全为数组的情况 则会被转换
+    // if (Number(obj[key])) obj[key] = Number(obj[key])
+    if (convertProps.includes(key)) obj[key] = Number(obj[key])
+    // 判断当前数组是否是JSON字符串 为JSON字符串时则 转化为原本数据类型
+    else if (JSON_REGEX.test(obj[key])) obj[key] = JSON.parse(obj[key])
   }
 }
 
-function convertNumber(req: Request, res: Response, next: NextFunction): void {
+function handleParseRequestParams(
+  req: Request,
+  res: Response,
+  next: NextFunction
+): void {
   // 需要转换为数值类型的属性名称列表
   const convertProps: string[] = [
     'id',
@@ -31,12 +41,12 @@ function convertNumber(req: Request, res: Response, next: NextFunction): void {
   const { query, body, params } = req
 
   // console.log('body前', JSON.parse(JSON.stringify(body)))
-  if (Object.keys(query)) handleParamsType(query, convertProps)
-  if (Object.keys(body)) handleParamsType(body, convertProps)
-  if (Object.keys(params)) handleParamsType(params, convertProps)
+  if (Object.keys(query).length) handleParamsType(query, convertProps)
+  if (Object.keys(body).length) handleParamsType(body, convertProps)
+  if (Object.keys(params).length) handleParamsType(params, convertProps)
   // console.log('body后', JSON.parse(JSON.stringify(body)))
 
   next()
 }
 
-export default convertNumber
+export default handleParseRequestParams
