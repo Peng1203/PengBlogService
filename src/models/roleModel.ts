@@ -24,17 +24,18 @@ const RoleModel = sequelize.define(
     roleDesc: {
       field: 'role_desc',
       type: DataTypes.CHAR,
+      defaultValue: '',
     },
     // 菜单标识数组
     menus: {
       type: DataTypes.JSON,
-      defaultValue: () => []
+      defaultValue: () => [],
     },
     // 操作权限标识数组
     operationPermissions: {
       field: 'auth_permissions',
       type: DataTypes.JSON,
-      defaultValue: () => []
+      defaultValue: () => [],
     },
     createdTime: {
       field: 'created_time',

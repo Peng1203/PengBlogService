@@ -7,4 +7,6 @@ const roleController = new RoleController()
 
 router.get('/getRoleList', roleController.getRoleList)
 
+router.post('/addRole', roleController.addRole)
+
 export default router

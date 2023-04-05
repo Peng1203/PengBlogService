@@ -2,6 +2,7 @@ import RoleModel from '../models/roleModel'
 import { RoleListItemInfo } from '../interfaces/Role'
 import { Op } from 'sequelize'
 import { ListResponse } from '../interfaces/Common'
+import { AddRoleType } from '../types/Role'
 
 /**
  * 定义service 角色类
@@ -33,6 +34,20 @@ class RoleService {
       console.log('data -----', data)
       console.log('total -----', total)
       return { data, total }
+    } catch (e) {
+      throw e
+    }
+  }
+
+  async createdRole(params: AddRoleType): Promise<boolean> {
+    try {
+      // 判断角色是否已经存在 isCreated根据是否创建 返回布尔类型 创建则返回true 未创建则返回false
+      const [result, isCreated] = await RoleModel.findOrCreate({
+        where: { roleName: (<{ roleName: string }>params).roleName },
+        defaults: params,
+      })
+      // console.log('result -----', result.toJSON())
+      return isCreated
     } catch (e) {
       throw e
     }
