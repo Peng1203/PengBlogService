@@ -468,7 +468,7 @@ class UserController {
     next: NextFunction
   ): Promise<any> => {
     try {
-      console.log('req.file -----', req.file)
+      const { file } = req as any
       const id: number | boolean = parseInt(req.params.id) || false
       if (!id || id <= 0)
         throw new MyError(
@@ -477,7 +477,7 @@ class UserController {
           '用户id参数有误!',
           'DTO'
         )
-      const fileBuffer = req.file?.buffer
+      const fileBuffer = file.buffer
       const updateRes = await this.userService.updataUserAvaterById(
         id,
         fileBuffer

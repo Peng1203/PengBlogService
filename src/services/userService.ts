@@ -298,7 +298,7 @@ class UserService {
    * @param {any} uuid:string
    * @returns {any}
    */
-  public async getLoginErrorCount(uuid: string): Promise<number> {
+  public async getLoginErrorCount(uuid: string): Promise<number | null> {
     try {
       return await getCache(`errorCounter:${uuid}`)
     } catch (e) {
