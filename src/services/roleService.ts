@@ -40,6 +40,21 @@ class RoleService {
   }
 
   /**
+   * 通过ID查询 角色是否存在
+   * @author Peng
+   * @date 2023-04-05
+   * @param {any} id:number
+   * @returns {any}
+   */
+  async findRoelById(id: number): Promise<boolean> {
+    try {
+      return !!(await RoleModel.findByPk(id))
+    } catch (e) {
+      throw e
+    }
+  }
+
+  /**
    * 添加角色 判断是否存在当前角色 不存在则创建
    * @author Peng
    * @date 2023-04-05
@@ -60,9 +75,33 @@ class RoleService {
     }
   }
 
+  /**
+   * 通过角色ID 删除角色
+   * @author Peng
+   * @date 2023-04-05
+   * @param {any} id:number
+   * @returns {any}
+   */
   async deleteRoleById(id: number): Promise<boolean> {
     try {
       return !!(await RoleModel.destroy({ where: { id } }))
+    } catch (e) {
+      throw e
+    }
+  }
+
+  /**
+   * 通过角色ID 更新角色信息
+   * @author Peng
+   * @date 2023-04-05
+   * @param {any} id:number
+   * @param {any} params:Object
+   * @returns {any}
+   */
+  async updateRoleInfoById(id: number, params: Object): Promise<boolean> {
+    try {
+      const updateRes = await RoleModel.update(params, { where: { id } })
+      return !!updateRes[0]
     } catch (e) {
       throw e
     }
