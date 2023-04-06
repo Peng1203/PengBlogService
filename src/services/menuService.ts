@@ -8,6 +8,13 @@ import { ListParamsType } from '../types/Common'
  * 定义service 菜单类
  */
 class MenuService {
+  /**
+   * 查询菜单列表
+   * @author Peng
+   * @date 2023-04-06
+   * @param {any} params:ListParamsType
+   * @returns {any}
+   */
   async findMenuList(params: ListParamsType): Promise<ListResponse> {
     try {
       const { page, pageSize, queryStr, column, order } = params
