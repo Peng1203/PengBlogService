@@ -31,8 +31,6 @@ class RoleService {
         order: [[column || 'id', order || 'ASC']],
       })
       const data: RoleListItemInfo[] = rows.map(row => row.toJSON())
-      console.log('data -----', data)
-      console.log('total -----', total)
       return { data, total }
     } catch (e) {
       throw e
