@@ -10,6 +10,7 @@ import indexRouter from './routes/indexRouter'
 import testRouter from './routes/testRouter'
 import usersRouter from './routes/usersRouter'
 import roleRouter from './routes/roleRouter'
+import menuRouter from './routes/menuRouter'
 import notFoundMiddleware from './middlewares/404Middleware'
 import errorHandler from './middlewares/errorHandler'
 import handleParamsType from './middlewares/handleParamsType'
@@ -47,6 +48,7 @@ app.use('/index', indexRouter)
 app.use('/test', testRouter)
 app.use('/user', usersRouter)
 app.use('/role', roleRouter)
+app.use('/menu', menuRouter)
 
 // 404中间件
 app.use(notFoundMiddleware)
