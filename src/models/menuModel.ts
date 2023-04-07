@@ -16,6 +16,7 @@ const MenuModel = sequelize.define(
       type: DataTypes.CHAR,
       allowNull: false,
     },
+    // 用于保存前端定义的 路由访问路径
     menuPath: {
       field: 'menu_path',
       type: DataTypes.CHAR,

@@ -37,6 +37,7 @@ function handleParseRequestParams(
     'count',
     'page',
     'pageSize',
+    'parentId',
   ]
   const { query, body, params } = req
 

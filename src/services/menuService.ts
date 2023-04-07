@@ -35,6 +35,28 @@ class MenuService {
       throw e
     }
   }
+
+  /**
+   * 查询数据库并创建菜单
+   * @author Peng
+   * @date 2023-04-07
+   * @param {any} menusInfo:any
+   * @returns {any}
+   */
+  async createdMenu(menusInfo: any): Promise<boolean> {
+    try {
+      const { menuName, menuURI } = menusInfo
+      const [result, isCreated] = await MenuModel.findOrCreate({
+        where: {
+          [Op.or]: [{ menuName }, { menuURI }],
+        },
+        defaults: menusInfo,
+      })
+      return isCreated
+    } catch (e) {
+      throw e
+    }
+  }
 }
 
 export default MenuService
