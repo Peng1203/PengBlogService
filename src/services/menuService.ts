@@ -87,6 +87,22 @@ class MenuService {
       throw e
     }
   }
+
+  /**
+   * 通过ID更新菜单信息
+   * @author Peng
+   * @date 2023-04-08
+   * @param {any} id:number
+   * @returns {any}
+   */
+  async updateMenuById(id: number, params: any): Promise<boolean> {
+    try {
+      const updateRes = await MenuModel.update(params, { where: { id } })
+      return !!updateRes[0]
+    } catch (e) {
+      throw e
+    }
+  }
 }
 
 export default MenuService

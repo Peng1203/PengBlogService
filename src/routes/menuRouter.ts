@@ -11,4 +11,6 @@ router.post('/addMenu', menuController.addMenu)
 
 router.delete('/deleteMenuById/:id', menuController.delMenu)
 
+router.put('/updateMenuById/:id', menuController.updateMenu)
+
 export default router
