@@ -11,6 +11,7 @@ import testRouter from './routes/testRouter'
 import usersRouter from './routes/usersRouter'
 import roleRouter from './routes/roleRouter'
 import menuRouter from './routes/menuRouter'
+import authPermissionRouter from './routes/authPermissionRouter'
 import notFoundMiddleware from './middlewares/404Middleware'
 import errorHandler from './middlewares/errorHandler'
 import handleParamsType from './middlewares/handleParamsType'
@@ -49,6 +50,7 @@ app.use('/test', testRouter)
 app.use('/user', usersRouter)
 app.use('/role', roleRouter)
 app.use('/menu', menuRouter)
+app.use('/auth-permission', authPermissionRouter)
 
 // 404中间件
 app.use(notFoundMiddleware)
