@@ -57,6 +57,36 @@ class MenuService {
       throw e
     }
   }
+
+  /**
+   * 根据ID查询菜单信息
+   * @author Peng
+   * @date 2023-04-08
+   * @param {any} id:number
+   * @returns {any}
+   */
+  async findMenuById(id: number): Promise<boolean> {
+    try {
+      return !!(await MenuModel.findByPk(id))
+    } catch (e) {
+      throw e
+    }
+  }
+
+  /**
+   * 通过ID删除菜单
+   * @author Peng
+   * @date 2023-04-08
+   * @param {any} id:number
+   * @returns {any}
+   */
+  async deleteMenuById(id: number): Promise<boolean> {
+    try {
+      return !!(await MenuModel.destroy({ where: { id } }))
+    } catch (e) {
+      throw e
+    }
+  }
 }
 
 export default MenuService
