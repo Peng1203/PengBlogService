@@ -11,4 +11,9 @@ router.post('/addAuthPermission', authPerController.addAuthPermission)
 
 router.delete('/deleteAuthPermById/:id', authPerController.delAuthPermission)
 
+router.put(
+  '/updateAuthPermInfoById/:id',
+  authPerController.updateAuthPermissionInfo
+)
+
 export default router

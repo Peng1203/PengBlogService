@@ -87,6 +87,17 @@ class AuthPermissionService {
       throw e
     }
   }
+
+  async updateAuthPermissionById(id: number, params: any): Promise<boolean> {
+    try {
+      const updateRes = await AuthPermissionModel.update(params, {
+        where: { id },
+      })
+      return !!updateRes[0]
+    } catch (e) {
+      throw e
+    }
+  }
 }
 
 export default AuthPermissionService
