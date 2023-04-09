@@ -57,6 +57,36 @@ class AuthPermissionService {
       throw e
     }
   }
+
+  /**
+   * 通过ID查询权限标识是否存在
+   * @author Peng
+   * @date 2023-04-09
+   * @param {any} id:number
+   * @returns {any}
+   */
+  async findAuthPermissionById(id: number): Promise<boolean> {
+    try {
+      return !!(await AuthPermissionModel.findByPk(id))
+    } catch (e) {
+      throw e
+    }
+  }
+
+  /**
+   * 通过ID删除权限标识
+   * @author Peng
+   * @date 2023-04-09
+   * @param {any} id:number
+   * @returns {any}
+   */
+  async deleteAuthPermissionById(id: number): Promise<boolean> {
+    try {
+      return !!(await AuthPermissionModel.destroy({ where: { id } }))
+    } catch (e) {
+      throw e
+    }
+  }
 }
 
 export default AuthPermissionService
