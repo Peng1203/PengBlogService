@@ -7,4 +7,6 @@ const authPerController = new AuthPermissionController()
 
 router.get('/getAuthPermissionList', authPerController.getAuthPermissionList)
 
+router.post('/addAuthPermission', authPerController.addAuthPermission)
+
 export default router

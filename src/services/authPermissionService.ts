@@ -35,6 +35,28 @@ class AuthPermissionService {
       throw e
     }
   }
+
+  /**
+   * 创建权限标识 当存在时取消创建操作
+   * @author Peng
+   * @date 2023-04-09
+   * @param {any} params:any
+   * @returns {any}
+   */
+  async createdAuthPermission(params: any): Promise<boolean> {
+    try {
+      const { permissionName, permissionCode } = params
+      const [result, isCreated] = await AuthPermissionModel.findOrCreate({
+        where: {
+          [Op.or]: [{ permissionName }, { permissionCode }],
+        },
+        defaults: params,
+      })
+      return isCreated
+    } catch (e) {
+      throw e
+    }
+  }
 }
 
 export default AuthPermissionService
