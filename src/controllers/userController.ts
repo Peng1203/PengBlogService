@@ -158,9 +158,8 @@ class UserController {
         return res.send({
           code: 200,
           message: 'Failed',
-          data: `登录错误次数已达到最大限制, 请在${
-            LOGIN_DISABLE_TIME / 60
-          }分钟后尝试`,
+          data: `登录错误次数已达到最大限制, 请在${LOGIN_DISABLE_TIME / 60
+            }分钟后尝试`,
         })
       }
 
@@ -251,26 +250,26 @@ class UserController {
     try {
       await validateOrRejectDTO(UserLogoutDTO, req.body)
       // 将退出登录的用户 清除在redis中的数据 并把生成的token 放入黑名单
-      const { id, userName, token } = req.body
-      const tokenUserInfo = await verifyToken(token)
+      const { id, userName } = req.body
+      // const tokenUserInfo = await verifyToken(token)
 
       // 防止恶意修改提交参数 达到越权操作
-      if (tokenUserInfo.userName !== userName)
-        throw new MyError(
-          FORBIDDEN_ERROR_CODE,
-          '越权操作!',
-          '权限签名用户与操作用户不匹配!',
-          'noAuth'
-        )
-      // 查询数据库 判断 用户id 和 用户名是否匹配
-      const isMatch = await this.userService.userInfoIsMatch(id, userName)
-      if (!isMatch)
-        throw new MyError(
-          FORBIDDEN_ERROR_CODE,
-          '越权操作!',
-          '操作用户信息不匹配!',
-          'noAuth'
-        )
+      // if (tokenUserInfo.userName !== userName)
+      //   throw new MyError(
+      //     FORBIDDEN_ERROR_CODE,
+      //     '越权操作!',
+      //     '权限签名用户与操作用户不匹配!',
+      //     'noAuth'
+      //   )
+      // // 查询数据库 判断 用户id 和 用户名是否匹配
+      // const isMatch = await this.userService.userInfoIsMatch(id, userName)
+      // if (!isMatch)
+      //   throw new MyError(
+      //     FORBIDDEN_ERROR_CODE,
+      //     '越权操作!',
+      //     '操作用户信息不匹配!',
+      //     'noAuth'
+      //   )
       await this.userService.setOldTokenToTokenBlackList(id, userName)
       res.send({
         code: 200,

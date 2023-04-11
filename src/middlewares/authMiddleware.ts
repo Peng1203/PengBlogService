@@ -42,7 +42,6 @@ async function authMiddleware(
     //   req['tokenUserInfo'] = isValidate
     //   return next()
     // }
-
     if (isNoAuthRequest) return next()
     // 签名验证token 是否 合法
     const isValidate = await verifyToken(token)

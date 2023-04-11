@@ -60,13 +60,13 @@ export class UserLogoutDTO {
   @MaxLength(6)
   readonly userName: string
 
-  @IsNotEmpty()
-  @IsString()
-  readonly token: string
+  // @IsNotEmpty()
+  // @IsString()
+  // readonly token: string
 }
 
 // 获取用户列表
-export class GetUserListDTO extends TableListDTO {}
+export class GetUserListDTO extends TableListDTO { }
 
 // 添加用户
 export class AddUserDTO {
@@ -156,7 +156,7 @@ export class UpdateUserDTO {
 }
 
 // 上传头像
-export class UploadUserAvatarDTO {}
+export class UploadUserAvatarDTO { }
 
 // 修改密码
 export class ChangePwdDTO {
