@@ -406,6 +406,11 @@ class UserController {
           '用户id参数有误!',
           'DTO'
         )
+      if (id === 1) return res.send({
+        code: 200,
+        message: 'Failed',
+        data: 'admin账户不允删除!',
+      })
       const delRes = await this.userService.deleteUserById(id)
       res.send({
         code: 200,
@@ -429,11 +434,16 @@ class UserController {
     next: NextFunction
   ): Promise<any> => {
     try {
-      const params = { id: req.params.id, ...req.body }
-      console.log('params -----', params)
+      const id = req.params.id as unknown as number
+      const params = req.body
+      if (id === 1) return res.send({
+        code: 200,
+        message: 'Failed',
+        data: 'admin账户不允许修改!',
+      })
       await validateOrRejectDTO(UpdateUserDTO, params)
 
-      const data = await this.userService.findUserById(params.id)
+      const data = await this.userService.findUserById(id)
       if (!data)
         return res.send({
           code: 200,
@@ -441,7 +451,7 @@ class UserController {
           data: '更新失败!未找到相关用户',
         })
 
-      const updataRes = await this.userService.updateUserInfo(req.body)
+      const updataRes = await this.userService.updateUserInfo(id, req.body)
       res.send({
         code: 200,
         message: updataRes ? 'Success' : 'Failed',

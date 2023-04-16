@@ -34,13 +34,13 @@ const UserModel = sequelize.define(
     email: {
       type: DataTypes.CHAR,
     },
-    // 用户状态 1正常 2锁定 3封禁
+    // 用户状态 0禁用 1正常 
     state: {
       type: DataTypes.INTEGER,
       defaultValue: 1,
       validate: {
-        min: 1,
-        max: 3,
+        min: 0,
+        max: 1,
       },
     },
     createdTime: {
@@ -91,6 +91,12 @@ const UserModel = sequelize.define(
   {
     tableName: 'user',
     timestamps: false,
+    // hooks: {
+    //   beforeUpdate: (instance: any) => {
+    //     // instance.updateTime = Sequelize.literal('CURRENT_TIMESTAMP')
+    //     instance.updateTime = new Date()
+    //   },
+    // },
   }
 )
 

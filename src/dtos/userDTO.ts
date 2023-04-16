@@ -2,6 +2,7 @@ import {
   IsDate,
   IsDefined,
   IsEmail,
+  IsEmpty,
   IsIn,
   IsInt,
   IsNotEmpty,
@@ -13,6 +14,7 @@ import {
   MaxLength,
   Min,
   MinLength,
+  ValidateIf,
 } from 'class-validator'
 
 import { DATE_TIME_REGEX, UUID_REGEX } from '../helpers/regex'
@@ -75,13 +77,13 @@ export class AddUserDTO {
   @MaxLength(6)
   @IsDefined()
   @IsNotEmpty()
-  userName: string
+  readonly userName: string
 
   @IsString()
   @IsDefined()
   @IsNotEmpty()
   @MinLength(6)
-  password: string
+  readonly password: string
 
   @IsInt()
   @IsNumber()
@@ -89,19 +91,21 @@ export class AddUserDTO {
   // @Max(99)
   @IsDefined()
   @IsNotEmpty()
-  roleId: number
+  readonly roleId: number
 
-  @IsString()
-  @IsEmail()
   @IsOptional()
-  email: string
+  // @IsEmpty()
+  @IsString()
+  @ValidateIf(o => o.email !== '')
+  @IsEmail()
+  readonly email: string
 
   @IsInt()
   @IsNumber()
-  @Min(1)
-  @Max(3)
+  @Min(0)
+  @Max(1)
   @IsOptional()
-  state: number
+  readonly state: number
 
   // @IsOptional()
   // avatar: Buffer
@@ -109,15 +113,15 @@ export class AddUserDTO {
 
 // 更新用户信息
 export class UpdateUserDTO {
-  @Min(1)
-  @IsInt()
-  @IsNumber()
-  @IsNotEmpty()
-  readonly id: number
+  // @Min(1)
+  // @IsInt()
+  // @IsNumber()
+  // @IsNotEmpty()
+  // readonly id: number
 
   @IsString()
   @MinLength(2)
-  @MaxLength(6)
+  // @MaxLength(6)
   @IsOptional()
   readonly userName: string
 
@@ -133,7 +137,8 @@ export class UpdateUserDTO {
   @IsOptional()
   readonly email: string
 
-  @Min(1)
+  @Min(0)
+  @Max(1)
   @IsInt()
   @IsNumber()
   @IsOptional()

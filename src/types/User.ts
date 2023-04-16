@@ -20,7 +20,7 @@ export type addUserInfoType = {
 
 // 更新用户信息
 export type updateUserInfoType = {
-  id: number
+  // id: number
   userName?: string
   roleId?: number
   email?: string

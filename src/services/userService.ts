@@ -372,7 +372,7 @@ class UserService {
       const { rows, count: total } = await UserModel.findAndCountAll({
         where: {
           [Op.or]: [
-            { id: { [Op.like]: `%${queryStr}%` } },
+            // { id: { [Op.like]: `%${queryStr}%` } },
             { userName: { [Op.like]: `%${queryStr}%` } },
           ],
         },
@@ -466,10 +466,10 @@ class UserService {
    * @param {any} userInfo:updateUserInfoType
    * @returns {any}
    */
-  public async updateUserInfo(userInfo: updateUserInfoType): Promise<boolean> {
+  public async updateUserInfo(id: number, userInfo: updateUserInfoType): Promise<boolean> {
     try {
       const updateRes = await UserModel.update(userInfo, {
-        where: { id: userInfo.id },
+        where: { id },
       })
       return !!updateRes[0]
     } catch (e) {
