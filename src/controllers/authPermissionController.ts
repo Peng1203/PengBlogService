@@ -99,9 +99,13 @@ class AuthPermissionController {
           '权限标识id参数有误!',
           'DTO'
         )
-      const findRes = await this.authPermissionService.findAuthPermissionById(
-        id
-      )
+      // 增删改查 权限标识为基础标识
+      if (id <= 4) return res.send({
+        code: 200,
+        message: 'Failed',
+        data: '基础权限标识不允许删除!',
+      })
+      const findRes = await this.authPermissionService.findAuthPermissionById(id)
 
       if (!findRes)
         return res.send({
