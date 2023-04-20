@@ -29,8 +29,15 @@ class MenuService {
         limit: pageSize,
         order: [[column || 'id', order || 'ASC']],
       })
+      // 获取全部的菜单唯一标识 用于前端过滤 已经添加过的菜单
+      const allMenuURI: any[] = await MenuModel.findAll({
+        attributes: ['menuURI'],
+        raw: true,
+      })
+      const URIs = allMenuURI.map(item => (item.menuURI))
+
       const data: MenuListItemInfo[] = rows.map(row => row.toJSON())
-      return { data, total }
+      return { data, total, URIs }
     } catch (e) {
       throw e
     }

@@ -23,7 +23,7 @@ class MenuController {
   ): Promise<any> => {
     try {
       await validateOrRejectDTO(GetMenusListDTO, req.query)
-      const { data, total } = await this.menuService.findMenuList(
+      const { data, total, URIs } = await this.menuService.findMenuList(
         req.query as any
       )
       res.send({
@@ -31,6 +31,7 @@ class MenuController {
         message: 'Success',
         data,
         total,
+        URIs
       })
     } catch (e) {
       next(e)
