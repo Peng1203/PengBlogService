@@ -100,22 +100,25 @@ const UserModel = sequelize.define(
   }
 )
 
-UserModel.belongsTo(RoleModel, { foreignKey: 'id' })
+UserModel.belongsTo(RoleModel, { foreignKey: 'roleId' })
 
 async function test() {
-  const userInfo = {
-    userName: '李四',
-    password: '5100',
-    roleId: 1,
-  }
-  const res = await UserModel.create(userInfo)
-  console.log('添加用户信息 -----', res.toJSON())
-  // const finRes = await UserModel.findOne({
-  //   where: {
-  //     userName: 'test',
-  //   },
-  // })
-  // console.log('finRes -----', finRes.toJSON())
+  console.log('哈哈哈哈 -----',)
+  // const userInfo = {
+  //   userName: '李四',
+  //   password: '5100',
+  //   roleId: 1,
+  // }
+  // const res = await UserModel.create(userInfo)
+  // console.log('添加用户信息 -----', res.toJSON())
+
+  const finRes = await UserModel.findOne({
+    where: {
+      userName: '彭安琪',
+    },
+    include: [RoleModel]
+  })
+  console.log('finRes -----', finRes.toJSON())
 }
 
 // test()

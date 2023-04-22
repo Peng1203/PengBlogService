@@ -64,25 +64,15 @@ const RoleModel = sequelize.define(
 )
 
 async function test() {
-  // const findRes = await (await RoleModel.findAll()).map(result => result.toJSON());
-  // console.log('findRes -----', (findRes))
+  const findRes = await (await RoleModel.findAll()).map(result => result.toJSON());
+  console.log('findRes -----', (findRes))
 
-  // const roles = {
-  //   createdTime: '2023-03-18 16:03:37',
-  //   updateTime: '2023-03-18 16:03:37',
-  //   id: 1,
-  //   roleName: 'administrator',
-  //   roleDesc: '超级管理员',
-  //   menus: [],
-  //   operationPermissions: []
+  // const newRole = {
+  //   roleName: 'test1',
+  //   roleDesc: '测试角色1',
   // }
-
-  const newRole = {
-    roleName: 'test1',
-    roleDesc: '测试角色1',
-  }
-  const addRes = await RoleModel.create(newRole)
-  console.log('插入结果 -----', addRes)
+  // const addRes = await RoleModel.create(newRole)
+  // console.log('插入结果 -----', addRes)
 }
 // test()
 

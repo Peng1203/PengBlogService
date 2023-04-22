@@ -1,6 +1,8 @@
 import { Op } from 'sequelize'
 import UserModel from '../models/userModel'
 import RoleModel from '../models/roleModel'
+import MenuModel from '../models/menuModel'
+import AuthPermissionModel from '../models/authPermissionModel'
 import {
   addToSortSet,
   delCache,
@@ -156,7 +158,7 @@ class UserService {
           user_name: userName,
           password,
         },
-        include: [RoleModel],
+        include: [{ model: RoleModel, required: false }],
         attributes: [
           'id',
           'email',
@@ -168,6 +170,8 @@ class UserService {
         ],
       })
       if (!findUserRes) return null
+
+      console.log('findUserRes. -----', findUserRes.toJSON())
       const {
         id,
         email,
@@ -179,6 +183,7 @@ class UserService {
         Role,
       } = findUserRes.toJSON()
 
+      console.log('Role -----', Role)
       const {
         id: roleId,
         roleName,
@@ -186,6 +191,8 @@ class UserService {
         menus,
         operationPermissions: authBtnList,
       } = Role
+      const menuList = (await MenuModel.findAll({ where: { id: menus } })).map(res => res.toJSON())
+      const authPermissionsList = (await AuthPermissionModel.findAll({ where: { id: authBtnList } })).map(res => res.toJSON().permissionCode)
       return {
         id,
         roleId,
@@ -195,8 +202,8 @@ class UserService {
         email,
         state,
         avatar,
-        menus,
-        authBtnList,
+        menus: menuList,
+        authBtnList: authPermissionsList,
         createdTime,
         updateTime,
         unsealTime,
