@@ -98,7 +98,7 @@ class RoleController {
       res.send({
         code: 200,
         message: delRes ? 'Success' : 'Failed',
-        data: delRes ? '删除角色成功!' : '删除角色失败!',
+        data: delRes ? '删除角色成功!' : '删除角色失败, 请检查是否有用户绑定该角色!',
       })
     } catch (e) {
       next(e)

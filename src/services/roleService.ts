@@ -23,6 +23,7 @@ class RoleService {
           [Op.or]: [
             { id: { [Op.like]: `%${queryStr}%` } },
             { roleName: { [Op.like]: `%${queryStr}%` } },
+            { roleDesc: { [Op.like]: `%${queryStr}%` } },
           ],
         },
         offset: (page - 1) * pageSize,
@@ -84,7 +85,8 @@ class RoleService {
     try {
       return !!(await RoleModel.destroy({ where: { id } }))
     } catch (e) {
-      throw e
+      return false
+      // throw e
     }
   }
 
