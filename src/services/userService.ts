@@ -171,7 +171,6 @@ class UserService {
       })
       if (!findUserRes) return null
 
-      console.log('findUserRes. -----', findUserRes.toJSON())
       const {
         id,
         email,
@@ -183,7 +182,6 @@ class UserService {
         Role,
       } = findUserRes.toJSON()
 
-      console.log('Role -----', Role)
       const {
         id: roleId,
         roleName,

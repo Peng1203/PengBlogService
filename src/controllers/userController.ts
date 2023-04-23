@@ -491,10 +491,12 @@ class UserController {
         id,
         fileBuffer
       )
+      const img = `data:image/png;base64,${Buffer.from(fileBuffer).toString('base64')}`
       res.send({
         code: 200,
         message: updateRes ? 'Success' : 'Failed',
-        data: updateRes ? '上传头像成功!' : '上传头像失败!',
+        data: updateRes ? '上传头像成功!' : '上传头像失败! 请检查是否和当前头像文件一致',
+        img: updateRes ? img : ''
       })
     } catch (e) {
       next(e)
