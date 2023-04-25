@@ -36,20 +36,18 @@ class TagService {
   }
 
   /**
-   * 通过标签名称查询 判断是否已经存在当前标签
+   * 通过标签ID查询 判断是否已经存在当前标签
    * @author Peng
    * @date 2023-04-25
    * @param {any} name:string
    * @param {any} id:number
    * @returns {any}
    */
-  async findTagByName(name: string, id?: number): Promise<boolean> {
+  async findTagById(id: number): Promise<boolean> {
     try {
       // 修改时 id参数 用于过滤查出来去除自身
-      const findRes = await TagModel.findAll({ where: { tagName: name } })
-      let data = findRes.map(row => row.toJSON())
-      if (id) data = data.filter(item => item.id !== id)
-      return !!data.length
+      const findRes = await TagModel.findByPk(id)
+      return !!findRes
     } catch (e) {
       throw e
     }
@@ -63,9 +61,14 @@ class TagService {
    */
   async createdTag(tagInfo: any): Promise<boolean> {
     try {
-      return !!(await TagModel.create(tagInfo))
+      const [result, isCreated] = await TagModel.findOrCreate({
+        where: {
+          tagName: tagInfo.tagName,
+        },
+        defaults: tagInfo,
+      })
+      return isCreated
     } catch (e) {
-      if (e.name === 'SequelizeUniqueConstraintError') return false
       throw e
     }
   }
@@ -81,10 +84,24 @@ class TagService {
   async editTagById(id: number, tagInfo: any): Promise<number> {
     try {
       const updataRes = await TagModel.update(tagInfo, { where: { id } })
-      console.log('updataRes -----', updataRes)
       return updataRes[0]
     } catch (e) {
       if (e.name === 'SequelizeUniqueConstraintError') return 2
+      throw e
+    }
+  }
+
+  /**
+   * 通过ID删除标签
+   * @author Peng
+   * @date 2023-04-25
+   * @param {any} id:number
+   * @returns {any}
+   */
+  async deleteTagById(id: number): Promise<boolean> {
+    try {
+      return !!(await TagModel.destroy({ where: { id } }))
+    } catch (e) {
       throw e
     }
   }

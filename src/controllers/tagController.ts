@@ -105,6 +105,48 @@ class TagController {
       next(e)
     }
   }
+
+  /**
+   * 通过ID删除标签信息
+   * @author Peng
+   * @date 2023-04-25
+   * @param {any} req:Request
+   * @param {any} res:Response
+   * @param {any} next:NextFunction
+   * @returns {any}
+   */
+  public delTag = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<any> => {
+    try {
+      const id: number | boolean = parseInt(req.params.id) || false
+      if (!id || id <= 0)
+        throw new MyError(
+          PARAMS_ERROR_CODE,
+          'params error!',
+          '标签id参数有误!',
+          'DTO'
+        )
+      const isFind = await this.tagService.findTagById(id)
+      if (!isFind)
+        return res.send({
+          code: 200,
+          data: 'Failed',
+          message: '删除失败, 未找到标签相关信息!',
+        })
+
+      const delRes = await this.tagService.deleteTagById(id)
+      res.send({
+        code: 200,
+        data: delRes ? 'Success' : 'Failed',
+        message: delRes ? '删除成功' : '删除失败, 未找到标签相关信息!',
+      })
+    } catch (e) {
+      next(e)
+    }
+  }
 }
 
 export default TagController
