@@ -5,11 +5,11 @@ const router = express.Router()
 
 const tagController = new TagController()
 
-router.get('/tagList', tagController.getTagList)
+router.get('/getTagList', tagController.getTagList)
 
 router.post('/addTag', tagController.addNewTag)
 
-router.put('/updateTagById/:id', tagController.updataTag)
+router.put('/updateTagById/:id', tagController.updateTag)
 
 router.delete('/deleteTagById/:id', tagController.delTag)
 

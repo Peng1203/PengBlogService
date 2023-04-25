@@ -74,7 +74,7 @@ class TagController {
    * @param {any} next:NextFunction
    * @returns {any}
    */
-  public updataTag = async (
+  public updateTag = async (
     req: Request,
     res: Response,
     next: NextFunction
@@ -89,6 +89,14 @@ class TagController {
           'DTO'
         )
       await validateOrRejectDTO(UpdateTagDTO, req.body)
+
+      const isFind = await this.tagService.findTagById(id)
+      if (!isFind)
+        return res.send({
+          code: 200,
+          data: 'Failed',
+          message: '更新失败, 未找到标签相关信息!',
+        })
 
       const editResNum = await this.tagService.editTagById(id, req.body)
       const msgHashMapping = {
