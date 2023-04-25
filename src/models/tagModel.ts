@@ -2,7 +2,7 @@ import { DataTypes, Sequelize } from 'sequelize'
 import { dateTimeFormat } from '../utils/moment'
 import sequelize from '../db/sequelize'
 
-/** 
+/**
  * 创建文章标签模型
  * @author Peng
  * @date 2023-04-24
@@ -20,17 +20,18 @@ const TagModel = sequelize.define(
     tagName: {
       field: 'tag_name',
       type: DataTypes.CHAR,
+      unique: true,
       allowNull: false,
     },
     tagIcon: {
       field: 'tag_icon',
       type: DataTypes.CHAR,
-      defaultValue: ''
+      defaultValue: '',
     },
     tagDesc: {
       field: 'tag_desc',
       type: DataTypes.CHAR,
-      defaultValue: ''
+      defaultValue: '',
     },
     createdTime: {
       field: 'created_time',
@@ -65,7 +66,6 @@ async function test() {
   // // console.log('findRes -----', findRes)
   // const data = findRes.map(row => row.toJSON())
   // console.log('data -----', data)
-
   // const tag = {
   //   tagName: 'Vue',
   //   tagIcon: 'iconfont icon-vue',
@@ -75,7 +75,6 @@ async function test() {
   // }
   // const addRes = await TagModel.create(tag)
   // console.log('addRes -----', addRes.toJSON())
-
   // const updateInfo = {
   //   tagName: 'Vue3',
   //   tagDesc: 'Vue.js 是一个渐进式JavaScript框架',
@@ -86,7 +85,6 @@ async function test() {
   //   where: { id: 1 }
   // })
   // console.log('updateRes -----', updateRes, updateRes[0])
-
   // const ids = []
   // for (let i = 2; i < 15; i++) {
   //   ids.push(i)

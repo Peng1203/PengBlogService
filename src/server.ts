@@ -10,6 +10,7 @@ import indexRouter from './routes/indexRouter'
 import testRouter from './routes/testRouter'
 import usersRouter from './routes/usersRouter'
 import roleRouter from './routes/roleRouter'
+import tagRouter from './routes/tagRouter'
 import menuRouter from './routes/menuRouter'
 import authPermissionRouter from './routes/authPermissionRouter'
 import notFoundMiddleware from './middlewares/404Middleware'
@@ -51,6 +52,7 @@ app.use('/user', usersRouter)
 app.use('/role', roleRouter)
 app.use('/menu', menuRouter)
 app.use('/auth-permission', authPermissionRouter)
+app.use('/article-tag', tagRouter)
 
 // 404中间件
 app.use(notFoundMiddleware)
