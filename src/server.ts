@@ -10,10 +10,11 @@ import indexRouter from './routes/indexRouter'
 import testRouter from './routes/testRouter'
 import usersRouter from './routes/usersRouter'
 import roleRouter from './routes/roleRouter'
-import tagRouter from './routes/tagRouter'
-import categoryRouter from './routes/categoryRouter'
 import menuRouter from './routes/menuRouter'
 import authPermissionRouter from './routes/authPermissionRouter'
+import tagRouter from './routes/tagRouter'
+import categoryRouter from './routes/categoryRouter'
+import articleRouter from './routes/articleRouter'
 import notFoundMiddleware from './middlewares/404Middleware'
 import errorHandler from './middlewares/errorHandler'
 import handleParamsType from './middlewares/handleParamsType'
@@ -53,6 +54,7 @@ app.use('/user', usersRouter)
 app.use('/role', roleRouter)
 app.use('/menu', menuRouter)
 app.use('/auth-permission', authPermissionRouter)
+app.use('/article', articleRouter)
 app.use('/article-tag', tagRouter)
 app.use('/article-category', categoryRouter)
 

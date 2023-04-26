@@ -38,6 +38,8 @@ function handleParseRequestParams(
     'page',
     'pageSize',
     'parentId',
+    'tagId',
+    'cId',
   ]
   const { query, body, params } = req
 

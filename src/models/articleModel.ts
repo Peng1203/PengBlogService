@@ -1,6 +1,9 @@
 import { DataTypes, Sequelize } from 'sequelize'
 import { dateTimeFormat } from '../utils/moment'
 import sequelize from '../db/sequelize'
+import CategoryModel from './categoryModel'
+import TagModel from './tagModel'
+import UserModel from './userModel'
 
 /**
  * 创建文章模型
@@ -22,12 +25,19 @@ const ArticleModel = sequelize.define(
       allowNull: false,
       unique: true,
     },
+    // 简介
+    brief: {
+      type: DataTypes.CHAR,
+      defaultValue: '',
+    },
     content: {
       type: DataTypes.TEXT,
       allowNull: false,
     },
-    author: {
-      type: DataTypes.CHAR,
+    // 文章作者
+    authorId: {
+      field: 'author_id',
+      type: DataTypes.BIGINT,
       allowNull: false,
     },
     // 文章封面
@@ -41,9 +51,9 @@ const ArticleModel = sequelize.define(
       type: DataTypes.BIGINT,
       allowNull: false,
     },
-    // 文章标签 JSON数组
+    // 文章标签 ID
     tags: {
-      type: DataTypes.JSON,
+      type: DataTypes.ARRAY(DataTypes.INTEGER),
       defaultValue: () => [],
     },
     // 评论数
@@ -99,6 +109,20 @@ const ArticleModel = sequelize.define(
     timestamps: false,
   }
 )
+
+// 定义文章模型的分类参数与 分类模型的关系
+ArticleModel.belongsTo(CategoryModel, {
+  foreignKey: 'categoryId',
+  targetKey: 'id',
+})
+
+ArticleModel.belongsTo(UserModel, {
+  foreignKey: 'authorId',
+  targetKey: 'id',
+})
+
+// 定义文章标签与标签的关系
+// ArticleModel.hasMany(TagModel, { sourceKey: 'tags' })
 
 async function test() {
   const rows = await ArticleModel.findAll({ where: { id: 2 } })
