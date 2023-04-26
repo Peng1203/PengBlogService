@@ -4,4 +4,5 @@ export type ListParamsType = {
   queryStr?: string
   column?: string
   order?: string
+  [key: string]: any
 }
