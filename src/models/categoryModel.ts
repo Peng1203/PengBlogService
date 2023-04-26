@@ -2,7 +2,7 @@ import { DataTypes, Sequelize } from 'sequelize'
 import { dateTimeFormat } from '../utils/moment'
 import sequelize from '../db/sequelize'
 
-/** 
+/**
  * 创建文章分类模型
  * @author Peng
  * @date 2023-04-25
@@ -21,11 +21,12 @@ const CategoryModel = sequelize.define(
       field: 'category_name',
       type: DataTypes.CHAR,
       allowNull: false,
+      unique: true,
     },
     categoryDesc: {
       field: 'category_desc',
       type: DataTypes.CHAR,
-      defaultValue: ''
+      defaultValue: '',
     },
     createdTime: {
       field: 'created_time',
