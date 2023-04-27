@@ -6,11 +6,11 @@ import UserModel from '../models/userModel'
 import { ListResponse } from '../interfaces/Common'
 import { ListParamsType } from '../types/Common'
 /**
- * 定义 分类service类
+ * 定义 文章service类
  */
 class ArticleService {
   /**
-   * 查询分类列表
+   * 查询文章列表
    * @author Peng
    * @date 2023-04-26
    * @param {any} params:ListParamsType
@@ -18,7 +18,6 @@ class ArticleService {
    */
   async findArticleList(params: ListParamsType): Promise<ListResponse> {
     try {
-      //
       const {
         page,
         pageSize,
@@ -36,7 +35,7 @@ class ArticleService {
         ? { authorId: { [Op.in]: authorIds } }
         : {}
 
-      // 分类过滤条件
+      // 文章过滤条件
       const categoryFilter = cId ? { categoryId: cId } : {}
 
       // 归档查询条件 按照创建时间来查询 指定时间段创建的文章
@@ -76,6 +75,11 @@ class ArticleService {
         limit: pageSize,
         order: [[column || 'id', order || 'ASC']],
       })
+      // 查询全部Tag
+      const allTag = (
+        await TagModel.findAll({ attributes: ['id', 'tagName', 'tagIcon'] })
+      ).map(row => row.toJSON())
+
       let data = rows.map(row => {
         const info = row.toJSON()
         const { id: categoryId, categoryName } = info?.Category
@@ -89,6 +93,10 @@ class ArticleService {
         }
         delete formatData?.Category
         delete formatData?.User
+        // 将TagIds映射为tag信息列表
+        formatData.tags = formatData.tags.map(tagId =>
+          allTag.find(tag => tag.id === tagId)
+        )
         return formatData
       })
       // 手动过滤出tagID 但无法获取到准确的total
@@ -100,7 +108,7 @@ class ArticleService {
   }
 
   /**
-   * 通过分类ID查询 判断是否已经存在当前分类
+   * 通过文章ID查询 判断是否已经存在当前文章
    * @author Peng
    * @date 2023-04-26
    * @param {any} name:string
@@ -118,7 +126,7 @@ class ArticleService {
   }
 
   /**
-   * 创建新分类
+   * 创建新文章
    * @author Peng
    * @date 2023-04-26
    * @returns {any}
@@ -127,7 +135,7 @@ class ArticleService {
     try {
       const [result, isCreated] = await ArticleModel.findOrCreate({
         where: {
-          articleName: articleInfo.articleName,
+          title: articleInfo.title,
         },
         defaults: articleInfo,
       })
@@ -138,7 +146,7 @@ class ArticleService {
   }
 
   /**
-   * 通过ID更新分类信息
+   * 通过ID更新文章信息
    * @author Peng
    * @date 2023-04-26
    * @param {any} id:number
@@ -158,7 +166,7 @@ class ArticleService {
   }
 
   /**
-   * 通过ID删除分类
+   * 通过ID删除文章
    * @author Peng
    * @date 2023-04-26
    * @param {any} id:number

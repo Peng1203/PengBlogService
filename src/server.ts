@@ -19,7 +19,7 @@ import notFoundMiddleware from './middlewares/404Middleware'
 import errorHandler from './middlewares/errorHandler'
 import handleParamsType from './middlewares/handleParamsType'
 import authMiddleware from './middlewares/authMiddleware'
-import setHeader from './middlewares/defaultHeader'
+import setHeader, { setResourceHeader } from './middlewares/defaultHeader'
 import taskManager from './tasks'
 
 const app = express()
@@ -36,7 +36,13 @@ app.use(
   })
 )
 app.use(express.urlencoded({ extended: false }))
-app.use(express.static(path.join(__dirname, './public')))
+// 设置静态资源服务器
+app.use(
+  '/resource',
+  express.static(path.join(__dirname, './public'), {
+    setHeaders: setResourceHeader,
+  })
+)
 // 记录 HTTP请求 日志
 app.use(_logger)
 // 将全局通用的库 或者函数 注册到 res 响应对象上
@@ -45,8 +51,9 @@ app.use(_moment)
 app.use(_env)
 // 处理解析过后的参数类型 中间件
 app.use(handleParamsType)
-
+// 校验路由是否需要token中间件
 app.use(authMiddleware)
+
 // 定义路由
 app.use('/index', indexRouter)
 app.use('/test', testRouter)

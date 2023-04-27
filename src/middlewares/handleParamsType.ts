@@ -40,6 +40,9 @@ function handleParseRequestParams(
     'parentId',
     'tagId',
     'cId',
+    'authorId',
+    'categoryId',
+    'state',
   ]
   const { query, body, params } = req
 

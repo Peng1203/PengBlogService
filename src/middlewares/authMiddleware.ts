@@ -13,6 +13,7 @@ const UN_AUTH_PATH: string[] = [
   '/user/logout',
   '/getCaptcha',
   '/verifyCaptcha',
+  '/resource',
 ]
 /**
  * 校验 Token 中间件

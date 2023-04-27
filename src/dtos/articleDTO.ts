@@ -1,6 +1,8 @@
 import {
+  IsArray,
   IsDefined,
   IsInt,
+  IsJSON,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -36,17 +38,43 @@ export class GetArticleListDTO extends TableListDTO {
   readonly endTime: string
 }
 
-// 添加Article
+// 添加文章
 export class AddArticleDTO {
   @IsString()
   @MinLength(1)
   @IsDefined()
   @IsNotEmpty()
-  readonly articleName: string
+  readonly title: string
 
   @IsString()
   @IsOptional()
-  readonly articleDesc: string
+  readonly brief: string
+
+  @IsString()
+  @IsDefined()
+  @IsNotEmpty()
+  readonly content: string
+
+  @IsNumber()
+  @IsInt()
+  @IsDefined()
+  @IsNotEmpty()
+  readonly authorId: number
+
+  @IsString()
+  @IsOptional()
+  readonly cover: string
+
+  @IsNumber()
+  @IsInt()
+  @IsDefined()
+  @IsNotEmpty()
+  readonly categoryId: number
+
+  // @IsJSON()
+  @IsArray()
+  @IsOptional()
+  readonly tags: number[]
 
   @IsString()
   @Matches(DATE_TIME_REGEX, { message: '日期格式有误!' })
@@ -65,11 +93,41 @@ export class UpdateArticleDTO {
   @MinLength(1)
   @IsDefined()
   @IsNotEmpty()
-  readonly articleName: string
+  readonly title: string
 
   @IsString()
   @IsOptional()
-  readonly articleDesc: string
+  readonly brief: string
+
+  @IsString()
+  @IsDefined()
+  @IsNotEmpty()
+  readonly content: string
+
+  @IsNumber()
+  @IsInt()
+  @IsDefined()
+  @IsNotEmpty()
+  readonly authorId: number
+
+  @IsString()
+  @IsOptional()
+  readonly cover: string
+
+  @IsNumber()
+  @IsInt()
+  @IsDefined()
+  @IsNotEmpty()
+  readonly categoryId: number
+
+  // @IsJSON()
+  @IsArray()
+  @IsOptional()
+  readonly tags: number[]
+
+  @IsInt()
+  @IsOptional()
+  readonly state: number
 
   @IsString()
   @Matches(DATE_TIME_REGEX, { message: '日期格式有误!' })

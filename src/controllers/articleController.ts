@@ -107,7 +107,7 @@ class ArticleController {
       const msgHashMapping = {
         0: '更新失败, 更新内容与之前一致!',
         1: '更新成功!',
-        2: '更新失败, 已存在该文章, 请确保文章唯一性!',
+        2: '更新失败, 已存在该文章, 请确保文章标题唯一性!',
       }
       res.send({
         code: 200,
@@ -156,6 +156,33 @@ class ArticleController {
         data: delRes ? 'Success' : 'Failed',
         message: delRes ? '删除成功' : '删除失败, 未找到文章相关信息!',
       })
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  /**
+   * 上传文章封面文件
+   * @author Peng
+   * @date 2023-04-27
+   * @param {any} req:Request
+   * @param {any} res:Response
+   * @param {any} next:NextFunction
+   * @returns {any}
+   */
+  public uploadCover = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<any> => {
+    try {
+      const fileInfo: any = req?.file
+      // console.log('fileInfo -----', fileInfo)
+      res.send(
+        `${req.protocol}://${req.get('host')}/resource/${fileInfo?.dir}/${
+          fileInfo.originalname
+        }`
+      )
     } catch (e) {
       next(e)
     }
