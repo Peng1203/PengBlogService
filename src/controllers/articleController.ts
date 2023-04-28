@@ -97,8 +97,8 @@ class ArticleController {
       if (!isFind)
         return res.send({
           code: 200,
-          data: 'Failed',
-          message: '更新失败, 未找到文章相关信息!',
+          message: 'Failed',
+          data: '更新失败, 未找到文章相关信息!',
         })
 
       await validateOrRejectDTO(UpdateArticleDTO, req.body)
@@ -146,15 +146,15 @@ class ArticleController {
       if (!isFind)
         return res.send({
           code: 200,
-          data: 'Failed',
-          message: '删除失败, 未找到文章相关信息!',
+          message: 'Failed',
+          data: '删除失败, 未找到文章相关信息!',
         })
 
       const delRes = await this.articleService.deleteArticleById(id)
       res.send({
         code: 200,
-        data: delRes ? 'Success' : 'Failed',
-        message: delRes ? '删除成功' : '删除失败, 未找到文章相关信息!',
+        message: delRes ? 'Success' : 'Failed',
+        data: delRes ? '删除成功' : '删除失败, 未找到文章相关信息!',
       })
     } catch (e) {
       next(e)

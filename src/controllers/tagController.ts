@@ -94,8 +94,8 @@ class TagController {
       if (!isFind)
         return res.send({
           code: 200,
-          data: 'Failed',
-          message: '更新失败, 未找到标签相关信息!',
+          message: 'Failed',
+          data: '更新失败, 未找到标签相关信息!',
         })
 
       const editResNum = await this.tagService.editTagById(id, req.body)
@@ -141,15 +141,15 @@ class TagController {
       if (!isFind)
         return res.send({
           code: 200,
-          data: 'Failed',
-          message: '删除失败, 未找到标签相关信息!',
+          message: 'Failed',
+          data: '删除失败, 未找到标签相关信息!',
         })
 
       const delRes = await this.tagService.deleteTagById(id)
       res.send({
         code: 200,
-        data: delRes ? 'Success' : 'Failed',
-        message: delRes ? '删除成功' : '删除失败, 未找到标签相关信息!',
+        message: delRes ? 'Success' : 'Failed',
+        data: delRes ? '删除成功' : '删除失败, 未找到标签相关信息!',
       })
     } catch (e) {
       next(e)
