@@ -32,4 +32,6 @@ router.patch(
 
 router.post('/changePasswordById/:id', userController.changePassword)
 
+router.get('/getAllUserOptions', userController.getAllUserOptions)
+
 export default router

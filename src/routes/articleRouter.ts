@@ -8,6 +8,8 @@ const articleController = new ArticleController()
 
 router.get('/getArticleList', articleController.getArticleList)
 
+router.get('/articleDetail/:id', articleController.getArticleDetailById)
+
 router.post('/addArticle', articleController.addNewArticle)
 
 router.put('/updateArticleById/:id', articleController.updateArticle)

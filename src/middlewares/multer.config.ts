@@ -13,16 +13,19 @@ const storageToDisk = multer.diskStorage({
     // resource-type 资源类型
     // 根据前端传递的 resource-classification 选择不同的存放目录
     // console.log('file -----', file)
+
     let SAVE_PATH = ''
     switch (req.headers['resource-classification']) {
       // 文章封面存放路径
       case 'cover':
         SAVE_PATH = path.join(STATIC_RESOURCE_ROOT_PATH, 'cover')
         file.dir = 'cover'
+        break
       default:
         SAVE_PATH = path.join(STATIC_RESOURCE_ROOT_PATH, 'upload')
         break
     }
+    // console.log('SAVE_PATH -----', SAVE_PATH)
     if (fs.existsSync(SAVE_PATH)) return cb(null, SAVE_PATH)
 
     // 当文件夹不存在时自动创建
@@ -37,7 +40,7 @@ const storageToDisk = multer.diskStorage({
   filename(req: Request, file, cb): void {
     // 解决中文名乱码的问题
     // file.originalname = Buffer.from(file.originalname, 'latin1').toString('utf8')
-    console.log('file.originalname -----', file.originalname)
+    // console.log('file.originalname -----', file.originalname)
     cb(null, file.originalname)
   },
 })

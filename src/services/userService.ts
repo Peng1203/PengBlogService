@@ -189,8 +189,12 @@ class UserService {
         menus,
         operationPermissions: authBtnList,
       } = Role
-      const menuList = (await MenuModel.findAll({ where: { id: menus } })).map(res => res.toJSON())
-      const authPermissionsList = (await AuthPermissionModel.findAll({ where: { id: authBtnList } })).map(res => res.toJSON().permissionCode)
+      const menuList = (await MenuModel.findAll({ where: { id: menus } })).map(
+        res => res.toJSON()
+      )
+      const authPermissionsList = (
+        await AuthPermissionModel.findAll({ where: { id: authBtnList } })
+      ).map(res => res.toJSON().permissionCode)
       return {
         id,
         roleId,
@@ -471,7 +475,10 @@ class UserService {
    * @param {any} userInfo:updateUserInfoType
    * @returns {any}
    */
-  public async updateUserInfo(id: number, userInfo: updateUserInfoType): Promise<boolean> {
+  public async updateUserInfo(
+    id: number,
+    userInfo: updateUserInfoType
+  ): Promise<boolean> {
     try {
       const updateRes = await UserModel.update(userInfo, {
         where: { id },
@@ -545,6 +552,24 @@ class UserService {
     try {
       const updataRes = await UserModel.update({ password }, { where: { id } })
       return !!updataRes[0]
+    } catch (e) {
+      throw e
+    }
+  }
+
+  /**
+   * 获取用户列表的全部数据 option
+   * @author Peng
+   * @date 2023-04-29
+   * @returns {any}
+   */
+  public async findAllUserToOption(): Promise<any[]> {
+    try {
+      const options = (await UserModel.findAll()).map(row => {
+        const { id, userName } = row.toJSON()
+        return { label: userName, value: id }
+      })
+      return options
     } catch (e) {
       throw e
     }

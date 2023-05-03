@@ -67,7 +67,7 @@ class ArticleService {
           },
           {
             model: UserModel,
-            attributes: ['id', 'userName'],
+            attributes: ['id', 'userName', 'avatar'],
           },
         ],
         attributes: { exclude: ['categoryId', 'content'] },
@@ -83,13 +83,18 @@ class ArticleService {
       let data = rows.map(row => {
         const info = row.toJSON()
         const { id: categoryId, categoryName } = info?.Category
-        const { id: authorId, userName: authorName } = info?.User
+        const {
+          id: authorId,
+          userName: authorName,
+          avatar: authorAvatar,
+        } = info?.User
         const formatData = {
           ...info,
           categoryId,
           categoryName,
           authorId,
           authorName,
+          authorAvatar,
         }
         delete formatData?.Category
         delete formatData?.User
@@ -175,6 +180,33 @@ class ArticleService {
   async deleteArticleById(id: number): Promise<boolean> {
     try {
       return !!(await ArticleModel.destroy({ where: { id } }))
+    } catch (e) {
+      throw e
+    }
+  }
+
+  async findArticleDetailById(id: number): Promise<object | null> {
+    try {
+      const findRes = await ArticleModel.findByPk(id, {
+        include: [
+          {
+            model: CategoryModel,
+            attributes: ['id', 'categoryName'],
+          },
+          {
+            model: UserModel,
+            attributes: ['id', 'userName', 'avatar'],
+          },
+        ],
+      })
+      if (!findRes) return null
+      const data = findRes.toJSON()
+      // 查询全部Tag
+      // const allTag = (
+      //   await TagModel.findAll({ attributes: ['id', 'tagName', 'tagIcon'] })
+      // ).map(row => row.toJSON())
+      // data.tags = data.tags.map(tagId => allTag.find(tag => tag.id === tagId))
+      return data
     } catch (e) {
       throw e
     }

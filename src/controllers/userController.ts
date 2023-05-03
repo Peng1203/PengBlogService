@@ -158,8 +158,9 @@ class UserController {
         return res.send({
           code: 200,
           message: 'Failed',
-          data: `登录错误次数已达到最大限制, 请在${LOGIN_DISABLE_TIME / 60
-            }分钟后尝试`,
+          data: `登录错误次数已达到最大限制, 请在${
+            LOGIN_DISABLE_TIME / 60
+          }分钟后尝试`,
         })
       }
 
@@ -406,11 +407,12 @@ class UserController {
           '用户id参数有误!',
           'DTO'
         )
-      if (id === 1) return res.send({
-        code: 200,
-        message: 'Failed',
-        data: 'admin账户不允删除!',
-      })
+      if (id === 1)
+        return res.send({
+          code: 200,
+          message: 'Failed',
+          data: 'admin账户不允删除!',
+        })
       const delRes = await this.userService.deleteUserById(id)
       res.send({
         code: 200,
@@ -436,11 +438,12 @@ class UserController {
     try {
       const id = req.params.id as unknown as number
       const params = req.body
-      if (id === 1) return res.send({
-        code: 200,
-        message: 'Failed',
-        data: 'admin账户不允许修改!',
-      })
+      if (id === 1)
+        return res.send({
+          code: 200,
+          message: 'Failed',
+          data: 'admin账户不允许修改!',
+        })
       await validateOrRejectDTO(UpdateUserDTO, params)
 
       const data = await this.userService.findUserById(id)
@@ -491,12 +494,16 @@ class UserController {
         id,
         fileBuffer
       )
-      const img = `data:image/png;base64,${Buffer.from(fileBuffer).toString('base64')}`
+      const img = `data:image/png;base64,${Buffer.from(fileBuffer).toString(
+        'base64'
+      )}`
       res.send({
         code: 200,
         message: updateRes ? 'Success' : 'Failed',
-        data: updateRes ? '上传头像成功!' : '上传头像失败! 请检查是否和当前头像文件一致',
-        img: updateRes ? img : ''
+        data: updateRes
+          ? '上传头像成功!'
+          : '上传头像失败! 请检查是否和当前头像文件一致',
+        img: updateRes ? img : '',
       })
     } catch (e) {
       next(e)
@@ -578,6 +585,33 @@ class UserController {
         code: 200,
         message: updateRes ? 'Success' : 'Failed',
         data: updateRes ? '修改密码成功!' : '修改密码失败!',
+      })
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  /**
+   * 获取全部用户列表的下拉数据
+   * @author Peng
+   * @date 2023-04-29
+   * @param {any} req:Request
+   * @param {any} res:Response
+   * @param {any} next:NextFunction
+   * @returns {any}
+   */
+  public getAllUserOptions = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<any> => {
+    try {
+      const findRes = await this.userService.findAllUserToOption()
+
+      res.send({
+        code: 200,
+        message: 'Success',
+        data: findRes,
       })
     } catch (e) {
       next(e)

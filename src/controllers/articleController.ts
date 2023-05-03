@@ -187,6 +187,42 @@ class ArticleController {
       next(e)
     }
   }
+
+  /**
+   * 通过ID获取文章详情
+   * @author Peng
+   * @date 2023-05-03
+   * @param {any} req:Request
+   * @param {any} res:Response
+   * @param {any} next:NextFunction
+   * @returns {any}
+   */
+  public getArticleDetailById = async (
+    req: Request,
+    res: Response,
+    next: NextFunction
+  ): Promise<any> => {
+    try {
+      const id: number | boolean = parseInt(req.params.id) || false
+      if (!id || id <= 0)
+        throw new MyError(
+          PARAMS_ERROR_CODE,
+          'params error!',
+          '文章id参数有误!',
+          'DTO'
+        )
+
+      const findRes = await this.articleService.findArticleDetailById(id)
+
+      res.send({
+        code: 200,
+        message: findRes ? 'Success' : 'Failed',
+        data: findRes ? findRes : '未找到指定文章相关信息!',
+      })
+    } catch (e) {
+      next(e)
+    }
+  }
 }
 
 export default ArticleController
