@@ -223,6 +223,9 @@ class UserController {
 
       // 登录成功 清除登录错误计数器
       await this.userService.resetLoginErrorCount(uuid)
+
+      // 获取登录客户端信息
+      await this.userService.getClientInfo(req)
       res.send({
         code: 200,
         message: 'Success',

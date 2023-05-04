@@ -574,6 +574,25 @@ class UserService {
       throw e
     }
   }
+
+  /**
+   * 解析登录用户的客户端信息
+   * @author Peng
+   * @date 2023-05-04
+   * @returns {any}
+   */
+  public async getClientInfo(req: any): Promise<any> {
+    try {
+      const ip = req.clientIp === '::1' ? '127.0.0.1' : req.clientIp
+      const device = req.useragent.isMobile ? '移动设备' : '电脑'
+      const { os, platform, browser, version, source } = req.useragent
+      console.log('ip -----', ip)
+      console.log('os -----', device, os, platform, browser, version, source)
+      return
+    } catch (e) {
+      throw e
+    }
+  }
 }
 
 export default UserService

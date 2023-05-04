@@ -3,6 +3,8 @@ import express from 'express'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import session from 'express-session'
+import requestIp from 'request-ip'
+import userAgent from 'express-useragent'
 import _logger from './utils/logger'
 import _moment from './utils/moment'
 import _env from './utils/environment'
@@ -43,6 +45,9 @@ app.use(
     setHeaders: setResourceHeader,
   })
 )
+// 解析客户端信息
+app.use(requestIp.mw())
+app.use(userAgent.express())
 // 记录 HTTP请求 日志
 app.use(_logger)
 // 将全局通用的库 或者函数 注册到 res 响应对象上
