@@ -5,6 +5,7 @@ import cookieParser from 'cookie-parser'
 import session from 'express-session'
 import requestIp from 'request-ip'
 import userAgent from 'express-useragent'
+import bodyParser from 'body-parser'
 import _logger from './utils/logger'
 import _moment from './utils/moment'
 import _env from './utils/environment'
@@ -26,6 +27,10 @@ import taskManager from './tasks'
 
 const app = express()
 
+// 设置请求体大小限制为50MB
+app.use(bodyParser.json({ limit: '50mb' }))
+app.use(bodyParser.urlencoded({ limit: '50mb', extended: true }))
+
 app.use(cors())
 app.use(setHeader)
 app.use(express.json())
@@ -37,6 +42,7 @@ app.use(
     saveUninitialized: true,
   })
 )
+
 app.use(express.urlencoded({ extended: false }))
 // 设置静态资源服务器
 app.use(
@@ -45,6 +51,7 @@ app.use(
     setHeaders: setResourceHeader,
   })
 )
+
 // 解析客户端信息
 app.use(requestIp.mw())
 app.use(userAgent.express())

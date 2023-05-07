@@ -27,6 +27,7 @@ import {
   loginInfoType,
   updateUserInfoType,
 } from '../types/User'
+import { getIPDetailInfo, getParseIPInfo } from '../thirdpart/parseIPApi'
 
 // type tableListQueryType = {
 //   page: number
@@ -583,12 +584,27 @@ class UserService {
    */
   public async getClientInfo(req: any): Promise<any> {
     try {
-      const ip = req.clientIp === '::1' ? '127.0.0.1' : req.clientIp
-      const device = req.useragent.isMobile ? '移动设备' : '电脑'
+      const ip =
+        req.clientIp.indexOf('127.0.0.1') !== -1 ? '127.0.0.1' : req.clientIp
+      const deviceType = req.useragent.isMobile ? '移动设备' : '电脑'
       const { os, platform, browser, version, source } = req.useragent
-      console.log('ip -----', ip)
-      console.log('os -----', device, os, platform, browser, version, source)
-      return
+      // const { data } = await getParseIPInfo(ip)
+      const { code, data } = await getIPDetailInfo(ip)
+      if (code !== 'Success') return null
+      // platform 系统平台
+      return {
+        ip,
+        os,
+        platform,
+        deviceType,
+        brower: {
+          name: browser,
+          version,
+        },
+        source,
+        ipDetailInfo: data,
+        loginTime: dateTimeFormat(),
+      }
     } catch (e) {
       throw e
     }

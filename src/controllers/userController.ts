@@ -225,11 +225,12 @@ class UserController {
       await this.userService.resetLoginErrorCount(uuid)
 
       // 获取登录客户端信息
-      await this.userService.getClientInfo(req)
+      const clientInfo = await this.userService.getClientInfo(req)
       res.send({
         code: 200,
         message: 'Success',
         data: result,
+        clientInfo,
         token,
       })
     } catch (e) {
