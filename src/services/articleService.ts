@@ -146,6 +146,7 @@ class ArticleService {
       })
       return isCreated
     } catch (e) {
+      console.log('service层 -----', e)
       throw e
     }
   }

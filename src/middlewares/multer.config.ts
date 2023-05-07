@@ -21,6 +21,11 @@ const storageToDisk = multer.diskStorage({
         SAVE_PATH = path.join(STATIC_RESOURCE_ROOT_PATH, 'cover')
         file.dir = 'cover'
         break
+      // 文章引用资源存放路径
+      case 'content':
+        SAVE_PATH = path.join(STATIC_RESOURCE_ROOT_PATH, 'content')
+        file.dir = 'content'
+        break
       default:
         SAVE_PATH = path.join(STATIC_RESOURCE_ROOT_PATH, 'upload')
         break
@@ -41,7 +46,7 @@ const storageToDisk = multer.diskStorage({
     // 解决中文名乱码的问题
     // file.originalname = Buffer.from(file.originalname, 'latin1').toString('utf8')
     // console.log('file.originalname -----', file.originalname)
-    cb(null, file.originalname)
+    cb(null, file?.originalname)
   },
 })
 // multer 上传到本地的资源服务 配置

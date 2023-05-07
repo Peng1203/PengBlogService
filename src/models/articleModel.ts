@@ -31,7 +31,7 @@ const ArticleModel = sequelize.define(
       defaultValue: '',
     },
     content: {
-      type: DataTypes.TEXT,
+      type: DataTypes.TEXT('long'),
       allowNull: false,
     },
     // 文章作者

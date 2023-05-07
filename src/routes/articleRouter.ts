@@ -17,7 +17,7 @@ router.put('/updateArticleById/:id', articleController.updateArticle)
 router.delete('/deleteArticleById/:id', articleController.delArticle)
 
 router.post(
-  '/upload-cover',
+  '/upload-resources',
   uploadToDisk.single('file'),
   articleController.uploadCover
 )
