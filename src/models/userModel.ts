@@ -26,6 +26,7 @@ const UserModel = sequelize.define(
       field: 'user_name',
       type: DataTypes.CHAR,
       allowNull: false,
+      unique: true,
     },
     password: {
       type: DataTypes.CHAR,
@@ -34,7 +35,7 @@ const UserModel = sequelize.define(
     email: {
       type: DataTypes.CHAR,
     },
-    // 用户状态 0禁用 1正常 
+    // 用户状态 0禁用 1正常
     state: {
       type: DataTypes.INTEGER,
       defaultValue: 1,
@@ -103,7 +104,7 @@ const UserModel = sequelize.define(
 UserModel.belongsTo(RoleModel, { foreignKey: 'roleId' })
 
 async function test() {
-  console.log('哈哈哈哈 -----',)
+  console.log('哈哈哈哈 -----')
   // const userInfo = {
   //   userName: '李四',
   //   password: '5100',
@@ -116,7 +117,7 @@ async function test() {
     where: {
       userName: '彭安琪',
     },
-    include: [RoleModel]
+    include: [RoleModel],
   })
   console.log('finRes -----', finRes.toJSON())
 }

@@ -20,6 +20,7 @@ const RoleModel = sequelize.define(
       field: 'role_name',
       type: DataTypes.CHAR,
       allowNull: false,
+      unique: true,
     },
     roleDesc: {
       field: 'role_desc',
@@ -64,8 +65,10 @@ const RoleModel = sequelize.define(
 )
 
 async function test() {
-  const findRes = await (await RoleModel.findAll()).map(result => result.toJSON());
-  console.log('findRes -----', (findRes))
+  const findRes = await (
+    await RoleModel.findAll()
+  ).map(result => result.toJSON())
+  console.log('findRes -----', findRes)
 
   // const newRole = {
   //   roleName: 'test1',

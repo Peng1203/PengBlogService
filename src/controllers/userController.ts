@@ -462,7 +462,7 @@ class UserController {
       res.send({
         code: 200,
         message: updataRes ? 'Success' : 'Failed',
-        data: updataRes ? '更新成功!' : '更新失败!',
+        data: updataRes ? '更新成功!' : '更新失败, 更新内容与之前一致!',
       })
     } catch (e) {
       next(e)
