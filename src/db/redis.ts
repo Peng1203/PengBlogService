@@ -4,12 +4,12 @@ import { JSON_REGEX } from '../helpers/regex'
 // 创建Redis终端
 const redisClient = new redis(config)
 
-// redisClient.on('connect', () => {
-//   console.log('ioredis connect-----')
-// })
-// redisClient.on('error', () => {
-//   console.log('ioredis error-----')
-// })
+redisClient.on('connect', () => {
+  console.log('Redis 连接成功')
+})
+redisClient.on('error', () => {
+  console.log('Redis 连接失败')
+})
 // redisClient.on('idle', () => {
 //   console.log('ioredis idle-----')
 // })

@@ -34,7 +34,7 @@ const UserModel = sequelize.define(
     email: {
       type: DataTypes.CHAR,
     },
-    // 用户状态 0禁用 1正常 
+    // 用户状态 0禁用 1正常
     state: {
       type: DataTypes.INTEGER,
       defaultValue: 1,
@@ -103,7 +103,9 @@ const UserModel = sequelize.define(
 UserModel.belongsTo(RoleModel, { foreignKey: 'roleId' })
 
 async function test() {
-  console.log('哈哈哈哈 -----',)
+  const { rows, count } = await UserModel.findAndCountAll()
+  const data = rows.map(row => row.toJSON())
+  console.log('data -----', count, data)
   // const userInfo = {
   //   userName: '李四',
   //   password: '5100',
@@ -112,13 +114,13 @@ async function test() {
   // const res = await UserModel.create(userInfo)
   // console.log('添加用户信息 -----', res.toJSON())
 
-  const finRes = await UserModel.findOne({
-    where: {
-      userName: '彭安琪',
-    },
-    include: [RoleModel]
-  })
-  console.log('finRes -----', finRes.toJSON())
+  // const finRes = await UserModel.findOne({
+  //   where: {
+  //     userName: '彭安琪',
+  //   },
+  //   include: [RoleModel]
+  // })
+  // console.log('finRes -----', finRes.toJSON())
 }
 
 // test()

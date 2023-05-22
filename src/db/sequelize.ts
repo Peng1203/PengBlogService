@@ -16,13 +16,13 @@ const sequelize = new Sequelize({
 })
 
 // 测试连接
-// sequelize
-//   .authenticate()
-//   .then(() => {
-//     console.log('mysql 连接成功')
-//   })
-//   .catch(e => {
-//     console.error('mysql 连接失败', e)
-//   })
+sequelize
+  .authenticate()
+  .then(() => {
+    console.log('MySQL 连接成功')
+  })
+  .catch(e => {
+    console.error('MySQL 连接失败', e)
+  })
 
 export default sequelize

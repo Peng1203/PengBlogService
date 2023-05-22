@@ -7,13 +7,13 @@
     "prod:start": "npm install --only=prod && node index.js",
     "dev": "cross-env NODE_ENV=development nodemon ./src/index.ts",
     "test": "jest",
+    "build": "cross-env NODE_ENV=production tsc && copy package.json dist\\ && copy .env dist\\",
     "build:wp": "cross-env NODE_ENV=production webpack",
     "build:ts": "cross-env NODE_ENV=production tsc && copy package.json dist\\ && copy .env dist\\",
     "dist-wp": "yarn run build:wp && node ./dist/app.js",
     "dist-ts": "yarn run build:ts && node ./dist/index.js"
   },
   "dependencies": {
-    "@types/request-ip": "^0.0.37",
     "axios": "^1.4.0",
     "body-parser": "^1.20.2",
     "class-transformer": "^0.5.1",
@@ -46,6 +46,7 @@
     "uuid": "^9.0.0"
   },
   "devDependencies": {
+    "@types/request-ip": "^0.0.37",
     "@types/cookie-parser": "^1.4.3",
     "@types/express": "^4.17.17",
     "@types/mime-types": "^2.1.1",
