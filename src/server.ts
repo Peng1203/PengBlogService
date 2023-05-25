@@ -18,6 +18,7 @@ import authPermissionRouter from './routes/authPermissionRouter'
 import tagRouter from './routes/tagRouter'
 import categoryRouter from './routes/categoryRouter'
 import articleRouter from './routes/articleRouter'
+import systemRouter from './routes/systemRouter'
 import notFoundMiddleware from './middlewares/404Middleware'
 import errorHandler from './middlewares/errorHandler'
 import handleParamsType from './middlewares/handleParamsType'
@@ -76,6 +77,7 @@ app.use('/auth-permission', authPermissionRouter)
 app.use('/article', articleRouter)
 app.use('/article-tag', tagRouter)
 app.use('/article-category', categoryRouter)
+app.use('/system', systemRouter)
 
 // 404中间件
 app.use(notFoundMiddleware)
