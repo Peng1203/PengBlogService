@@ -67,7 +67,7 @@ class ArticleService {
           },
           {
             model: UserModel,
-            attributes: ['id', 'userName', 'avatar'],
+            attributes: ['id', 'userName', 'avatarUrl'],
           },
         ],
         attributes: { exclude: ['categoryId', 'content'] },
@@ -86,7 +86,7 @@ class ArticleService {
         const {
           id: authorId,
           userName: authorName,
-          avatar: authorAvatar,
+          avatarUrl: authorAvatar,
         } = info?.User
         const formatData = {
           ...info,
@@ -196,7 +196,7 @@ class ArticleService {
           },
           {
             model: UserModel,
-            attributes: ['id', 'userName', 'avatar'],
+            attributes: ['id', 'userName', 'avatarUrl'],
           },
         ],
       })
