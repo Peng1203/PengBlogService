@@ -493,22 +493,35 @@ class UserController {
           '用户id参数有误!',
           'DTO'
         )
-      const fileBuffer = file.buffer
-      const updateRes = await this.userService.updataUserAvaterById(
-        id,
-        fileBuffer
-      )
-      const img = `data:image/png;base64,${Buffer.from(fileBuffer).toString(
-        'base64'
-      )}`
+      const url = `${req.protocol}://${req.get('host')}/resource/${file?.dir}/${
+        file.originalname
+      }`
+      const updateRes = await this.userService.updataUserAvaterUrlById(id, url)
       res.send({
         code: 200,
         message: updateRes ? 'Success' : 'Failed',
         data: updateRes
           ? '上传头像成功!'
           : '上传头像失败! 请检查是否和当前头像文件一致',
-        img: updateRes ? img : '',
+        img: updateRes ? url : '',
       })
+      // res.send({ code: 200 })
+      // const fileBuffer = file.buffer
+      // const updateRes = await this.userService.updataUserAvaterById(
+      //   id,
+      //   fileBuffer
+      // )
+      // const img = `data:image/png;base64,${Buffer.from(fileBuffer).toString(
+      //   'base64'
+      // )}`
+      // res.send({
+      //   code: 200,
+      //   message: updateRes ? 'Success' : 'Failed',
+      //   data: updateRes
+      //     ? '上传头像成功!'
+      //     : '上传头像失败! 请检查是否和当前头像文件一致',
+      //   img: updateRes ? img : '',
+      // })
     } catch (e) {
       next(e)
     }

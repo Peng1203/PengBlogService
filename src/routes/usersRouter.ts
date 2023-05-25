@@ -1,6 +1,6 @@
 import express from 'express'
 import UserController from '../controllers/userController'
-import { uploadToRAM } from '../middlewares/multer.config'
+import { uploadToDisk } from '../middlewares/multer.config'
 
 const router = express.Router()
 
@@ -26,7 +26,14 @@ router.put('/updateUserInfoById/:id', userController.updateUserInfo)
 
 router.patch(
   '/uploadAvatarById/:id',
-  uploadToRAM.single('file'),
+  uploadToDisk(3, [
+    'image/jpeg',
+    'image/png',
+    'image/gif',
+    'image/bmp',
+    'image/tiff',
+    'image/webp',
+  ]).single('file'),
   userController.uploadUserAvater
 )
 

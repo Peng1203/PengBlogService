@@ -166,7 +166,7 @@ class UserService {
           'state',
           'createdTime',
           'updateTime',
-          'avatar',
+          'avatarUrl',
           'unsealTime',
         ],
       })
@@ -178,7 +178,7 @@ class UserService {
         state,
         createdTime,
         updateTime,
-        avatar,
+        avatarUrl,
         unsealTime,
         Role,
       } = findUserRes.toJSON()
@@ -204,7 +204,7 @@ class UserService {
         roleDesc,
         email,
         state,
-        avatar,
+        avatarUrl,
         menus: menuList,
         authBtnList: authPermissionsList,
         createdTime,
@@ -516,6 +516,31 @@ class UserService {
   }
 
   /**
+   * 更新用户头像 (url)
+   * @author Peng
+   * @date 2023-05-25
+   * @param {any} id:number
+   * @param {any} fileBuffer:Buffer
+   * @returns {any}
+   */
+  public async updataUserAvaterUrlById(
+    id: number,
+    url: string
+  ): Promise<boolean> {
+    try {
+      const updataRes = await UserModel.update(
+        {
+          avatarUrl: url,
+        },
+        { where: { id } }
+      )
+      return !!updataRes[0]
+    } catch (e) {
+      throw e
+    }
+  }
+
+  /**
    * 通过ID 用户名 密码 校验 是否存在
    * @author Peng
    * @date 2023-04-04
@@ -585,7 +610,9 @@ class UserService {
   public async getClientInfo(req: any): Promise<any> {
     try {
       const ip =
-        req.clientIp.indexOf('127.0.0.1') !== -1 ? '127.0.0.1' : req.clientIp
+        req.clientIp.indexOf('127.0.0.1') !== -1
+          ? '127.0.0.1'
+          : req.clientIp.replace('::ffff:', '')
       const deviceType = req.useragent.isMobile ? '移动设备' : '电脑'
       const { os, platform, browser, version, source } = req.useragent
       // const { data } = await getParseIPInfo(ip)

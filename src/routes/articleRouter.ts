@@ -18,7 +18,14 @@ router.delete('/deleteArticleById/:id', articleController.delArticle)
 
 router.post(
   '/upload-resources',
-  uploadToDisk.single('file'),
+  uploadToDisk(1, [
+    'image/jpeg',
+    'image/png',
+    'image/gif',
+    'image/bmp',
+    'image/tiff',
+    'image/webp',
+  ]).single('file'),
   articleController.uploadCover
 )
 
