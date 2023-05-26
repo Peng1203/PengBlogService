@@ -3,8 +3,9 @@ import express from 'express'
 import cors from 'cors'
 import cookieParser from 'cookie-parser'
 import session from 'express-session'
-import requestIp from 'request-ip'
+import expressWs from 'express-ws'
 import userAgent from 'express-useragent'
+import requestIp from 'request-ip'
 import bodyParser from 'body-parser'
 import _logger from './utils/logger'
 import _moment from './utils/moment'
@@ -14,6 +15,7 @@ import testRouter from './routes/testRouter'
 import usersRouter from './routes/usersRouter'
 import roleRouter from './routes/roleRouter'
 import menuRouter from './routes/menuRouter'
+import socketRouter from './routes/webSocketRouter'
 import authPermissionRouter from './routes/authPermissionRouter'
 import tagRouter from './routes/tagRouter'
 import categoryRouter from './routes/categoryRouter'
@@ -27,6 +29,10 @@ import setHeader, { setResourceHeader } from './middlewares/defaultHeader'
 import taskManager from './tasks'
 
 const app = express()
+
+expressWs(app)
+// 使用WebSocket
+app.use('/socket', socketRouter)
 
 // 设置请求体大小限制为50MB
 app.use(bodyParser.json({ limit: '50mb' }))
