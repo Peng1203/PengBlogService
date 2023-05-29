@@ -28,6 +28,7 @@
   "include": [
     "./src/**/*.ts",
     "./src/public/**/*",
+    "src/script/updateAdmin/index.js",
   ], // 指定需要编译的 TypeScript 文件
   "exclude": [
     "node_modules",
