@@ -6,7 +6,6 @@ const scriptPath =
   os.platform() === 'linux'
     ? join(__dirname, './index.sh')
     : join(__dirname, './index.bat')
-console.log('scriptPath -----', scriptPath)
 
 const scriptJob = exec(scriptPath)
 scriptJob.on('close', code => {

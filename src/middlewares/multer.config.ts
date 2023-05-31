@@ -33,6 +33,7 @@ const storageToDisk = multer.diskStorage({
         break
       default:
         SAVE_PATH = path.join(STATIC_RESOURCE_ROOT_PATH, 'upload')
+        file.dir = 'default'
         break
     }
     // console.log('SAVE_PATH -----', SAVE_PATH)
