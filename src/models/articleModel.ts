@@ -53,7 +53,8 @@ const ArticleModel = sequelize.define(
     },
     // 文章标签 ID
     tags: {
-      type: DataTypes.ARRAY(DataTypes.INTEGER),
+      // type: DataTypes.ARRAY(DataTypes.INTEGER),
+      type: DataTypes.JSON,
       defaultValue: () => [],
     },
     // 评论数

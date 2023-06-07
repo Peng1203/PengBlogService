@@ -1,4 +1,5 @@
 import { Op } from 'sequelize'
+import sequelize from '../db/sequelize'
 import ArticleModel from '../models/articleModel'
 import CategoryModel from '../models/categoryModel'
 import TagModel from '../models/tagModel'
@@ -37,6 +38,12 @@ class ArticleService {
 
       // 文章过滤条件
       const categoryFilter = cId ? { categoryId: cId } : {}
+      // 标签过滤条件
+      const tagFilter = tagId
+        ? {
+            [Op.and]: [sequelize.literal(`JSON_CONTAINS(tags, '[${tagId}]')`)],
+          }
+        : {}
 
       // 归档查询条件 按照创建时间来查询 指定时间段创建的文章
       const archivalFilter =
@@ -47,13 +54,13 @@ class ArticleService {
               },
             }
           : {}
+
       const { rows, count: total } = await ArticleModel.findAndCountAll({
         where: {
           ...authorFilter,
           ...categoryFilter,
-          // tags: {
-          //   [Op.like]: `%${tagId}%`,
-          // },
+          ...tagFilter,
+
           [Op.or]: [
             { title: { [Op.like]: `%${queryStr}%` } },
             { brief: { [Op.like]: `%${queryStr}%` } },
