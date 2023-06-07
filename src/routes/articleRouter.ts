@@ -26,7 +26,7 @@ router.post(
     'image/tiff',
     'image/webp',
   ]).single('file'),
-  articleController.uploadCover
+  articleController.uploadResources
 )
 
 export default router

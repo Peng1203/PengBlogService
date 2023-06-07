@@ -1,4 +1,5 @@
 import { Request, Response, NextFunction } from 'express'
+// import type { ExpressHandler } from '@/types/global'
 import ArticleService from '../services/articleService'
 import { validateOrRejectDTO } from '../helpers/validateParams'
 import {
@@ -162,7 +163,7 @@ class ArticleController {
   }
 
   /**
-   * 上传文章封面文件
+   * 上传文章 封面 或内容图片
    * @author Peng
    * @date 2023-04-27
    * @param {any} req:Request
@@ -170,7 +171,7 @@ class ArticleController {
    * @param {any} next:NextFunction
    * @returns {any}
    */
-  public uploadCover = async (
+  public uploadResources = async (
     req: Request,
     res: Response,
     next: NextFunction
