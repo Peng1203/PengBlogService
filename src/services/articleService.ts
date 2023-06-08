@@ -36,36 +36,35 @@ class ArticleService {
         ? { authorId: { [Op.in]: authorIds } }
         : {}
 
-      // 文章过滤条件
+      // 文章分类过滤条件
       const categoryFilter = cId ? { categoryId: cId } : {}
+
       // 标签过滤条件
       const tagFilter = tagId
-        ? {
-            [Op.and]: [sequelize.literal(`JSON_CONTAINS(tags, '[${tagId}]')`)],
-          }
+        ? { [Op.and]: [sequelize.literal(`JSON_CONTAINS(tags, '[${tagId}]')`)] }
         : {}
 
       // 归档查询条件 按照创建时间来查询 指定时间段创建的文章
       const archivalFilter =
         startTime && endTime
-          ? {
-              createdTime: {
-                [Op.between]: [startTime, endTime],
-              },
-            }
+          ? { createdTime: { [Op.between]: [startTime, endTime] } }
           : {}
+
+      // 搜索关键词过滤
+      const strFilter = {
+        [Op.or]: [
+          { title: { [Op.like]: `%${queryStr}%` } },
+          { brief: { [Op.like]: `%${queryStr}%` } },
+        ],
+      }
 
       const { rows, count: total } = await ArticleModel.findAndCountAll({
         where: {
           ...authorFilter,
           ...categoryFilter,
           ...tagFilter,
-
-          [Op.or]: [
-            { title: { [Op.like]: `%${queryStr}%` } },
-            { brief: { [Op.like]: `%${queryStr}%` } },
-          ],
           ...archivalFilter,
+          ...strFilter,
         },
         include: [
           {
