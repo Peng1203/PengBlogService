@@ -6,6 +6,7 @@
     "start": "cross-env NODE_ENV=development ts-node ./src/index.ts",
     "prod:start": "npm install --only=prod && node index.js",
     "dev": "cross-env NODE_ENV=development nodemon ./src/index.ts",
+    "dev:esno": "cross-env NODE_ENV=development nodemon --exec esno ./src/index.ts",
     "test": "jest",
     "build": "cross-env NODE_ENV=production tsc && copy package.json dist\\ && copy .env dist\\",
     "build:wp": "cross-env NODE_ENV=production webpack",
