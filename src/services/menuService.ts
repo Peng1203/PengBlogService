@@ -1,3 +1,4 @@
+import chalk from 'chalk'
 import { Op } from 'sequelize'
 import MenuModel from '../models/menuModel'
 import { MenuListItemInfo } from '../interfaces/Menu'
@@ -34,13 +35,42 @@ class MenuService {
         attributes: ['menuURI'],
         raw: true,
       })
-      const URIs = allMenuURI.map(item => (item.menuURI))
+
+      // 已添加菜单的唯一标识
+      const URIs = allMenuURI.map(item => item.menuURI)
 
       const data: MenuListItemInfo[] = rows.map(row => row.toJSON())
       return { data, total, URIs }
     } catch (e) {
       throw e
     }
+  }
+
+  /**
+   * 处理菜单数据结构
+   * @author Peng
+   * @date 2023-06-11
+   * @param {any} data:any[]
+   * @returns {any}
+   */
+  handleMenuData(data: any[]): any[] {
+    console.log(
+      `%c data ----`,
+      'color: #fff;background-color: #000;font-size: 18px',
+      data
+    )
+    const newData = []
+
+    // ID哈希映射数据
+    const IDHashMapping = {}
+    data.forEach(item => {
+      IDHashMapping[item.id] = item
+      if (item.otherConfig?.parentMenuName === '') newData.push(item)
+      else {
+      }
+    })
+    // this.handleMenuData(data)
+    return []
   }
 
   /**

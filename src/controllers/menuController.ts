@@ -26,12 +26,15 @@ class MenuController {
       const { data, total, URIs } = await this.menuService.findMenuList(
         req.query as any
       )
+
+      // 处理菜单数据结构
+      this.menuService.handleMenuData(data)
       res.send({
         code: 200,
         message: 'Success',
         data,
         total,
-        URIs
+        URIs,
       })
     } catch (e) {
       next(e)

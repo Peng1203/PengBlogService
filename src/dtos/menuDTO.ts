@@ -3,6 +3,7 @@ import {
   IsArray,
   IsDefined,
   IsInt,
+  IsJSON,
   IsNotEmpty,
   IsNumber,
   IsOptional,
@@ -51,11 +52,24 @@ export class AddMenuDTO {
   // @IsOptional()
   readonly parentId: number
 
-  @IsArray()
-  @ArrayMinSize(0)
+  // @IsArray()
+  // @ArrayMinSize(0)
+  // @IsDefined()
+  // @IsNotEmpty()
+  // readonly roles: Array<number>
+
+  @IsString()
   @IsDefined()
   @IsNotEmpty()
-  readonly roles: Array<number>
+  readonly menuType: '1' | '2' | '3' | '4'
+
+  // @IsString()
+  @IsOptional()
+  readonly menuRedirect: any
+
+  // @IsJSON()
+  @IsOptional()
+  readonly otherConfig: any
 
   @IsString()
   @Matches(DATE_TIME_REGEX, { message: '日期格式有误!' })
@@ -100,11 +114,11 @@ export class UpdateMenuDTO {
   // @IsOptional()
   readonly parentId: number
 
-  @IsArray()
-  @ArrayMinSize(0)
-  @IsDefined()
-  @IsNotEmpty()
-  readonly roles: Array<number>
+  // @IsArray()
+  // @ArrayMinSize(0)
+  // @IsDefined()
+  // @IsNotEmpty()
+  // readonly roles: Array<number>
 
   @IsString()
   @Matches(DATE_TIME_REGEX, { message: '日期格式有误!' })

@@ -35,16 +35,41 @@ const MenuModel = sequelize.define(
       type: DataTypes.CHAR,
       defaultValue: '',
     },
-    // 父级ID参数 0为 一级菜单
+    // 父级ID参数 0为一级菜单
     parentId: {
       field: 'parent_id',
       type: DataTypes.BIGINT,
       defaultValue: 0,
     },
     // 拥有菜单的角色id列表
-    roles: {
+    // roles: {
+    //   type: DataTypes.JSON,
+    //   defaultValue: () => [],
+    // },
+    // 菜单类型 1一级目录 2 一级菜单  3目录 4菜单
+    menuType: {
+      field: 'menu_type',
+      type: DataTypes.ENUM('1', '2', '3', '4'),
+      defaultValue: '1',
+      allowNull: false,
+    },
+    // 重定向菜单
+    menuRedirect: {
+      field: 'menu_redirect',
+      type: DataTypes.CHAR,
+      defaultValue: null,
+      allowNull: true,
+    },
+    // 菜单其他配置信息
+    otherConfig: {
+      field: 'other_config',
       type: DataTypes.JSON,
-      defaultValue: () => [],
+      defaultValue: () => ({
+        isKeepAlive: false,
+        isHide: false,
+        parentMenuName: '',
+      }),
+      allowNull: true,
     },
     createdTime: {
       field: 'created_time',
@@ -79,11 +104,14 @@ async function test() {
   //   findRes.map(res => res.toJSON())
   // )
   const addMenu = {
-    menuName: '个人中心',
-    menuPath: '/personal',
-    menuURI: 'personal',
+    menuName: '权限管理',
+    menuPath: '/auth',
+    menuIcon: 'iconfont icon-auth',
+    menuURI: 'Auth',
     parentId: 0,
-    roles: [],
+    menuType: '1',
+    menuRedirect: 'SystemRole',
+    otherConfig: { isKeepAlive: false, isHide: false },
   }
   const addRes = await MenuModel.create(addMenu)
   console.log('addRes -----', addRes)
