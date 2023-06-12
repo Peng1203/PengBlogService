@@ -4,6 +4,7 @@ import { AddMenuDTO, GetMenusListDTO, UpdateMenuDTO } from '../dtos/menuDTO'
 import { validateOrRejectDTO } from '../helpers/validateParams'
 import MyError from '../helpers/exceptionError'
 import { PARAMS_ERROR_CODE } from '../helpers/errorCode'
+import { ExpressHandler } from '../types/global'
 class MenuController {
   private menuService = new MenuService()
 
@@ -28,13 +29,15 @@ class MenuController {
       )
 
       // 处理菜单数据结构
-      this.menuService.handleMenuData(data)
+      const newData = this.menuService.handleMenuData(data)
       res.send({
         code: 200,
         message: 'Success',
-        data,
+        // data,
+        data: newData,
         total,
         URIs,
+        // newData,
       })
     } catch (e) {
       next(e)
@@ -64,6 +67,25 @@ class MenuController {
         message: addRes ? 'Success' : 'Failed',
         data: addRes ? '菜单添加成功!' : '菜单添加失败, 该菜单已存在!',
       })
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  /**
+   * 一键添加默认菜单数据
+   * @author Peng
+   * @date 2023-06-12
+   * @param {any} res
+   * @param {any} req
+   * @param {any} next
+   * @returns {any}
+   */
+  public addAllDefaultMenus: ExpressHandler = async (req, res, next) => {
+    try {
+      console.log('req.body -----', req.body)
+      res.send('一键添加默认菜单数据')
+      this.menuService.createdAllDefaultMenus(req.body)
     } catch (e) {
       next(e)
     }

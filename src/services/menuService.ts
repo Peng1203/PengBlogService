@@ -1,4 +1,3 @@
-import chalk from 'chalk'
 import { Op } from 'sequelize'
 import MenuModel from '../models/menuModel'
 import { MenuListItemInfo } from '../interfaces/Menu'
@@ -54,23 +53,66 @@ class MenuService {
    * @returns {any}
    */
   handleMenuData(data: any[]): any[] {
-    console.log(
-      `%c data ----`,
-      'color: #fff;background-color: #000;font-size: 18px',
-      data
-    )
-    const newData = []
-
+    const newData: any = []
+    // {
+    //   "createdTime": "2023-06-11 22:19:39",
+    //   "updateTime": "2023-06-11 23:34:18",
+    //   "id": 1,
+    //   "menuName": "权限管理",
+    //   "menuPath": "/auth",
+    //   "menuURI": "Auth",
+    //   "menuIcon": "iconfont icon-auth",
+    //   "parentId": 0,
+    //   "menuType": "1",
+    //   "menuRedirect": "SystemRole",
+    //   "otherConfig": {
+    //     "isHide": false,
+    //     "isKeepAlive": false,
+    //     "parentMenuName": ""
+    //   }
+    // }
     // ID哈希映射数据
-    const IDHashMapping = {}
+    // const IDHashMapping = {}
+
     data.forEach(item => {
-      IDHashMapping[item.id] = item
-      if (item.otherConfig?.parentMenuName === '') newData.push(item)
-      else {
-      }
+      ;(item.menuType === '1' || item.menuType === '2') && (item.children = [])
+      item.otherConfig.parentMenuName === '' && newData.push(item)
     })
+
+    function formatData(allData: any[], currentData: any[]) {
+      allData.forEach((item: any) => {
+        if (item.otherConfig.parentMenuName) {
+          const findRes = currentData.find(
+            menu => menu.menuURI === item.otherConfig.parentMenuName
+          )
+          if (findRes) {
+            findRes?.children || (findRes.children = [])
+            const existingChild = findRes.children.find(
+              child => child.menuURI === item.menuURI
+            )
+            if (!existingChild) findRes.children.push(item)
+          } else {
+            currentData.forEach(
+              menu => menu.children && formatData([item], menu.children)
+            )
+          }
+        }
+      })
+    }
+
+    formatData(data, newData)
+    // console.log('newData -----', newData)
     // this.handleMenuData(data)
-    return []
+    return newData
+  }
+
+  async createdAllDefaultMenus(menuList: any[]) {
+    try {
+      const addRes = await MenuModel.bulkCreate(menuList)
+      console.log('addRes -----', addRes)
+    } catch (e) {
+      throw e
+    }
   }
 
   /**

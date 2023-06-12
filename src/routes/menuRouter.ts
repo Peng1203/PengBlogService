@@ -9,6 +9,8 @@ router.get('/getMenuList', menuController.getMenuList)
 
 router.post('/addMenu', menuController.addMenu)
 
+router.post('/addAllDefaultMenus', menuController.addAllDefaultMenus)
+
 router.delete('/deleteMenuById/:id', menuController.delMenu)
 
 router.put('/updateMenuById/:id', menuController.updateMenu)
