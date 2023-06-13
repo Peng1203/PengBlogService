@@ -25,8 +25,8 @@ class MenuService {
             { menuName: { [Op.like]: `%${queryStr}%` } },
           ],
         },
-        offset: (page - 1) * pageSize,
-        limit: pageSize,
+        // offset: (page - 1) * pageSize,
+        // limit: pageSize,
         order: [[column || 'id', order || 'ASC']],
       })
       // 获取全部的菜单唯一标识 用于前端过滤 已经添加过的菜单
@@ -52,7 +52,8 @@ class MenuService {
    * @param {any} data:any[]
    * @returns {any}
    */
-  handleMenuData(data: any[]): any[] {
+  handleMenuData(result: any[]): any[] {
+    const data = JSON.parse(JSON.stringify(result))
     const newData: any = []
     // {
     //   "createdTime": "2023-06-11 22:19:39",
@@ -106,10 +107,10 @@ class MenuService {
     return newData
   }
 
-  async createdAllDefaultMenus(menuList: any[]) {
+  async createdAllDefaultMenus(menuList: any[]): Promise<number> {
     try {
-      const addRes = await MenuModel.bulkCreate(menuList)
-      console.log('addRes -----', addRes)
+      const rows = await MenuModel.bulkCreate(menuList)
+      return rows.length
     } catch (e) {
       throw e
     }

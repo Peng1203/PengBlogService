@@ -11,13 +11,31 @@ import {
   Matches,
   MaxLength,
   Min,
+  IsIn,
   MinLength,
 } from 'class-validator'
-import { TableListDTO } from './common/tableListDTO'
 import { DATE_TIME_REGEX, PATH_REGEX } from '../helpers/regex'
 
 // 获取菜单列表
-export class GetMenusListDTO extends TableListDTO {}
+export class GetMenusListDTO {
+  @IsString()
+  // @IsOptional()
+  @IsDefined()
+  queryStr: string
+
+  @IsString()
+  @IsOptional()
+  column: string
+
+  @IsString()
+  @IsOptional()
+  @IsIn(['ASC', 'DESC', ''])
+  order: 'ASC' | 'DESC' | '' = ''
+
+  @IsString()
+  @IsOptional()
+  token?: string
+}
 
 // 添加菜单
 export class AddMenuDTO {

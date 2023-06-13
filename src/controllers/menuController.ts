@@ -34,7 +34,7 @@ class MenuController {
         code: 200,
         message: 'Success',
         // data,
-        data: newData,
+        data: req.query.queryStr ? data : newData,
         total,
         URIs,
         // newData,
@@ -83,9 +83,13 @@ class MenuController {
    */
   public addAllDefaultMenus: ExpressHandler = async (req, res, next) => {
     try {
-      console.log('req.body -----', req.body)
-      res.send('一键添加默认菜单数据')
-      this.menuService.createdAllDefaultMenus(req.body)
+      const addTotal = await this.menuService.createdAllDefaultMenus(req.body)
+      console.log('addTotal -----', addTotal)
+      res.send({
+        code: 200,
+        message: 'Success',
+        data: `成功添加 ${addTotal} 个菜单`,
+      })
     } catch (e) {
       next(e)
     }

@@ -29,30 +29,36 @@ function handleParseRequestParams(
   res: Response,
   next: NextFunction
 ): void {
-  // 需要转换为数值类型的属性名称列表
-  const convertProps: string[] = [
-    'id',
-    'roleId',
-    'age',
-    'count',
-    'page',
-    'pageSize',
-    'parentId',
-    'tagId',
-    'cId',
-    'authorId',
-    'categoryId',
-    'state',
-  ]
-  const { query, body, params } = req
+  try {
+    // 需要转换为数值类型的属性名称列表
+    const convertProps: string[] = [
+      'id',
+      'roleId',
+      'age',
+      'count',
+      'page',
+      'pageSize',
+      'parentId',
+      'tagId',
+      'cId',
+      'authorId',
+      'categoryId',
+      'state',
+    ]
+    const { query, body, params } = req
 
-  // console.log('body前', JSON.parse(JSON.stringify(body)))
-  if (Object.keys(query).length) handleParamsType(query, convertProps)
-  if (Object.keys(body).length) handleParamsType(body, convertProps)
-  if (Object.keys(params).length) handleParamsType(params, convertProps)
-  // console.log('body后', JSON.parse(JSON.stringify(body)))
+    if (JSON_REGEX.test(body) && body.constructor === Array) return next()
 
-  next()
+    // console.log('body前', JSON.parse(JSON.stringify(body)))
+    if (Object.keys(query).length) handleParamsType(query, convertProps)
+    if (Object.keys(body).length) handleParamsType(body, convertProps)
+    if (Object.keys(params).length) handleParamsType(params, convertProps)
+    // console.log('body后', JSON.parse(JSON.stringify(body)))
+
+    next()
+  } catch (e) {
+    next(e)
+  }
 }
 
 export default handleParseRequestParams
