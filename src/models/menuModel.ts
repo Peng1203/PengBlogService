@@ -70,6 +70,12 @@ const MenuModel = sequelize.define(
         parentMenuName: '',
       }),
       allowNull: true,
+      // get() {
+      //   return JSON.parse(this.getDataValue('otherConfig'))
+      // },
+      // set(val) {
+      //   this.setDataValue('otherConfig', JSON.stringify(val))
+      // },
     },
     createdTime: {
       field: 'created_time',
@@ -103,18 +109,32 @@ async function test() {
   //   'findRes -----',
   //   findRes.map(res => res.toJSON())
   // )
-  const addMenu = {
-    menuName: '权限管理',
-    menuPath: '/auth',
-    menuIcon: 'iconfont icon-auth',
-    menuURI: 'Auth',
+  // const addMenu = {
+  //   menuName: '权限管理',
+  //   menuPath: '/auth',
+  //   menuIcon: 'iconfont icon-auth',
+  //   menuURI: 'Auth',
+  //   parentId: 0,
+  //   menuType: '1',
+  //   menuRedirect: 'SystemRole',
+  //   otherConfig: { isKeepAlive: false, isHide: false },
+  // }
+  // const addRes = await MenuModel.create(addMenu)
+  // console.log('addRes -----', addRes)
+
+  const params = {
+    menuName: '个人中心',
+    menuPath: '/personal',
+    menuURI: 'Personal',
+    menuIcon: 'ele-UserFilled',
     parentId: 0,
-    menuType: '1',
-    menuRedirect: 'SystemRole',
-    otherConfig: { isKeepAlive: false, isHide: false },
+    menuType: '3',
+    menuRedirect: '',
+    otherConfig: { isHide: true, isKeepAlive: true, parentMenuName: '' },
   }
-  const addRes = await MenuModel.create(addMenu)
-  console.log('addRes -----', addRes)
+
+  const res = await MenuModel.update(params, { where: { id: 13 } })
+  console.log('res -----', res)
 }
 // test()
 

@@ -46,7 +46,6 @@ function handleParseRequestParams(
       'state',
     ]
     const { query, body, params } = req
-
     if (JSON_REGEX.test(body) && body.constructor === Array) return next()
 
     // console.log('body前', JSON.parse(JSON.stringify(body)))
