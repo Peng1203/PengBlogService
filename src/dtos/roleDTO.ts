@@ -14,12 +14,12 @@ import { TableListDTO } from './common/tableListDTO'
 import { DATE_TIME_REGEX } from '../helpers/regex'
 
 // 获取角色列表
-export class GetRoleListDTO extends TableListDTO { }
+export class GetRoleListDTO extends TableListDTO {}
 
 // 添加角色
 export class AddRoleDTO {
   @IsString()
-  @MinLength(3)
+  @MinLength(2)
   // @MaxLength(10)
   @IsDefined()
   @IsNotEmpty()
@@ -56,7 +56,7 @@ export class AddRoleDTO {
 // 更新角色信息
 export class UpdateRoelInfoDTO {
   @IsString()
-  @MinLength(3)
+  @MinLength(2)
   // @MaxLength(10)
   @IsDefined()
   @IsNotEmpty()
