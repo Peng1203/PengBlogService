@@ -22,6 +22,8 @@ router.post('/addUser', userController.addUser)
 
 router.delete('/deleteUserById/:id', userController.delUser)
 
+router.delete('/deleteUsers', userController.batchDelUser)
+
 router.put('/updateUserInfoById/:id', userController.updateUserInfo)
 
 router.patch(

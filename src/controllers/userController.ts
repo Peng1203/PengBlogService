@@ -1,9 +1,11 @@
 import { Request, Response, NextFunction } from 'express'
 import moment from 'moment'
 import { FORBIDDEN_ERROR_CODE, PARAMS_ERROR_CODE } from '../helpers/errorCode'
+import { ExpressHandler } from '../types/global'
 import {
   AddUserDTO,
   ChangePwdDTO,
+  DeleteUsersDTO,
   GetUserListDTO,
   UpdateUserDTO,
   UserLoginDTO,
@@ -422,6 +424,27 @@ class UserController {
         code: 200,
         message: delRes ? 'Success' : 'Failed',
         data: delRes ? '删除成功!' : '删除失败!',
+      })
+    } catch (e) {
+      next(e)
+    }
+  }
+
+  public batchDelUser: ExpressHandler = async (req, res, next) => {
+    try {
+      await validateOrRejectDTO(DeleteUsersDTO, req.body)
+      if (req.body.ids.indexOf(1) >= 0)
+        return res.send({
+          code: 200,
+          message: 'Failed',
+          data: '无法删除所包含的admin账户!',
+        })
+      const delCount = await this.userService.deleteUsersByIds(req.body!.ids)
+
+      res.send({
+        code: 200,
+        message: 'Success',
+        data: `成功删除${delCount}个用户!`,
       })
     } catch (e) {
       next(e)

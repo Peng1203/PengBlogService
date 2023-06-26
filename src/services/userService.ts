@@ -378,28 +378,38 @@ class UserService {
    */
   public async getUserList(params: object): Promise<ListResponse> {
     try {
-      const { page, pageSize, queryStr, column, order } = params as any
+      const { page, pageSize, queryStr, column, order, roleId } = params as any
+      const roleIdFilter = roleId ? { roleId } : {}
       const { rows, count: total } = await UserModel.findAndCountAll({
         where: {
           [Op.or]: [
             // { id: { [Op.like]: `%${queryStr}%` } },
             { userName: { [Op.like]: `%${queryStr}%` } },
           ],
+          ...roleIdFilter,
         },
+        include: [
+          {
+            model: RoleModel,
+            attributes: ['roleName'],
+          },
+        ],
         offset: (page - 1) * pageSize,
         limit: pageSize,
         attributes: { exclude: ['password', 'avatar'] },
         order: [[column || 'id', order || 'ASC']],
       })
+
       const data: UserListItemInfo[] = rows.map(row => {
-        return row.toJSON()
-        // const dataRes = row.toJSON()
-        // const avatar = dataRes.avatar ? dataRes.avatar.toString('base64') : null
-        // return {
-        //   ...dataRes,
-        //   avatar,
-        // }
+        const item = row.toJSON()
+        const { Role, ...formatData } = item
+        return {
+          ...formatData,
+          roleName: Role.roleName,
+        }
+        return formatData
       })
+
       return { data, total }
     } catch (e) {
       throw e
@@ -632,6 +642,21 @@ class UserService {
         ipDetailInfo: data,
         loginTime: dateTimeFormat(),
       }
+    } catch (e) {
+      throw e
+    }
+  }
+
+  /**
+   * 通过用户ID数组 批量删除用户
+   * @author Peng
+   * @date 2023-06-26
+   * @param {any} ids:number[]
+   * @returns {any}
+   */
+  public async deleteUsersByIds(ids: number[]): Promise<any> {
+    try {
+      return await UserModel.destroy({ where: { id: ids } })
     } catch (e) {
       throw e
     }

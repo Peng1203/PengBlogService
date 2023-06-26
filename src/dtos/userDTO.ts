@@ -1,4 +1,7 @@
 import {
+  ArrayMinSize,
+  ArrayNotEmpty,
+  IsArray,
   IsDate,
   IsDefined,
   IsEmail,
@@ -15,7 +18,11 @@ import {
   Min,
   MinLength,
   ValidateIf,
+  Validate,
+  ValidateNested,
 } from 'class-validator'
+
+import { IsArrayNumber } from './common/custom'
 
 import { DATE_TIME_REGEX, UUID_REGEX } from '../helpers/regex'
 import { TableListDTO } from './common/tableListDTO'
@@ -68,7 +75,19 @@ export class UserLogoutDTO {
 }
 
 // 获取用户列表
-export class GetUserListDTO extends TableListDTO { }
+export class GetUserListDTO extends TableListDTO {
+  @Min(0)
+  @IsNumber()
+  readonly roleId: number
+}
+
+// 批量删除ID数组
+export class DeleteUsersDTO {
+  @IsArray()
+  @IsNotEmpty()
+  @Validate(IsArrayNumber) // 自定义校验
+  readonly ids: number[]
+}
 
 // 添加用户
 export class AddUserDTO {
@@ -161,7 +180,7 @@ export class UpdateUserDTO {
 }
 
 // 上传头像
-export class UploadUserAvatarDTO { }
+export class UploadUserAvatarDTO {}
 
 // 修改密码
 export class ChangePwdDTO {

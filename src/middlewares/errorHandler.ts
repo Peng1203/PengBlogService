@@ -71,6 +71,9 @@ function errorHandler(
         case 'SequelizeDatabaseError':
           msg = '查询错误!'
           break
+        case 'SequelizeForeignKeyConstraintError':
+          msg = '请检查删除数据是否有其他外键关联信息!'
+          break
         default:
           msg = err.message
           break
