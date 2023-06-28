@@ -516,9 +516,9 @@ class UserController {
           '用户id参数有误!',
           'DTO'
         )
-      const url = `${req.protocol}://${req.get('host')}/resource/${file?.dir}/${
-        file.originalname
-      }`
+      const url = `${req.protocol}://${req.get('host')}/staticResource/${
+        file?.dir
+      }/${file.originalname}`
       const updateRes = await this.userService.updataUserAvaterUrlById(id, url)
       res.send({
         code: 200,

@@ -21,6 +21,8 @@ import tagRouter from './routes/tagRouter'
 import categoryRouter from './routes/categoryRouter'
 import articleRouter from './routes/articleRouter'
 import systemRouter from './routes/systemRouter'
+import resourceRouter from './routes/resourceRouter'
+
 import notFoundMiddleware from './middlewares/404Middleware'
 import errorHandler from './middlewares/errorHandler'
 import handleParamsType from './middlewares/handleParamsType'
@@ -53,7 +55,7 @@ app.use(
 app.use(express.urlencoded({ extended: false }))
 // 设置静态资源服务器
 app.use(
-  '/resource',
+  '/staticResource',
   express.static(path.join(__dirname, './public'), {
     setHeaders: setResourceHeader,
   })
@@ -84,6 +86,7 @@ app.use('/article', articleRouter)
 app.use('/article-tag', tagRouter)
 app.use('/article-category', categoryRouter)
 app.use('/system', systemRouter)
+app.use('/resource', resourceRouter)
 
 // 404中间件
 app.use(notFoundMiddleware)
