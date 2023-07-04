@@ -179,7 +179,7 @@ class ArticleController {
     try {
       const fileInfo: any = req?.file
       res.send(
-        `${req.protocol}://${req.get('host')}/resource/${fileInfo?.dir}/${
+        `${req.protocol}://${req.get('host')}/staticResource/${fileInfo?.dir}/${
           fileInfo.filename
         }`
       )
