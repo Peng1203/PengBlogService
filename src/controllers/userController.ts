@@ -518,7 +518,7 @@ class UserController {
         )
       const url = `${req.protocol}://${req.get('host')}/staticResource/${
         file?.dir
-      }/${file.originalname}`
+      }/${file.filename}`
       const updateRes = await this.userService.updataUserAvaterUrlById(id, url)
       res.send({
         code: 200,

@@ -7,9 +7,6 @@ dependencies:
   body-parser:
     specifier: ^1.20.2
     version: 1.20.2
-  chalk:
-    specifier: ^5.2.0
-    version: 5.2.0
   class-transformer:
     specifier: ^0.5.1
     version: 0.5.1
@@ -76,6 +73,9 @@ dependencies:
   mysql2:
     specifier: ^3.1.2
     version: 3.1.2
+  nanoid:
+    specifier: '3'
+    version: 3.3.6
   node-schedule:
     specifier: ^2.1.1
     version: 2.1.1
@@ -1615,11 +1615,6 @@ packages:
       ansi-styles: 4.3.0
       supports-color: 7.2.0
     dev: true
-
-  /chalk@5.2.0:
-    resolution: {integrity: sha512-ree3Gqw/nazQAPuJJEy+avdl7QfZMcUvmHIKgEZkGL+xOBzRvup5Hxo6LHuMceSxOabuJLJm5Yp/92R9eMmMvA==}
-    engines: {node: ^12.17.0 || ^14.13 || >=16.0.0}
-    dev: false
 
   /char-regex@1.0.2:
     resolution: {integrity: sha512-kWWXztvZ5SBQV+eRgKFeh8q5sLuZY2+8WUIzlxWVTg+oGwY14qylx1KbKzHd8P6ZYkAg0xyIDU9JMHhyJMZ1jw==}
@@ -3375,6 +3370,12 @@ packages:
     engines: {node: '>=12.0.0'}
     dependencies:
       lru-cache: 7.18.3
+    dev: false
+
+  /nanoid@3.3.6:
+    resolution: {integrity: sha512-BGcqMMJuToF7i1rt+2PWSNVnWIkGCU78jBG3RxO/bZlnZPK2Cmi2QaffxGO/2RvWi9sL+FAiRiXMgsyxQ1DIDA==}
+    engines: {node: ^10 || ^12 || ^13.7 || ^14 || >=15.0.1}
+    hasBin: true
     dev: false
 
   /natural-compare@1.4.0:

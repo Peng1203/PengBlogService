@@ -178,10 +178,9 @@ class ArticleController {
   ): Promise<any> => {
     try {
       const fileInfo: any = req?.file
-      // console.log('fileInfo -----', fileInfo)
       res.send(
         `${req.protocol}://${req.get('host')}/resource/${fileInfo?.dir}/${
-          fileInfo.originalname
+          fileInfo.filename
         }`
       )
     } catch (e) {

@@ -4,6 +4,7 @@ import fs from 'fs'
 import multer from 'multer'
 import { Request } from 'express'
 import { STATIC_RESOURCE_ROOT_PATH } from '../configs/sign'
+import { generateFileName } from '../utils/fsUtils'
 
 // 处理上传文件信息
 const storageToDisk = multer.diskStorage({
@@ -48,21 +49,23 @@ const storageToDisk = multer.diskStorage({
     }
   },
   // 上传文件的名称
-  filename(req: Request, file, cb): void {
+  async filename(req: Request, file, cb): Promise<any> {
     // 解决中文名乱码的问题
     // file.originalname = Buffer.from(file.originalname, 'latin1').toString('utf8')
-    // console.log('file.originalname -----', file.originalname)
-    let fileName = file?.originalname
-    switch (req.headers['resource-classification']) {
-      // 上传用户头像 自定义 文件名
-      case 'user-cover':
-        const splitVal = file.originalname.split('.')
-        const fileExtension = splitVal[splitVal.length - 1]
-        fileName = `user-cover-${req.headers.userid}.${fileExtension}`
-        file.originalname = fileName
-        break
-    }
-    cb(null, fileName)
+    const newFileName = await generateFileName(file.originalname)
+    cb(null, newFileName)
+
+    // let fileName = file?.originalname
+    // switch (req.headers['resource-classification']) {
+    //   // 上传用户头像 自定义 文件名
+    //   case 'user-cover':
+    //     const splitVal = file.originalname.split('.')
+    //     const fileExtension = splitVal[splitVal.length - 1]
+    //     fileName = `user-cover-${req.headers.userid}.${fileExtension}`
+    //     file.originalname = fileName
+    //     break
+    // }
+    // cb(null, fileName)
   },
 })
 
